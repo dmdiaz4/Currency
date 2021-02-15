@@ -1,5 +1,11 @@
 # Currency
-Simple app that uses https://exchangeratesapi.io to show and convert currencies
+Simple app that uses https://exchangeratesapi.io to show and convert currencies 
+
+# Screen Shots
+<p align="center">
+<img src="/screen_shot.png" width="35%"/>
+<img src="/screen_shot2.png" width="35%"/>
+</p>
 
 
 # License
