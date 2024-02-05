@@ -1,17 +1,47 @@
-# Currency
-Simple app that uses https://exchangeratesapi.io to show and convert currencies 
+<h1 align="center">Currency</h1>
+<p align="center">
+  💱 Simple app that uses https://api.vatcomply.com to show and convert currencies
+</p>
+<p align="center">
+  <a href="https://opensource.org/licenses/mit"><img alt="License" src="https://img.shields.io/badge/License-MIT-blue.svg"/></a>
+  <a href="https://android-arsenal.com/api?level=24"><img alt="API" src="https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat"/></a>
+</p>
 
-# Screen Shots
+## Tech stack & Open-source libraries
+- **Minimum SDK level**
+  - Android 24
+  
+- **Language**
+   - [Kotlin](https://kotlinlang.org/)
+
+- **UI Framework**
+   - Android - [View Binding](https://developer.android.com/topic/libraries/view-binding)
+  
+- **Architecture**
+  - [MVVM Architecture](https://developer.android.com/topic/architecture) (Model - View - ViewModel)
+  - [Repository Pattern](https://proandroiddev.com/the-real-repository-pattern-in-android-efba8662b754)
+  - [Clean Code Architecture](https://proandroiddev.com/why-you-need-use-cases-interactors-142e8a6fe576) (Usecase + mappers)
+    
+- [Arrow-Kt](https://arrow-kt.io): Arrow brings idiomatic functional programming to Kotlin
+- [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) + [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/): for asynchronous.
+- [Retrofit](https://github.com/square/retrofit): A type-safe HTTP client for Android and Java
+- [Moshi](https://github.com/square/moshi/): A modern JSON serialization library for Kotlin.
+- [Dagger/Hilt](https://github.com/google/dagger) : A fast dependency injector for Java and Android
+- [Room](https://github.com/androidx-releases/Room): Persistence library that provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite
+
+----
+
+## Screen Shots
 <p align="center">
 <img src="/screen_shot.png" width="35%"/>
 <img src="/screen_shot2.png" width="35%"/>
 </p>
 
 
-# License
+## License
     MIT License
 
-    Copyright (c) 2021 David Diaz
+    Copyright (c) 2024 David Diaz
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
