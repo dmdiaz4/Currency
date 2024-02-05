@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021 David Diaz
+ * Copyright (c) 2024 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,20 +25,7 @@
 package com.example.currency
 
 import android.app.Application
-import com.example.currency.di.*
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
+import dagger.hilt.android.HiltAndroidApp
 
-class CurrencyApplication: Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin {
-            androidLogger()
-            androidContext(this@CurrencyApplication)
-            modules(listOf(databaseModule, networkModule, repositoryModule, useCaseModule, viewModelModule))
-        }
-    }
-}
+@HiltAndroidApp
+class CurrencyApplication: Application()
