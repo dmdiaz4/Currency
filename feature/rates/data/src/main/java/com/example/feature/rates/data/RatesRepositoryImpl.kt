@@ -31,6 +31,7 @@ import com.example.feature.rates.data.mappers.toRates
 import com.example.feature.rates.data.remote.dtos.APIRatesResponse
 import com.example.feature.rates.domain.models.Rates
 import com.example.core.data.repositories.Repository
+import com.example.core.extensions.emitRight
 import com.example.core.extensions.mapRight
 import com.example.feature.rates.data.remote.RatesRemoteDataSource
 import com.example.currency.di.qualifiers.Default
@@ -46,6 +47,9 @@ class RatesRepositoryImpl @Inject constructor(
     @Default defaultDispatcher: CoroutineDispatcher
 ) : RatesRepository, Repository(defaultDispatcher) {
 
+
+    private var currencyUnit: CurrencyUnit? = null
+
     override fun getLatestRates(
         currencyUnit: CurrencyUnit
     ) = get<APIRatesResponse, Rates>(
@@ -57,10 +61,14 @@ class RatesRepositoryImpl @Inject constructor(
 
             emitAll(domainFlow)
         },
+        shouldFetchFlow = {
+            emitRight(currencyUnit.code != this@RatesRepositoryImpl.currencyUnit?.code)
+        },
         fetchFlow = {
             emit(remoteSource.getLatestRates(currencyUnit))
         },
         saveFetchSuccess = { fetch ->
+            this@RatesRepositoryImpl.currencyUnit = currencyUnit
             localSource.saveLatestRates(fetch.toDBRates())
         }
     )
