@@ -26,8 +26,8 @@ package com.example.feature.rates.data.mappers
 
 import com.example.core.data.local.entities.DBRates
 import com.example.feature.rates.data.remote.dtos.APIRatesResponse
-import com.example.core.models.Rate
-import com.example.core.models.Rates
+import com.example.feature.rates.domain.models.Rate
+import com.example.feature.rates.domain.models.Rates
 import org.joda.money.CurrencyUnit
 
 
@@ -68,42 +68,141 @@ fun APIRatesResponse.toDBRates() = DBRates(
     PLN = rates.PLN,
 )
 
-fun DBRates.toRates() = Rates(
+fun DBRates.toRates() = com.example.feature.rates.domain.models.Rates(
     base = base,
     rates = listOf(
-        Rate(currencyUnit = CurrencyUnit.of("CAD"), rate = CAD),
-        Rate(currencyUnit = CurrencyUnit.of("HKD"), rate = HKD),
-        Rate(currencyUnit = CurrencyUnit.of("ISK"), rate = ISK),
-        Rate(currencyUnit = CurrencyUnit.of("PHP"), rate = PHP),
-        Rate(currencyUnit = CurrencyUnit.of("DKK"), rate = DKK),
-        Rate(currencyUnit = CurrencyUnit.of("HUF"), rate = HUF),
-        Rate(currencyUnit = CurrencyUnit.of("CZK"), rate = CZK),
-        Rate(currencyUnit = CurrencyUnit.of("GBP"), rate = GBP),
-        Rate(currencyUnit = CurrencyUnit.of("RON"), rate = RON),
-        Rate(currencyUnit = CurrencyUnit.of("SEK"), rate = SEK),
-        Rate(currencyUnit = CurrencyUnit.of("IDR"), rate = IDR),
-        Rate(currencyUnit = CurrencyUnit.of("INR"), rate = INR),
-        Rate(currencyUnit = CurrencyUnit.of("BRL"), rate = BRL),
-        Rate(currencyUnit = CurrencyUnit.of("RUB"), rate = RUB),
-        Rate(currencyUnit = CurrencyUnit.of("HRK"), rate = HRK),
-        Rate(currencyUnit = CurrencyUnit.of("JPY"), rate = JPY),
-        Rate(currencyUnit = CurrencyUnit.of("THB"), rate = THB),
-        Rate(currencyUnit = CurrencyUnit.of("CHF"), rate = CHF),
-        Rate(currencyUnit = CurrencyUnit.of("EUR"), rate = EUR),
-        Rate(currencyUnit = CurrencyUnit.of("MYR"), rate = MYR),
-        Rate(currencyUnit = CurrencyUnit.of("BGN"), rate = BGN),
-        Rate(currencyUnit = CurrencyUnit.of("TRY"), rate = TRY),
-        Rate(currencyUnit = CurrencyUnit.of("CNY"), rate = CNY),
-        Rate(currencyUnit = CurrencyUnit.of("NOK"), rate = NOK),
-        Rate(currencyUnit = CurrencyUnit.of("NZD"), rate = NZD),
-        Rate(currencyUnit = CurrencyUnit.of("ZAR"), rate = ZAR),
-        Rate(currencyUnit = CurrencyUnit.of("USD"), rate = USD),
-        Rate(currencyUnit = CurrencyUnit.of("MXN"), rate = MXN),
-        Rate(currencyUnit = CurrencyUnit.of("SGD"), rate = SGD),
-        Rate(currencyUnit = CurrencyUnit.of("AUD"), rate = AUD),
-        Rate(currencyUnit = CurrencyUnit.of("ILS"), rate = ILS),
-        Rate(currencyUnit = CurrencyUnit.of("KRW"), rate = KRW),
-        Rate(currencyUnit = CurrencyUnit.of("PLN"), rate = PLN),
-        )
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("CAD"),
+            rate = CAD
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("HKD"),
+            rate = HKD
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("ISK"),
+            rate = ISK
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("PHP"),
+            rate = PHP
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("DKK"),
+            rate = DKK
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("HUF"),
+            rate = HUF
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("CZK"),
+            rate = CZK
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("GBP"),
+            rate = GBP
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("RON"),
+            rate = RON
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("SEK"),
+            rate = SEK
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("IDR"),
+            rate = IDR
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("INR"),
+            rate = INR
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("BRL"),
+            rate = BRL
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("RUB"),
+            rate = RUB
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("HRK"),
+            rate = HRK
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("JPY"),
+            rate = JPY
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("THB"),
+            rate = THB
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("CHF"),
+            rate = CHF
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("EUR"),
+            rate = EUR
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("MYR"),
+            rate = MYR
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("BGN"),
+            rate = BGN
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("TRY"),
+            rate = TRY
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("CNY"),
+            rate = CNY
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("NOK"),
+            rate = NOK
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("NZD"),
+            rate = NZD
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("ZAR"),
+            rate = ZAR
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("USD"),
+            rate = USD
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("MXN"),
+            rate = MXN
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("SGD"),
+            rate = SGD
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("AUD"),
+            rate = AUD
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("ILS"),
+            rate = ILS
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("KRW"),
+            rate = KRW
+        ),
+        com.example.feature.rates.domain.models.Rate(
+            currencyUnit = CurrencyUnit.of("PLN"),
+            rate = PLN
+        ),
+    )
 )
 

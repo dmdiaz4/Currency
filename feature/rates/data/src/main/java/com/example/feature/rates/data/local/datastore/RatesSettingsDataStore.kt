@@ -22,12 +22,14 @@
  * SOFTWARE.
  */
 
-package com.example.core.models
+package com.example.feature.rates.data.local.datastore
 
-import com.example.core.models.Rate
-import org.joda.money.CurrencyUnit
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.intPreferencesKey
 
-data class Rates(
-    val base: CurrencyUnit = CurrencyUnit.USD,
-    val rates: List<Rate> = listOf()
-)
+interface RatesSettingsDataStore: DataStore<Preferences>{
+
+    val CURRENCY_FORMATS_KEY: String get() = "CURRENCY_FORMATS_KEY"
+
+}

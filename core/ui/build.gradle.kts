@@ -67,6 +67,9 @@ dependencies {
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
 
+    implementation(libs.preference.ktx)
+    implementation(libs.datastore.preferences)
+
     //joda
     implementation(libs.joda.money)
 

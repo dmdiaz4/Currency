@@ -25,6 +25,7 @@
 package com.example.core.data.repositories
 
 import arrow.core.Either
+import arrow.core.computations.EitherEffect
 import arrow.core.raise.either
 import arrow.core.flatten
 import arrow.core.left
@@ -43,6 +44,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("unused", "MemberVisibilityCanBePrivate", "RedundantAsync")
 abstract class Repository(
@@ -90,5 +92,19 @@ abstract class Repository(
         .flowOn(defaultDispatcher)
         .cancellable()
         .conflate()
+
+    suspend fun <RESPONSE, DOMAIN> crud(
+        operation: Raise<Failure>.() -> RESPONSE,
+        saveOperationSuccess: Raise<Failure>.(RESPONSE) -> DOMAIN,
+    ) = withContext(defaultDispatcher) {
+        either<Failure, DOMAIN> {
+            val success = tryOrFailure { either(operation) }.flatten().bind()
+            tryOrFailure {
+                either<Failure, DOMAIN> {
+                    saveOperationSuccess(success)
+                }
+            }.flatten().bind()
+        }
+    }
 
 }

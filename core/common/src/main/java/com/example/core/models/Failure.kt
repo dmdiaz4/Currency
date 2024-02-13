@@ -29,7 +29,7 @@ package com.example.core.models
  * Every feature specific failure should extend [FeatureFailure] class.
  */
 sealed class Failure {
-    object NetworkUnavailable: Failure()
+    data object NetworkUnavailable: Failure()
     data class NetworkError(val code: Int) : Failure()
     data class UnknownError(val throwable: Throwable) : Failure()
 

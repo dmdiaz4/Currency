@@ -22,30 +22,31 @@
  * SOFTWARE.
  */
 
-package com.example.feature.rates.data.repositories
+package com.example.feature.rates.data
 
 
 import com.example.feature.rates.data.local.RatesLocalDataSource
 import com.example.feature.rates.data.mappers.toDBRates
 import com.example.feature.rates.data.mappers.toRates
 import com.example.feature.rates.data.remote.dtos.APIRatesResponse
-import com.example.core.models.Rates
+import com.example.feature.rates.domain.models.Rates
 import com.example.core.data.repositories.Repository
 import com.example.core.extensions.mapRight
 import com.example.feature.rates.data.remote.RatesRemoteDataSource
 import com.example.currency.di.qualifiers.Default
+import com.example.feature.rates.domain.RatesRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.joda.money.CurrencyUnit
 import javax.inject.Inject
 
-class RatesRepository @Inject constructor(
+class RatesRepositoryImpl @Inject constructor(
     private val remoteSource: RatesRemoteDataSource,
     private val localSource: RatesLocalDataSource,
     @Default defaultDispatcher: CoroutineDispatcher
-) : Repository(defaultDispatcher) {
+) : RatesRepository, Repository(defaultDispatcher) {
 
-    fun getLatestRates(
+    override fun getLatestRates(
         currencyUnit: CurrencyUnit
     ) = get<APIRatesResponse, Rates>(
         domainFlow = {
@@ -63,4 +64,15 @@ class RatesRepository @Inject constructor(
             localSource.saveLatestRates(fetch.toDBRates())
         }
     )
+
+    override fun getDisabledCurrencyFormats(
+    ) = localSource
+        .getDisabledCurrencyFormats()
+        .mapRight {set -> set.map { CurrencyUnit.of(it) }.toSet()}
+
+
+    override suspend fun saveDisabledCurrencyFormats(
+        values: Set<CurrencyUnit>
+    ) = localSource
+        .saveDisabledCurrencyFormats(values.map { it.code }.toSet())
 }

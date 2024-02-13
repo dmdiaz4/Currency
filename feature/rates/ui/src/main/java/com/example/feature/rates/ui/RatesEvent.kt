@@ -22,14 +22,10 @@
  * SOFTWARE.
  */
 
-package com.example.core.models
+package com.example.feature.rates.ui
 
-import org.joda.money.CurrencyUnit
-import org.joda.money.CurrencyUnit.USD
-import java.math.BigDecimal
-import java.math.BigDecimal.ONE
+import org.joda.money.Money
 
-data class Rate(
-    val currencyUnit: CurrencyUnit = USD,
-    val rate: BigDecimal = ONE
-)
+sealed class RatesEvent {
+    data class AmountChanged(val money: Money): RatesEvent()
+}

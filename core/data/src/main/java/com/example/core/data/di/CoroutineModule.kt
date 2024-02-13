@@ -40,7 +40,7 @@ object CoroutineModule {
 
     @Default
     @Provides
-    fun provideDefaultDispatcher() : CoroutineDispatcher = Dispatchers.Main
+    fun provideDefaultDispatcher() : CoroutineDispatcher = Dispatchers.Default
 
     @Network
     @Provides

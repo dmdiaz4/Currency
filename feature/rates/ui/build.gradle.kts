@@ -79,6 +79,9 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
+    implementation(libs.preference.ktx)
+    implementation(libs.datastore.preferences)
+
     //joda
     implementation(libs.joda.money)
 

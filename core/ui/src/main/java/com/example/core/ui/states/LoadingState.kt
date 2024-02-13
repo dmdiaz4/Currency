@@ -22,31 +22,15 @@
  * SOFTWARE.
  */
 
-package com.example.core.data.di
+package com.example.core.ui.states
 
-import android.content.Context
-import androidx.room.Room
-import com.example.core.data.local.daos.DBRatesDao
-import com.example.core.data.local.PersistingDatabase
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import com.example.core.models.Failure
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
+sealed class LoadingState<out T>{
+    data object Loading : LoadingState<Nothing>()
 
-    @Provides
-    @Singleton
-    fun provideDatabase(
-        @ApplicationContext context: Context
-    ): PersistingDatabase {
-        return Room
-            .databaseBuilder(context, PersistingDatabase::class.java, "rates_db")
-            .build()
-    }
+    data class Failed(val exception: Failure): LoadingState<Nothing>()
 
+    data class Success<T>(val data: T): LoadingState<T>()
 }
+

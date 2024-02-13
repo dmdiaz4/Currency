@@ -22,22 +22,11 @@
  * SOFTWARE.
  */
 
-package com.example.feature.rates.domain.usecases
+package com.example.feature.rates.ui.settings
 
-import arrow.core.Either
-import com.example.core.models.Failure
-import com.example.core.models.Rates
-import com.example.feature.rates.data.repositories.RatesRepository
-import kotlinx.coroutines.flow.Flow
+import com.example.core.ui.states.LoadingState
 import org.joda.money.CurrencyUnit
-import javax.inject.Inject
 
-
-class GetLatestRatesUseCase @Inject constructor(
-    private val repository: RatesRepository
-){
-    operator fun invoke(currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>> {
-        return repository.getLatestRates(currencyUnit = currencyUnit)
-    }
-
-}
+data class RatesSettingsState(
+    val formats : LoadingState<List<CurrencyUnit>> = LoadingState.Loading
+)

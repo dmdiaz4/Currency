@@ -22,12 +22,17 @@
  * SOFTWARE.
  */
 
-package com.example.core.data.di
+package com.example.feature.rates.data.di
 
 import android.content.Context
-import androidx.room.Room
-import com.example.core.data.local.daos.DBRatesDao
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.core.data.local.PersistingDatabase
+import com.example.core.data.local.daos.DBRatesDao
+import com.example.feature.rates.data.RatesRepositoryImpl
+import com.example.feature.rates.data.local.datastore.RatesSettingsDataStore
+import com.example.feature.rates.domain.RatesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,18 +40,32 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+
+private val Context.dataStore by preferencesDataStore(name = "rates_settings")
+
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
+object RatesDataModule {
+
+    @Provides
+    fun provideDBRatesDao(
+        database: PersistingDatabase
+    ): DBRatesDao {
+        return database.ratesDao()
+    }
+
+
+    @Provides
+    fun provideRatesSettingsDataStore(
+        @ApplicationContext context: Context
+    ) : RatesSettingsDataStore{
+        return object: RatesSettingsDataStore, DataStore<Preferences> by context.dataStore {}
+    }
 
     @Provides
     @Singleton
-    fun provideDatabase(
-        @ApplicationContext context: Context
-    ): PersistingDatabase {
-        return Room
-            .databaseBuilder(context, PersistingDatabase::class.java, "rates_db")
-            .build()
-    }
+    fun provideRatesRepository(
+        ratesRepositoryImpl: RatesRepositoryImpl
+    ): RatesRepository = ratesRepositoryImpl
 
 }

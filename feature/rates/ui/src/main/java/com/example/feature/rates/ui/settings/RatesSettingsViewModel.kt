@@ -22,68 +22,64 @@
  * SOFTWARE.
  */
 
-package com.example.feature.rates.ui
+package com.example.feature.rates.ui.settings
 
 import androidx.annotation.MainThread
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature.rates.domain.usecases.GetConvertedAmountsUseCase
 import com.example.core.extensions.cancelIfActive
 import com.example.core.ui.states.LoadingState
+import com.example.feature.rates.domain.usecases.GetDisabledCurrencyFormatsUseCase
+import com.example.feature.rates.domain.usecases.SaveCurrencyFormatsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.joda.money.CurrencyUnit
-import org.joda.money.CurrencyUnit.USD
-import org.joda.money.Money
 import javax.inject.Inject
 
 @HiltViewModel
-class RatesViewModel @Inject constructor(
-    private val handle: SavedStateHandle,
-    private val getConvertedAmountsUseCase: GetConvertedAmountsUseCase,
+class RatesSettingsViewModel @Inject constructor(
+    private val getCurrencyFormatsUseCase: GetDisabledCurrencyFormatsUseCase,
+    private val saveCurrencyFormatsUseCase: SaveCurrencyFormatsUseCase
 ) : ViewModel() {
 
-
-    private val _state = MutableStateFlow(RatesState(enteredAmount = handle["money"] ?: Money.zero(USD)))
+    private val _state = MutableStateFlow(RatesSettingsState())
     val state = _state.asStateFlow()
 
     init {
-        getConvertedAmounts(state.value.enteredAmount)
+        getCurrencyFormats()
     }
 
     @MainThread
-    fun onEvent(event: RatesEvent){
+    fun onEvent(event: RatesSettingsEvent){
         when(event){
-            is RatesEvent.AmountChanged -> {
-                val money = event.money
-                val previousState = _state.getAndUpdate { it.copy(enteredAmount = money) }
-                handle["money"] = money
-
-                if (previousState.enteredAmount != money){
-                    getConvertedAmounts(money)
+            is RatesSettingsEvent.FormatsChanged -> {
+                viewModelScope.launch {
+                    saveCurrencyFormatsUseCase(event.formats.toSet())
                 }
             }
         }
     }
 
-    private var getConvertedAmountsJob: Job? = null
-    private fun getConvertedAmounts(amount: Money) {
-        getConvertedAmountsJob.cancelIfActive()
-        _state.update { it.copy(convertedAmounts = LoadingState.Loading) }
-        getConvertedAmountsJob = viewModelScope.launch {
-            getConvertedAmountsUseCase(amount).collect { results ->
+
+    private var getCurrencyFormatsJob: Job? = null
+    private fun getCurrencyFormats(){
+        getCurrencyFormatsJob.cancelIfActive()
+        _state.update { it.copy(formats = LoadingState.Loading) }
+        getCurrencyFormatsJob = viewModelScope.launch {
+            getCurrencyFormatsUseCase().collect{ results ->
                 results.fold(
                     ifLeft = { failure ->
-                        _state.update { it.copy(convertedAmounts = LoadingState.Failed(failure)) }
+                        _state.update { it.copy(formats = LoadingState.Failed(failure)) }
                     },
                     ifRight = { success ->
-                        _state.update { it.copy(convertedAmounts = LoadingState.Success(success)) }
+                        _state.update { it.copy(formats = LoadingState.Success(success.toList())) }
                     }
                 )
             }
         }
     }
+
 }

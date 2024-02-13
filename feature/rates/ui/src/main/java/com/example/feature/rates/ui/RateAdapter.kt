@@ -28,50 +28,36 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.SortedListAdapterCallback
-import com.example.core.models.Rate
 import com.example.core.ui.adapters.BaseAdapter.BaseHolder
 import com.example.core.extensions.createSortedList
 import com.example.core.extensions.singleClickListener
 import com.example.core.extensions.toFormattedString
 import com.example.core.ui.adapters.BaseAdapter
 import com.example.feature.rates.ui.databinding.ItemRateBinding
-import org.joda.money.CurrencyUnit
 import org.joda.money.Money
-import java.math.BigDecimal
-import java.math.RoundingMode.HALF_UP
 
 class RateAdapter(
     private val onClick: (Money) -> Unit
-) : BaseAdapter<Rate, BaseHolder<ItemRateBinding>>() {
-
-    private var amount: Money = Money.zero(CurrencyUnit.USD)
+) : BaseAdapter<Money, BaseHolder<ItemRateBinding>>() {
 
 
-    private val data = createSortedList(object : SortedListAdapterCallback<Rate>(this) {
-        override fun compare(o1: Rate, o2: Rate): Int {
+    private val data = createSortedList(object : SortedListAdapterCallback<Money>(this) {
+        override fun compare(o1: Money, o2: Money): Int {
             return o1.currencyUnit.code.compareTo(o2.currencyUnit.code)
         }
 
-        override fun areContentsTheSame(oldItem: Rate, newItem: Rate): Boolean {
+        override fun areContentsTheSame(oldItem: Money?, newItem: Money?): Boolean {
             return oldItem == newItem
         }
 
-        override fun areItemsTheSame(item1: Rate, item2: Rate): Boolean {
-            return TextUtils.equals(item1.currencyUnit.code, item2.currencyUnit.code)
+        override fun areItemsTheSame(item1: Money?, item2: Money?): Boolean {
+            return TextUtils.equals(item1?.currencyUnit?.code, item2?.currencyUnit?.code)
         }
 
     })
-
-
-    override fun updateList(state: List<Rate>) {
+    override fun updateList(state: List<Money>) {
         data.replaceAll(state)
     }
-
-    fun updateAmount(money: Money){
-        amount = money
-        notifyDataSetChanged()
-    }
-
 
     override fun getItemCount(): Int = data.size()
 
@@ -83,16 +69,13 @@ class RateAdapter(
 
     override fun onBindViewHolder(holder: BaseHolder<ItemRateBinding>, position: Int) {
         val binding = holder.binding
-        val currency: CurrencyUnit = data.get(position).currencyUnit
-        val rate: BigDecimal = data.get(position).rate
+        val amount = data.get(position)
 
-        binding.currency.text = currency.code
+        binding.currency.text = amount.currencyUnit.code
 
-        val converted = Money.zero(currency).plus(amount.multipliedBy(rate, HALF_UP).amount, HALF_UP)
+        binding.amount.text = amount.toFormattedString()
 
-        binding.amount.text = converted.toFormattedString()
-
-        binding.root.singleClickListener(hideKeyboardAfterClick = true) { onClick(converted) }
+        binding.root.singleClickListener(hideKeyboardAfterClick = true) { onClick(amount) }
     }
 
 }

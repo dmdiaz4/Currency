@@ -22,15 +22,19 @@
  * SOFTWARE.
  */
 
-package com.example.core.ui.states
+package com.example.feature.rates.domain
 
+import arrow.core.Either
 import com.example.core.models.Failure
+import com.example.feature.rates.domain.models.Rates
+import kotlinx.coroutines.flow.Flow
+import org.joda.money.CurrencyUnit
 
-sealed class LoadingUIState<out T>{
-    data object Loading : LoadingUIState<Nothing>()
+interface RatesRepository {
 
-    data class Failed(val exception: Failure): LoadingUIState<Nothing>()
+    fun getLatestRates(currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>>
 
-    data class Success<T>(val data: T): LoadingUIState<T>()
+    fun getDisabledCurrencyFormats(): Flow<Either<Failure, Set<CurrencyUnit>>>
+
+    suspend fun saveDisabledCurrencyFormats(values: Set<CurrencyUnit>): Either<Failure, Unit>
 }
-

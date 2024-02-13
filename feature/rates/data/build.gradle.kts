@@ -65,9 +65,14 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
 
+    implementation(project(":core:domain"))
+    implementation(project(":feature:rates:domain"))
+
     //hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    implementation(libs.datastore.preferences)
 
     //joda
     implementation(libs.joda.money)

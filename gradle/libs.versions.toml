@@ -6,6 +6,7 @@ arrow-core-retrofit = "1.0.0"
 arrow-fx-coroutines = "1.2.0"
 constraintlayout = "2.1.4"
 core-ktx = "1.12.0"
+datastore-preferences = "1.0.0"
 espresso-core = "3.5.1"
 hilt-android-compiler = "2.50"
 hilt-gradle-plugin = "2.50"
@@ -17,6 +18,7 @@ logging-interceptor = "4.12.0"
 material = "1.11.0"
 moshi = "1.15.0"
 navigation-fragment-ktx = "2.7.6"
+preference-ktx = "1.2.1"
 retrofit = "2.9.0"
 room-runtime = "2.6.1"
 
@@ -28,6 +30,7 @@ arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref 
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android-compiler" }
@@ -41,6 +44,7 @@ moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
 navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation-fragment-ktx" }
 navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation-fragment-ktx" }
+preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference-ktx" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-runtime" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-runtime" }

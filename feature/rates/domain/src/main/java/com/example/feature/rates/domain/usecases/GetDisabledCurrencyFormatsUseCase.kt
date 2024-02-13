@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-package com.example.feature.rates.ui
+package com.example.feature.rates.domain.usecases
 
-import com.example.core.models.Failure
-import com.example.core.models.Rate
-import org.joda.money.Money
-import com.example.core.ui.states.LoadingUIState
+import com.example.feature.rates.domain.RatesRepository
+import javax.inject.Inject
 
-data class RatesUIState(
-    val enteredAmount: Money,
-    val rates: LoadingUIState<List<Rate>>? = null
-) {
-    val currencyUnit get() = enteredAmount.currencyUnit
+class GetDisabledCurrencyFormatsUseCase @Inject constructor(
+    private val repository: RatesRepository
+){
+    operator fun invoke() = repository.getDisabledCurrencyFormats()
+
 }

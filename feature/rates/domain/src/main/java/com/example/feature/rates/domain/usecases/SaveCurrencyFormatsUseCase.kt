@@ -22,31 +22,17 @@
  * SOFTWARE.
  */
 
-package com.example.core.data.di
+package com.example.feature.rates.domain.usecases
 
-import android.content.Context
-import androidx.room.Room
-import com.example.core.data.local.daos.DBRatesDao
-import com.example.core.data.local.PersistingDatabase
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import com.example.feature.rates.domain.RatesRepository
+import org.joda.money.CurrencyUnit
+import javax.inject.Inject
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
 
-    @Provides
-    @Singleton
-    fun provideDatabase(
-        @ApplicationContext context: Context
-    ): PersistingDatabase {
-        return Room
-            .databaseBuilder(context, PersistingDatabase::class.java, "rates_db")
-            .build()
-    }
+
+class SaveCurrencyFormatsUseCase @Inject constructor(
+    private val repository: RatesRepository
+){
+    suspend operator fun invoke(value: Set<CurrencyUnit>) = repository.saveDisabledCurrencyFormats(value)
 
 }

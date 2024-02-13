@@ -22,64 +22,70 @@
  * SOFTWARE.
  */
 
-package com.example.feature.rates.ui
+package com.example.feature.rates.ui.settings
 
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.preference.PreferenceDataStore
+import androidx.preference.PreferenceFragmentCompat
 import com.example.core.models.Failure
-import com.example.core.ui.extensions.viewBinding
 import com.example.core.ui.states.LoadingState
-import com.example.core.ui.views.MoneyEditText
-import com.example.feature.rates.ui.databinding.FragmentRatesBinding
+import com.example.feature.rates.ui.R
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import org.joda.money.Money
+import kotlinx.coroutines.runBlocking
+import org.joda.money.CurrencyUnit
+
 
 @AndroidEntryPoint
-class RatesFragment : Fragment(R.layout.fragment_rates) {
+class RatesSettingsFragment: PreferenceFragmentCompat() {
 
-    private val binding by viewBinding (FragmentRatesBinding::bind)
 
-    private val viewModel by viewModels<RatesViewModel>()
+    private val viewModel by viewModels<RatesSettingsViewModel>()
 
-    private lateinit var adapter: RateAdapter
+    private val dataStore = object :PreferenceDataStore(){
+
+        override fun putStringSet(key: String, values: MutableSet<String>?) {
+            viewModel.onEvent(RatesSettingsEvent.FormatsChanged(values?.map { CurrencyUnit.of(it) }?: emptyList()))
+        }
+
+        override fun getStringSet(key: String, defValues: MutableSet<String>?): MutableSet<String>? {
+            return runBlocking {
+                (viewModel.state
+                    .first { it.formats is LoadingState.Success<*> }
+                    .formats as LoadingState.Success<List<CurrencyUnit>>)
+                    .data
+                    .map { it.code }
+                    .toMutableSet()
+            }
+        }
+    }
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        preferenceManager.preferenceDataStore = dataStore
+        setPreferencesFromResource(R.xml.rates_preferences, rootKey)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        adapter = RateAdapter { converted ->
-            viewModel.onEvent(RatesEvent.AmountChanged(converted))
-        }
-
-        binding.rateList.adapter = adapter
-
-        binding.priceInput.moneyUpdateListener = object : MoneyEditText.MoneyUpdatedListener {
-            override fun onUpdated(total: Money) {
-                viewModel.onEvent(RatesEvent.AmountChanged(total))
-            }
-        }
 
         setUpObservers(viewLifecycleOwner)
     }
 
     private fun setUpObservers(lifecycleOwner: LifecycleOwner) {
-
         lifecycleOwner.lifecycleScope.launch {
-            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
-                    binding.priceInputLayout.hint = "Enter Currency Amount in " + state.enteredAmount.currencyUnit.code
-                    binding.priceInput.money = state.enteredAmount
-
-                    when(state.convertedAmounts){
+                    when(state.formats){
                         is LoadingState.Failed -> {
-                            val failure = state.convertedAmounts.exception
+                            val failure = state.formats.exception
                             val msg = when(failure){
                                 is Failure.NetworkError -> {
                                     "Network error, HTTP code: " + failure.code
@@ -94,14 +100,15 @@ class RatesFragment : Fragment(R.layout.fragment_rates) {
                             Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
                         }
                         is LoadingState.Success -> {
-                            adapter.updateList(state.convertedAmounts.data)
+                            dataStore.putStringSet("", state.formats.data.map { it.code }.toMutableSet())
                         }
-                        else -> {
-                            adapter.updateList(emptyList())
-                        }
+                        else -> {}
                     }
                 }
             }
         }
     }
+
 }
+
+
