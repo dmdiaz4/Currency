@@ -30,6 +30,6 @@ import java.math.BigDecimal
 import java.math.BigDecimal.ONE
 
 data class Rate(
-    val currencyUnit: CurrencyUnit = USD,
-    val rate: BigDecimal = ONE
+    val currencyUnit: CurrencyUnit,
+    val rate: BigDecimal
 )

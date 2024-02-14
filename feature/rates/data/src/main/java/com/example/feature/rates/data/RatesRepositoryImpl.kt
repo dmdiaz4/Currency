@@ -28,10 +28,8 @@ package com.example.feature.rates.data
 import com.example.feature.rates.data.local.RatesLocalDataSource
 import com.example.feature.rates.data.mappers.toDBRates
 import com.example.feature.rates.data.mappers.toRates
-import com.example.feature.rates.data.remote.dtos.APIRatesResponse
-import com.example.feature.rates.domain.models.Rates
 import com.example.core.data.repositories.Repository
-import com.example.core.extensions.emitRight
+import com.example.core.data.serializers.DateSerializer
 import com.example.core.extensions.mapRight
 import com.example.feature.rates.data.remote.RatesRemoteDataSource
 import com.example.currency.di.qualifiers.Default
@@ -39,6 +37,7 @@ import com.example.feature.rates.domain.RatesRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.joda.money.CurrencyUnit
+import java.util.Date
 import javax.inject.Inject
 
 class RatesRepositoryImpl @Inject constructor(
@@ -48,39 +47,26 @@ class RatesRepositoryImpl @Inject constructor(
 ) : RatesRepository, Repository(defaultDispatcher) {
 
 
-    private var currencyUnit: CurrencyUnit? = null
-
-    override fun getLatestRates(
+    override fun getRates(
+        date: Date,
         currencyUnit: CurrencyUnit
-    ) = get<APIRatesResponse, Rates>(
+    ) = get(
         domainFlow = {
             val domainFlow =
                 localSource
                 .getLatestRates(currencyUnit)
-                .mapRight { it.toRates() }
+                .mapRight { it?.toRates() }
 
             emitAll(domainFlow)
         },
-        shouldFetchFlow = {
-            emitRight(currencyUnit.code != this@RatesRepositoryImpl.currencyUnit?.code)
+        shouldFetch = {rates ->
+            DateSerializer.serialize(date) !=  DateSerializer.serialize(rates?.date)
         },
-        fetchFlow = {
-            emit(remoteSource.getLatestRates(currencyUnit))
+        fetch = {
+            remoteSource.getRates(date, currencyUnit).bind()
         },
         saveFetchSuccess = { fetch ->
-            this@RatesRepositoryImpl.currencyUnit = currencyUnit
-            localSource.saveLatestRates(fetch.toDBRates())
+            localSource.saveLatestRates(fetch.toDBRates()).bind()
         }
     )
-
-    override fun getDisabledCurrencyFormats(
-    ) = localSource
-        .getDisabledCurrencyFormats()
-        .mapRight {set -> set.map { CurrencyUnit.of(it) }.toSet()}
-
-
-    override suspend fun saveDisabledCurrencyFormats(
-        values: Set<CurrencyUnit>
-    ) = localSource
-        .saveDisabledCurrencyFormats(values.map { it.code }.toSet())
 }

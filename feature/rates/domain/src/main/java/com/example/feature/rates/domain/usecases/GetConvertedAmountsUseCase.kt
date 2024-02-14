@@ -27,33 +27,28 @@ package com.example.feature.rates.domain.usecases
 import arrow.core.Either
 import com.example.core.extensions.eitherFlatMapLatest
 import com.example.core.extensions.emitRight
+import com.example.core.extensions.mapRight
 import com.example.core.models.Failure
 import com.example.feature.rates.domain.RatesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.joda.money.Money
 import java.math.RoundingMode.HALF_UP
+import java.util.Date
 import javax.inject.Inject
 
 
 class GetConvertedAmountsUseCase @Inject constructor(
     private val repository: RatesRepository,
-    private val getDisabledCurrencyFormatsUseCase: GetDisabledCurrencyFormatsUseCase,
-){
+) {
     operator fun invoke(amount: Money): Flow<Either<Failure, List<Money>>> {
 
         return repository
-            .getLatestRates(currencyUnit = amount.currencyUnit)
-            .eitherFlatMapLatest {rates ->
-                getDisabledCurrencyFormatsUseCase().eitherFlatMapLatest { list ->
-                    flow {
-                        val filtered = rates.rates.filter { !list.contains(it.currencyUnit) }
-                        val converted = filtered.map { rate ->
-                            Money.zero(rate.currencyUnit)
-                                .plus(amount.multipliedBy(rate.rate, HALF_UP).amount, HALF_UP)
-                        }
-                        emitRight(converted)
-                    }
+            .getRates(Date(), currencyUnit = amount.currencyUnit)
+            .mapRight { rates ->
+                rates.rates.map { rate ->
+                    Money.zero(rate.currencyUnit)
+                        .plus(amount.multipliedBy(rate.rate, HALF_UP).amount, HALF_UP)
                 }
             }
     }

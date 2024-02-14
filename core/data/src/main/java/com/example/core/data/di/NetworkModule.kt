@@ -32,6 +32,7 @@ import com.example.core.data.BuildConfig
 import com.example.core.data.remote.handlers.NetworkHandler
 import com.example.core.data.serializers.BigDecimalSerializer
 import com.example.core.data.serializers.CurrencyUnitSerializer
+import com.example.core.data.serializers.DateSerializer
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import dagger.Module
@@ -95,7 +96,7 @@ object NetworkModule {
     @Singleton
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
-            .add(Date::class.java,  Rfc3339DateJsonAdapter())
+            .add(DateSerializer)
             .add(BigDecimalSerializer)
             .add(CurrencyUnitSerializer)
             .build()

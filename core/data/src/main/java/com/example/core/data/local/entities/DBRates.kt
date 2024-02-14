@@ -29,6 +29,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.joda.money.CurrencyUnit
 import java.math.BigDecimal
+import java.util.Date
 
 // Database DTO
 @Entity(tableName = "rates")
@@ -36,6 +37,8 @@ data class DBRates(
     @PrimaryKey
     @ColumnInfo(name = "base")
     val base: CurrencyUnit,
+    @ColumnInfo(name = "date")
+    val date: Date,
     @ColumnInfo(name = "CAD")
     val CAD: BigDecimal,
     @ColumnInfo(name = "HKD")

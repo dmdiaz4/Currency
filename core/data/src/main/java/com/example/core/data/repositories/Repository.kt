@@ -30,6 +30,10 @@ import arrow.core.raise.either
 import arrow.core.flatten
 import arrow.core.left
 import arrow.core.raise.Raise
+import com.example.core.extensions.eitherFlatMapLatest
+import com.example.core.extensions.filterNotNullRight
+import com.example.core.extensions.mapRight
+import com.example.core.extensions.onEachRight
 import com.example.core.extensions.tryOrFailure
 import com.example.core.models.Failure
 import com.example.core.models.Failure.UnknownError
@@ -42,9 +46,12 @@ import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.switchMap
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -53,78 +60,28 @@ abstract class Repository(
     protected val defaultDispatcher: CoroutineDispatcher
 ) {
 
+
     fun <FETCH, DOMAIN> get(
         domainFlow: suspend FlowCollector<Either<Failure, DOMAIN>>.() -> Unit,
-        shouldFetchFlow: suspend FlowCollector<Either<Failure, Boolean>>.() -> Unit,
-        fetchFlow: suspend FlowCollector<Either<Failure, FETCH>>.() -> Unit,
+        shouldFetch: suspend Raise<Failure>.(DOMAIN) -> Boolean,
+        fetch: suspend Raise<Failure>.() -> FETCH,
         saveFetchSuccess: suspend Raise<Failure>.(FETCH) -> Unit,
-    ) = flow {
-
-        val sharedFlow = MutableSharedFlow<Either<Failure, DOMAIN>>(replay = 1)
-
-        val finishedSaving = MutableStateFlow(false)
-
-        val domainFlowWrapped =
-            flow(domainFlow).catch { emit(UnknownError(it).left()) }
-        val shouldFetchFlowWrapped =
-            flow(shouldFetchFlow).catch { emit(UnknownError(it).left()) }
-        val fetchFlowWrapped =
-            flow(fetchFlow).catch { emit(UnknownError(it).left()) }
-        val saveFetchSuccessWrapped: suspend (FETCH) -> Either<Failure, Unit> = { success ->
-            tryOrFailure {
-                either<Failure, Unit> {
-                    saveFetchSuccess(
-                        success
-                    )
+    ) = flow(domainFlow)
+        .catch { emit(UnknownError(it).left()) }
+        .onEach { domain ->
+            either{
+                tryOrFailure {
+                    val domainSuccess = domain.bind()
+                    val shouldFetchSuccess =  either { shouldFetch.invoke(this, domainSuccess) }.bind()
+                    if (shouldFetchSuccess){
+                        val fetchSuccess = either { fetch.invoke(this) }.bind()
+                        either { saveFetchSuccess.invoke(this, fetchSuccess)}.bind()
+                    }
+                    domainSuccess
                 }
             }.flatten()
         }
-
-        coroutineScope {
-            launch {
-                shouldFetchFlowWrapped
-                    .catch { emit(UnknownError(it).left()) }
-                    .collect { shouldFetch ->
-                        shouldFetch.fold(
-                            ifLeft = { sharedFlow.emit(it.left()) },
-                            ifRight = { fetch ->
-                                if (fetch) {
-                                    fetchFlowWrapped
-                                        .catch { emit(UnknownError(it).left()) }
-                                        .map { it.map { success -> saveFetchSuccessWrapped(success) } }
-                                        .map { it.flatten() }
-                                        .collect { result ->
-                                            result.fold(
-                                                ifLeft = { sharedFlow.emit(it.left()) },
-                                                ifRight = { finishedSaving.value = true }
-                                            )
-                                        }
-
-                                } else {
-                                    finishedSaving.value = true
-                                }
-                            }
-                        )
-
-                    }
-            }
-            launch {
-                sharedFlow.collect {
-                    finishedSaving.value = true
-                }
-            }
-            launch {
-                finishedSaving.collect { saved ->
-                    if (saved) {
-                        sharedFlow.emitAll(domainFlowWrapped)
-                    }
-                }
-            }
-
-            emitAll(sharedFlow)  // Emit all the flow updates
-        }
-    }
-        .catch { emit(UnknownError(it).left()) }
+        .filterNotNullRight()
         .flowOn(defaultDispatcher)
         .cancellable()
         .conflate()

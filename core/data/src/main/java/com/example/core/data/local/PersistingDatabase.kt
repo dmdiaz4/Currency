@@ -31,10 +31,11 @@ import com.example.core.data.local.daos.DBRatesDao
 import com.example.core.data.local.entities.DBRates
 import com.example.core.data.serializers.BigDecimalSerializer
 import com.example.core.data.serializers.CurrencyUnitSerializer
+import com.example.core.data.serializers.DateSerializer
 
 
 @Database(entities = [DBRates::class], version = 1, exportSchema = false)
-@TypeConverters(value = [BigDecimalSerializer::class, CurrencyUnitSerializer::class])
+@TypeConverters(value = [BigDecimalSerializer::class, CurrencyUnitSerializer::class, DateSerializer::class])
 abstract class PersistingDatabase : RoomDatabase() {
 
     abstract fun ratesDao(): DBRatesDao

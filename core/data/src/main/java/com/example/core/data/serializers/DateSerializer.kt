@@ -22,14 +22,29 @@
  * SOFTWARE.
  */
 
-package com.example.feature.rates.data.local.datastore
+package com.example.core.data.serializers
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.room.TypeConverter
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-interface RatesSettingsDataStore: DataStore<Preferences>{
+object DateSerializer {
 
-    val CURRENCY_FORMATS_KEY: String get() = "CURRENCY_FORMATS_KEY"
+    private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+    @ToJson
+    @TypeConverter
+    fun serialize(date: Date?): String? {
+        return date?.let { formatter.format(it) }
+    }
+
+    @FromJson
+    @TypeConverter
+    fun deserialize(json: String?): Date? {
+        return json?.let { formatter.parse(it) }
+    }
 
 }

@@ -29,12 +29,10 @@ import com.example.core.models.Failure
 import com.example.feature.rates.domain.models.Rates
 import kotlinx.coroutines.flow.Flow
 import org.joda.money.CurrencyUnit
+import java.util.Date
 
 interface RatesRepository {
 
-    fun getLatestRates(currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>>
+    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>>
 
-    fun getDisabledCurrencyFormats(): Flow<Either<Failure, Set<CurrencyUnit>>>
-
-    suspend fun saveDisabledCurrencyFormats(values: Set<CurrencyUnit>): Either<Failure, Unit>
 }

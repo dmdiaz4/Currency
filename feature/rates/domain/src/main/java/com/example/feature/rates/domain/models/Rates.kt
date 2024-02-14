@@ -26,8 +26,10 @@ package com.example.feature.rates.domain.models
 
 import com.example.feature.rates.domain.models.Rate
 import org.joda.money.CurrencyUnit
+import java.util.Date
 
 data class Rates(
-    val base: CurrencyUnit = CurrencyUnit.USD,
-    val rates: List<com.example.feature.rates.domain.models.Rate> = listOf()
+    val base: CurrencyUnit,
+    val date: Date,
+    val rates: List<Rate>
 )

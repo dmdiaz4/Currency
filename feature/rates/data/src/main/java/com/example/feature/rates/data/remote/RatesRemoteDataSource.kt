@@ -33,6 +33,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit
 import retrofit2.Retrofit
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -42,12 +43,13 @@ class RatesRemoteDataSource @Inject constructor(
     @Network private val networkDispatcher: CoroutineDispatcher
 ): RemoteDataSource<APIRatesService>(retrofit.create(APIRatesService::class.java), networkHandler){
 
-    suspend fun getLatestRates(
+    suspend fun getRates(
+        date: Date,
         currencyUnit: CurrencyUnit,
     ) = either {
         val service = getAvailableService().bind()
         val rates = withContext(networkDispatcher) {
-            service.getLatestRates(base = currencyUnit.code)
+            service.getRates(base = currencyUnit.code)
         }
         processRemoteResponse(rates).bind()
     }

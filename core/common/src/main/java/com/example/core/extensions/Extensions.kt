@@ -46,6 +46,8 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transform
 import org.joda.money.Money
 import org.joda.money.format.MoneyAmountStyle
 import org.joda.money.format.MoneyFormatter
@@ -113,8 +115,20 @@ fun View.singleClickListener(hideKeyboardAfterClick: Boolean? = false, onClick: 
     }
 }
 
+fun <A, B: Any> Flow<Either<A,B?>>.filterNotNullRight(): Flow<Either<A,B>> = transform<Either<A,B?>, Either<A,B>> { value ->
+    value.fold(
+        ifLeft = {
+            return@transform emit(it.left())
+        },
+        ifRight = {
+            if (it!= null){
+                return@transform emit(it.right())
+            }
+        }
+    )
+}
+fun <A,B> Flow<Either<A,B>>.onEachRight(action: suspend (B) -> Unit): Flow<Either<A, B>> = this.onEach { it.fold(ifRight = { action(it) }, ifLeft = {}) }
 inline fun <A,B,C> Flow<Either<A, B>>.mapRight(crossinline transform: suspend (value: B) -> C): Flow<Either<A, C>> = this.map { it.map { transform(it) } }
-
 
 suspend fun <A,B> FlowCollector<Either<A, B>>.emitLeft(left: A) = emit(left.left())
 

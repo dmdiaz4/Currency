@@ -28,12 +28,15 @@ import com.example.feature.rates.data.remote.dtos.APIRatesResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.util.Date
 
 interface APIRatesService {
 
     @GET("rates")
-    suspend fun getLatestRates(
+    suspend fun getRates(
         @Query("base")
-        base: String? = "EUR",
+        base: String? = null,
+        @Query("date")
+        date: Date? = null
     ): Response<APIRatesResponse>
 }
