@@ -22,32 +22,24 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package com.dmdiaz.currency.core.network.serializers
+
+import androidx.room.TypeConverter
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
+import org.joda.money.CurrencyUnit
+
+object CurrencyUnitSerializer {
+
+    @ToJson
+    @TypeConverter
+    fun serialize(currencyUnit: CurrencyUnit): String {
+        return currencyUnit.code
+    }
+
+    @FromJson
+    @TypeConverter
+    fun deserialize(json: String): CurrencyUnit {
+        return CurrencyUnit.of(json)
     }
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

@@ -22,32 +22,13 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+package com.dmdiaz.currency.core.domain.models.rates
 
-rootProject.name = "Currency"
-include(":app")
+import org.joda.money.CurrencyUnit
+import java.util.Date
 
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-
+data class Rates(
+    val base: CurrencyUnit,
+    val date: Date,
+    val rates: List<Rate>
+)

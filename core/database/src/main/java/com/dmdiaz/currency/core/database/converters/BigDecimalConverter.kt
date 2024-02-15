@@ -22,32 +22,20 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package com.dmdiaz.currency.core.database.converters
+
+import androidx.room.TypeConverter
+import java.math.BigDecimal
+
+object BigDecimalConverter {
+
+    @TypeConverter
+    fun decimalToString(amount: BigDecimal?): String? {
+        return amount?.toString()
+    }
+
+    @TypeConverter
+    fun fromString(string: String?): BigDecimal? {
+        return string?.let { BigDecimal(it) }
     }
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

@@ -22,32 +22,12 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+package com.dmdiaz.currency.features.rates
 
-rootProject.name = "Currency"
-include(":app")
+import org.joda.money.Money
+import com.dmdiaz.currency.libs.ui.states.LoadingState
 
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-
+data class RatesState(
+    val enteredAmount: Money,
+    val convertedAmounts: LoadingState<List<Money>> = LoadingState.Loading
+)

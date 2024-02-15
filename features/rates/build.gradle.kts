@@ -31,7 +31,7 @@ plugins {
 }
 
 android {
-    namespace = "com.dmdiaz.currency.core.domain"
+    namespace = "com.dmdiaz.currency.features.rates"
     compileSdk = 34
 
     defaultConfig {
@@ -57,15 +57,29 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
 
     implementation(project(":libs:common"))
+    implementation(project(":libs:ui"))
+
+    implementation(project(":core:domain"))
 
     //hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    implementation(libs.preference.ktx)
+    implementation(libs.datastore.preferences)
 
     //joda
     implementation(libs.joda.money)
@@ -74,9 +88,13 @@ dependencies {
     implementation(libs.arrow.core)
     implementation(libs.arrow.fx.coroutines)
 
+
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(libs.constraintlayout)
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -22,32 +22,16 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.core.data.datasources
+
+import arrow.core.Either
+import com.dmdiaz.currency.libs.models.Failure
+import com.dmdiaz.currency.core.network.dtos.APIRatesResponse
+import org.joda.money.CurrencyUnit
+import java.util.Date
+
+
+interface RatesRemoteDataSource{
+
+    suspend fun getRates(date: Date, currencyUnit: CurrencyUnit): Either<Failure, APIRatesResponse>
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

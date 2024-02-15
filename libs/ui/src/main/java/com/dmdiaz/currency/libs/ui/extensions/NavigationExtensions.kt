@@ -22,32 +22,16 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.libs.ui.extensions
+
+import androidx.annotation.IdRes
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+
+// For finding your navController for a NavHostFragment that was inflated in this activity
+fun FragmentActivity.findNavController(@IdRes viewId: Int): NavController {
+    val navHostFragment =
+        supportFragmentManager.findFragmentById(viewId) as NavHostFragment
+    return navHostFragment.navController
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

@@ -22,32 +22,27 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package com.dmdiaz.currency.core.database.converters
+
+import androidx.room.TypeConverter
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+object DateConverter {
+
+    private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+    @TypeConverter
+    fun dateToString(date: Date?): String? {
+        return date?.let { formatter.format(it) }
     }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
+
+    @TypeConverter
+    fun deserialize(json: String?): Date? {
+        return json?.let { formatter.parse(it) }
     }
+
 }
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-
