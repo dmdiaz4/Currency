@@ -22,32 +22,21 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.core.database
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.dmdiaz.currency.core.database.converters.BigDecimalConverter
+import com.dmdiaz.currency.core.database.converters.CurrencyUnitConverter
+import com.dmdiaz.currency.core.database.converters.DateConverter
+import com.dmdiaz.currency.core.database.daos.DBRatesDao
+import com.dmdiaz.currency.core.database.entities.DBRates
+
+
+@Database(entities = [DBRates::class], version = 1, exportSchema = false)
+@TypeConverters(value = [BigDecimalConverter::class, CurrencyUnitConverter::class, DateConverter::class])
+abstract class PersistingDatabase : RoomDatabase() {
+
+    abstract fun ratesDao(): DBRatesDao
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

@@ -22,32 +22,23 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.core.database.daos
+
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Upsert
+import com.dmdiaz.currency.core.database.entities.DBRates
+import kotlinx.coroutines.flow.Flow
+import org.joda.money.CurrencyUnit
+
+
+@Dao
+interface DBRatesDao {
+
+    @Query("SELECT * from rates WHERE base = :base")
+    fun get(base: CurrencyUnit): Flow<DBRates?>
+
+    @Upsert
+    suspend fun upsert(rates: DBRates)
+
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

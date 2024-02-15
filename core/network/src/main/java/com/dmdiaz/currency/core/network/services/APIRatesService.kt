@@ -22,32 +22,21 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.core.network.services
+
+import com.dmdiaz.currency.core.network.dtos.APIRatesResponse
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Query
+import java.util.Date
+
+interface APIRatesService {
+
+    @GET("rates")
+    suspend fun getRates(
+        @Query("base")
+        base: String? = null,
+        @Query("date")
+        date: Date? = null
+    ): Response<APIRatesResponse>
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

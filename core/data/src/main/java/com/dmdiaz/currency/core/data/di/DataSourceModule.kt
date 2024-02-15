@@ -22,32 +22,28 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.core.data.di
+
+import com.dmdiaz.currency.core.data.datasources.RatesLocalDataSource
+import com.dmdiaz.currency.core.data.datasources.RatesLocalDataSourceImpl
+import com.dmdiaz.currency.core.data.datasources.RatesRemoteDataSource
+import com.dmdiaz.currency.core.data.datasources.RatesRemoteDataSourceImpl
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface DataSourceModule {
+
+    @Binds
+    fun bindsRatesRemoteDataSource(
+        ratesRemoteDataSourceImpl: RatesRemoteDataSourceImpl,
+    ): RatesRemoteDataSource
+
+    @Binds
+    fun bindsRatesLocalDataSource(
+        ratesLocalDataSourceImpl: RatesLocalDataSourceImpl,
+    ): RatesLocalDataSource
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

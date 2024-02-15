@@ -22,32 +22,21 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+package com.dmdiaz.currency.core.network.dtos
 
-rootProject.name = "Currency"
-include(":app")
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import org.joda.money.CurrencyUnit
+import org.joda.money.CurrencyUnit.USD
+import java.util.*
 
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-
+// API DTO
+@JsonClass(generateAdapter = true)
+data class APIRatesResponse(
+    @Json(name = "base")
+    var base: CurrencyUnit = USD,
+    @Json(name = "date")
+    var date: Date = Date(),
+    @Json(name = "rates")
+    var rates: APIRates = APIRates()
+)

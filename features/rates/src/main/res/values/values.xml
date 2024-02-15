@@ -22,19 +22,7 @@
   ~ SOFTWARE.
   -->
 
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph.xml"
-    app:startDestination="@id/rates_frag">
-
-    <fragment
-        android:id="@+id/rates_frag"
-        android:name="com.dmdiaz.currency.features.rates.RatesFragment"
-        android:label="Rates"
-        tools:layout="@layout/fragment_rates">
-
-    </fragment>
-
-</navigation>
+<resources>
+    <!-- Preference keys -->
+    <string name="pref_currency_formats" translatable="false">pcf</string>
+</resources>

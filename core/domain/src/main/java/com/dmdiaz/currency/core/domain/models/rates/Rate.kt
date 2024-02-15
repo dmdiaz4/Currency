@@ -22,32 +22,14 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+package com.dmdiaz.currency.core.domain.models.rates
 
-rootProject.name = "Currency"
-include(":app")
+import org.joda.money.CurrencyUnit
+import org.joda.money.CurrencyUnit.USD
+import java.math.BigDecimal
+import java.math.BigDecimal.ONE
 
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-
+data class Rate(
+    val currencyUnit: CurrencyUnit,
+    val rate: BigDecimal
+)

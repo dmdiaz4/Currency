@@ -22,32 +22,33 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package com.dmdiaz.currency.core.data.datasources
+
+import arrow.core.raise.either
+import com.dmdiaz.currency.core.data.di.qualifiers.Dispatcher
+import com.dmdiaz.currency.core.data.di.qualifiers.Dispatchers.IO
+import com.dmdiaz.currency.core.network.handlers.NetworkHandler
+import com.dmdiaz.currency.core.network.services.APIRatesService
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import org.joda.money.CurrencyUnit
+import java.util.Date
+import javax.inject.Inject
+
+class RatesRemoteDataSourceImpl @Inject constructor(
+    service: APIRatesService,
+    networkHandler: NetworkHandler,
+    @Dispatcher(IO) private val networkDispatcher: CoroutineDispatcher
+):RatesRemoteDataSource, RemoteDataSource<APIRatesService>(service, networkHandler){
+
+    override suspend fun getRates(
+        date: Date,
+        currencyUnit: CurrencyUnit,
+    ) = either {
+        val service = getAvailableService().bind()
+        val rates = withContext(networkDispatcher) {
+            service.getRates(base = currencyUnit.code)
+        }
+        processRemoteResponse(rates).bind()
     }
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

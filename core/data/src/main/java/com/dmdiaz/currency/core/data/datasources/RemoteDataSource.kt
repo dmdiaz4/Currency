@@ -22,32 +22,31 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package com.dmdiaz.currency.core.data.datasources
+
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import com.dmdiaz.currency.core.network.handlers.NetworkHandler
+import com.dmdiaz.currency.libs.models.Failure
+import retrofit2.Response
+
+abstract class RemoteDataSource<T>(
+    private val service: T,
+    private val networkHandler: NetworkHandler
+) {
+
+    protected fun <T> processRemoteResponse(response: Response<T>): Either<Failure, T> {
+        return if (response.isSuccessful) {
+            response.body()!!.right()
+        } else {
+            Failure.NetworkError(response.code()).left()
+        }
+    }
+
+    fun getAvailableService() = if (networkHandler.isNetworkAvailable()) {
+        service.right()
+    } else {
+        Failure.NetworkUnavailable.left()
     }
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

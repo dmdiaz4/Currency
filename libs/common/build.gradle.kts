@@ -26,12 +26,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
-    kotlin("kapt")
 }
 
 android {
-    namespace = "com.dmdiaz.currency.core.domain"
+    namespace = "com.dmdiaz.currency.libs.common"
     compileSdk = 34
 
     defaultConfig {
@@ -60,12 +58,6 @@ android {
 }
 
 dependencies {
-
-    implementation(project(":libs:common"))
-
-    //hilt
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
 
     //joda
     implementation(libs.joda.money)

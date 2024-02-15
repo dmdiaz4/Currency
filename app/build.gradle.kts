@@ -31,11 +31,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.currency"
+    namespace = "com.dmdiaz.currency"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.currency"
+        applicationId = "com.dmdiaz.currency"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -72,13 +72,15 @@ kapt {
 
 dependencies {
 
-    implementation(project(":core:common"))
-    implementation(project(":core:data"))
+    implementation(project(":libs:common"))
+    implementation(project(":libs:ui"))
+
     implementation(project(":core:domain"))
-    implementation(project(":core:ui"))
-    implementation(project(":feature:rates:data"))
-    implementation(project(":feature:rates:domain"))
-    implementation(project(":feature:rates:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":core:database"))
+    implementation(project(":core:network"))
+
+    implementation(project(":features:rates"))
 
 
     implementation(libs.navigation.fragment.ktx)

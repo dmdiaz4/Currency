@@ -22,32 +22,21 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.libs.ui.adapters
+
+
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
+
+
+abstract class BaseAdapter<T, VH : BaseAdapter.BaseHolder<*>> : RecyclerView.Adapter<VH>() {
+
+    abstract fun updateList(state: List<T>)
+
+    open class BaseHolder<VB : ViewBinding>(
+            val binding: VB,
+    ) : RecyclerView.ViewHolder(binding.root)
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
 
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
 
 

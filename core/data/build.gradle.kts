@@ -32,7 +32,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.core.data"
+    namespace = "com.dmdiaz.currency.core.data"
     compileSdk = 34
 
     defaultConfig {
@@ -65,11 +65,19 @@ android {
 
 dependencies {
 
-    implementation(project(":core:common"))
+    implementation(project(":libs:common"))
+
+    implementation(project(":core:domain"))
+    implementation(project(":core:database"))
+    implementation(project(":core:network"))
+
 
     //hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    implementation(libs.datastore.preferences)
+
 
     //joda
     implementation(libs.joda.money)

@@ -22,32 +22,15 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.libs.ui.states
+
+import com.dmdiaz.currency.libs.models.Failure
+
+sealed class LoadingState<out T>{
+    data object Loading : LoadingState<Nothing>()
+
+    data class Failed(val exception: Failure): LoadingState<Nothing>()
+
+    data class Success<T>(val data: T): LoadingState<T>()
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
 

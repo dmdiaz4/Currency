@@ -22,32 +22,10 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+package com.dmdiaz.currency
 
-rootProject.name = "Currency"
-include(":app")
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-include(":libs:common")
-include(":libs:ui")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-
+@HiltAndroidApp
+class CurrencyApplication: Application()
