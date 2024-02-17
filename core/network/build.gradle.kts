@@ -32,10 +32,10 @@ plugins {
 
 android {
     namespace = "com.dmdiaz.currency.core.network"
-    compileSdk = 34
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
-        minSdk = 24
+        minSdk = ProjectConfig.minSdk
         buildConfigField("String", "BASE_URL", project.properties["BASE_URL"].toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
