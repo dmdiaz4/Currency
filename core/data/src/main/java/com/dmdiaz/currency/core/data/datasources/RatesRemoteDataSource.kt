@@ -25,7 +25,7 @@
 package com.dmdiaz.currency.core.data.datasources
 
 import arrow.core.Either
-import com.dmdiaz.currency.libs.models.Failure
+import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.core.network.dtos.APIRatesResponse
 import org.joda.money.CurrencyUnit
 import java.util.Date

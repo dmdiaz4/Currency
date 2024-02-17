@@ -22,17 +22,15 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.repositories
+package com.dmdiaz.currency.core.domain.models
 
-import arrow.core.Either
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rates
-import kotlinx.coroutines.flow.Flow
-import org.joda.money.CurrencyUnit
-import java.util.Date
 
-interface RatesRepository {
 
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>>
+sealed class Resource<out T>{
+    data object Loading : Resource<Nothing>()
 
+    data class Failed(val exception: Failure): Resource<Nothing>()
+
+    data class Success<T>(val data: T): Resource<T>()
 }
+

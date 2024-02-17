@@ -22,17 +22,10 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.repositories
+package com.dmdiaz.currency.libs.util.di.qualifiers
 
-import arrow.core.Either
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rates
-import kotlinx.coroutines.flow.Flow
-import org.joda.money.CurrencyUnit
-import java.util.Date
+import javax.inject.Qualifier
 
-interface RatesRepository {
-
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>>
-
-}
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ApplicationScope

@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.repositories
+package com.dmdiaz.currency.core.domain.models
 
-import arrow.core.Either
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rates
-import kotlinx.coroutines.flow.Flow
-import org.joda.money.CurrencyUnit
-import java.util.Date
+/**
+ * Base Class for handling errors/failures/exceptions.
+ * Every feature specific failure should extend [FeatureFailure] class.
+ */
+sealed class Failure {
+    data object NetworkUnavailable: Failure()
+    data class NetworkError(val code: Int) : Failure()
+    data class UnknownError(val throwable: Throwable) : Failure()
 
-interface RatesRepository {
-
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>>
-
+    /** * Extend this class for feature specific failures.*/
+    abstract class FeatureFailure : Failure()
 }

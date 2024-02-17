@@ -25,8 +25,8 @@
 package com.dmdiaz.currency.core.data.datasources
 
 import arrow.core.raise.either
-import com.dmdiaz.currency.core.data.di.qualifiers.Dispatcher
-import com.dmdiaz.currency.core.data.di.qualifiers.Dispatchers.IO
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.IO
 import com.dmdiaz.currency.core.network.handlers.NetworkHandler
 import com.dmdiaz.currency.core.network.services.APIRatesService
 import kotlinx.coroutines.CoroutineDispatcher

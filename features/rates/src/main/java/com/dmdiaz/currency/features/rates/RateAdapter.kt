@@ -30,9 +30,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.dmdiaz.currency.features.rates.databinding.ItemRateBinding
 import com.dmdiaz.currency.libs.ui.adapters.BaseAdapter.BaseHolder
-import com.dmdiaz.currency.libs.extensions.createSortedList
-import com.dmdiaz.currency.libs.extensions.singleClickListener
-import com.dmdiaz.currency.libs.extensions.toFormattedString
+import com.dmdiaz.currency.libs.util.extensions.createSortedList
+import com.dmdiaz.currency.libs.util.extensions.singleClickListener
+import com.dmdiaz.currency.libs.util.extensions.toFormattedString
 import com.dmdiaz.currency.libs.ui.adapters.BaseAdapter
 import org.joda.money.Money
 

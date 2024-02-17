@@ -28,7 +28,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.dmdiaz.currency.core.network.handlers.NetworkHandler
-import com.dmdiaz.currency.libs.models.Failure
+import com.dmdiaz.currency.core.domain.models.Failure
 import retrofit2.Response
 
 abstract class RemoteDataSource<T>(

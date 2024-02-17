@@ -27,7 +27,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-    kotlin("kapt")
     alias(libs.plugins.devtools.ksp)
 }
 
@@ -65,8 +64,7 @@ android {
 
 dependencies {
 
-    implementation(project(":libs:common"))
-
+    implementation(project(":libs:util"))
     implementation(project(":core:domain"))
     implementation(project(":core:database"))
     implementation(project(":core:network"))
@@ -74,7 +72,7 @@ dependencies {
 
     //hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.datastore.preferences)
 

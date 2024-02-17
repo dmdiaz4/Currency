@@ -25,10 +25,15 @@
 package com.dmdiaz.currency.core.domain.usecases
 
 import arrow.core.Either
-import com.dmdiaz.currency.libs.extensions.mapRight
-import com.dmdiaz.currency.libs.models.Failure
+import com.dmdiaz.currency.libs.util.extensions.mapRight
+import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.core.domain.repositories.RatesRepository
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers
+import com.dmdiaz.currency.libs.util.extensions.pmap
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import org.joda.money.Money
 import java.math.RoundingMode.HALF_UP
 import java.util.Date
@@ -37,17 +42,19 @@ import javax.inject.Inject
 
 class GetConvertedAmountsUseCase @Inject constructor(
     private val repository: RatesRepository,
+    @Dispatcher(Dispatchers.Default) val dispatcher: CoroutineDispatcher
 ) {
     operator fun invoke(amount: Money): Flow<Either<Failure, List<Money>>> {
 
         return repository
             .getRates(Date(), currencyUnit = amount.currencyUnit)
             .mapRight { rates ->
-                rates.rates.map { rate ->
-                    Money.zero(rate.currencyUnit)
-                        .plus(amount.multipliedBy(rate.rate, HALF_UP).amount, HALF_UP)
+                withContext(dispatcher){
+                    rates.rates.pmap { rate ->
+                        Money.zero(rate.currencyUnit)
+                            .plus(amount.multipliedBy(rate.rate, HALF_UP).amount, HALF_UP)
+                    }
                 }
             }
     }
-
 }

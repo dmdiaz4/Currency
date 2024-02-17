@@ -25,9 +25,9 @@
 package com.dmdiaz.currency.features.rates
 
 import org.joda.money.Money
-import com.dmdiaz.currency.libs.ui.states.LoadingState
+import com.dmdiaz.currency.core.domain.models.Resource
 
 data class RatesState(
     val enteredAmount: Money,
-    val convertedAmounts: LoadingState<List<Money>> = LoadingState.Loading
+    val convertedAmounts: Resource<List<Money>> = Resource.Loading
 )

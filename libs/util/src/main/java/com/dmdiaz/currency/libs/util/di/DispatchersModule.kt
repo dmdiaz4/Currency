@@ -22,17 +22,29 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.repositories
+package com.dmdiaz.currency.libs.util.di
 
-import arrow.core.Either
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rates
-import kotlinx.coroutines.flow.Flow
-import org.joda.money.CurrencyUnit
-import java.util.Date
 
-interface RatesRepository {
 
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>>
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.Default
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.IO
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
+@Module
+@InstallIn(SingletonComponent::class)
+object DispatchersModule {
+
+    @Provides
+    @Dispatcher(Default)
+    fun provideDefaultDispatcher() : CoroutineDispatcher = Dispatchers.Default
+
+    @Provides
+    @Dispatcher(IO)
+    fun provideNetworkDispatcher() : CoroutineDispatcher = Dispatchers.IO
 }

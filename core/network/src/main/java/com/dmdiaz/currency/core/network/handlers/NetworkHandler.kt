@@ -27,7 +27,7 @@ package com.dmdiaz.currency.core.network.handlers
 import android.content.Context
 import android.net.NetworkCapabilities
 import android.os.Build
-import com.dmdiaz.currency.libs.extensions.connectivityManager
+import com.dmdiaz.currency.libs.util.extensions.connectivityManager
 
 class NetworkHandler(
     private val context: Context

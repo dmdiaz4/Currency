@@ -29,8 +29,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dmdiaz.currency.core.domain.usecases.GetConvertedAmountsUseCase
-import com.dmdiaz.currency.libs.extensions.cancelIfActive
-import com.dmdiaz.currency.libs.ui.states.LoadingState
+import com.dmdiaz.currency.libs.util.extensions.cancelIfActive
+import com.dmdiaz.currency.core.domain.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -71,15 +71,15 @@ class RatesViewModel @Inject constructor(
     private var getConvertedAmountsJob: Job? = null
     private fun getConvertedAmounts(amount: Money) {
         getConvertedAmountsJob.cancelIfActive()
-        _state.update { it.copy(convertedAmounts = LoadingState.Loading) }
+        _state.update { it.copy(convertedAmounts = Resource.Loading) }
         getConvertedAmountsJob = viewModelScope.launch {
             getConvertedAmountsUseCase(amount).collect { results ->
                 results.fold(
                     ifLeft = { failure ->
-                        _state.update { it.copy(convertedAmounts = LoadingState.Failed(failure)) }
+                        _state.update { it.copy(convertedAmounts = Resource.Failed(failure)) }
                     },
                     ifRight = { success ->
-                        _state.update { it.copy(convertedAmounts = LoadingState.Success(success)) }
+                        _state.update { it.copy(convertedAmounts = Resource.Success(success)) }
                     }
                 )
             }

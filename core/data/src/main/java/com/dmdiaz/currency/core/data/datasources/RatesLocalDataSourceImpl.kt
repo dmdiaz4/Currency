@@ -25,12 +25,13 @@
 package com.dmdiaz.currency.core.data.datasources
 
 import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import com.dmdiaz.currency.core.database.daos.DBRatesDao
 import com.dmdiaz.currency.core.database.entities.DBRates
-import com.dmdiaz.currency.libs.extensions.emitAllRight
-import com.dmdiaz.currency.libs.extensions.emitLeft
-import com.dmdiaz.currency.libs.extensions.tryOrFailure
-import com.dmdiaz.currency.libs.models.Failure
+import com.dmdiaz.currency.libs.util.extensions.emitAllRight
+import com.dmdiaz.currency.libs.util.extensions.emitLeft
+import com.dmdiaz.currency.core.domain.models.Failure
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -57,9 +58,11 @@ class RatesLocalDataSourceImpl @Inject constructor(
 
     override suspend fun saveLatestRates(
         rates: DBRates
-    ) = tryOrFailure {
+    ) = try {
         withContext(Dispatchers.IO){
-            ratesDao.upsert(rates)
+            ratesDao.upsert(rates).right()
         }
+    } catch (ex: Exception){
+        Failure.UnknownError(ex).left()
     }
 }

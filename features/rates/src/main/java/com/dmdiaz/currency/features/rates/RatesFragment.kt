@@ -34,9 +34,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.dmdiaz.currency.features.rates.databinding.FragmentRatesBinding
-import com.dmdiaz.currency.libs.models.Failure
+import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.libs.ui.extensions.viewBinding
-import com.dmdiaz.currency.libs.ui.states.LoadingState
+import com.dmdiaz.currency.core.domain.models.Resource
 import com.dmdiaz.currency.libs.ui.views.MoneyEditText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -78,7 +78,7 @@ class RatesFragment : Fragment(R.layout.fragment_rates) {
                     binding.priceInput.money = state.enteredAmount
 
                     when(state.convertedAmounts){
-                        is LoadingState.Failed -> {
+                        is Resource.Failed -> {
                             val failure = state.convertedAmounts.exception
                             val msg = when(failure){
                                 is Failure.NetworkError -> {
@@ -93,7 +93,7 @@ class RatesFragment : Fragment(R.layout.fragment_rates) {
                             }
                             Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
                         }
-                        is LoadingState.Success -> {
+                        is Resource.Success -> {
                             adapter.updateList(state.convertedAmounts.data)
                         }
                         else -> {

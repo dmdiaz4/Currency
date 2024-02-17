@@ -40,8 +40,8 @@ dependencyResolutionManagement {
 rootProject.name = "Currency"
 include(":app")
 
-include(":libs:common")
-include(":libs:ui")
+include(":libs:util")
+include(":libs:designsystem")
 
 include(":core:domain")
 include(":core:data")
