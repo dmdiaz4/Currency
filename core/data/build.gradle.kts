@@ -27,16 +27,15 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-    kotlin("kapt")
     alias(libs.plugins.devtools.ksp)
 }
 
 android {
     namespace = "com.dmdiaz.currency.core.data"
-    compileSdk = 34
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
-        minSdk = 24
+        minSdk = ProjectConfig.minSdk
         buildConfigField("String", "BASE_URL", project.properties["BASE_URL"].toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -65,8 +64,7 @@ android {
 
 dependencies {
 
-    implementation(project(":libs:common"))
-
+    implementation(project(":libs:util"))
     implementation(project(":core:domain"))
     implementation(project(":core:database"))
     implementation(project(":core:network"))
@@ -74,7 +72,7 @@ dependencies {
 
     //hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.datastore.preferences)
 

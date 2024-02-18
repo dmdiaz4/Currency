@@ -22,32 +22,17 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.core.domain.models
+
+/**
+ * Base Class for handling errors/failures/exceptions.
+ * Every feature specific failure should extend [FeatureFailure] class.
+ */
+sealed class Failure {
+    data object NetworkUnavailable: Failure()
+    data class NetworkError(val code: Int) : Failure()
+    data class UnknownError(val throwable: Throwable) : Failure()
+
+    /** * Extend this class for feature specific failures.*/
+    abstract class FeatureFailure : Failure()
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:util")
-include(":libs:designsystem")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-

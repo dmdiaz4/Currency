@@ -26,18 +26,17 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-    kotlin("kapt")
     alias(libs.plugins.devtools.ksp)
 }
 
 android {
     namespace = "com.dmdiaz.currency"
-    compileSdk = 34
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
         applicationId = "com.dmdiaz.currency"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = ProjectConfig.minSdk
+        targetSdk = ProjectConfig.targetSdk
         versionCode = 1
         versionName = "1.0"
 
@@ -65,15 +64,10 @@ android {
     }
 }
 
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
-}
-
 dependencies {
 
-    implementation(project(":libs:common"))
-    implementation(project(":libs:ui"))
+    implementation(project(":libs:util"))
+    implementation(project(":libs:designsystem"))
 
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
@@ -89,7 +83,7 @@ dependencies {
 
     //hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     //joda
     implementation(libs.joda.money)

@@ -31,12 +31,12 @@ plugins {
 }
 
 android {
-    namespace = "com.dmdiaz.currency.core.database"
+    namespace = "com.dmdiaz.currency.libs.util"
     compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
         minSdk = ProjectConfig.minSdk
-        buildConfigField("String", "BASE_URL", project.properties["BASE_URL"].toString())
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -57,47 +57,20 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
 
-    implementation(project(":libs:util"))
-    implementation(project(":core:domain"))
-
-
+    //joda
+    implementation(libs.joda.money)
 
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
-    implementation(libs.datastore.preferences)
-
-
-    //joda
-    implementation(libs.joda.money)
-
     //arrow
     implementation(libs.arrow.core)
     implementation(libs.arrow.fx.coroutines)
-
-    //Room
-    implementation(libs.room.runtime)
-    ksp(libs.room.compiler)
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.room.ktx)
-
-    //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.arrow.core.retrofit)
-    implementation(libs.converter.moshi)
-    implementation(libs.logging.interceptor)
-    implementation(libs.moshi)
-    implementation(libs.moshi.adapters)
-    ksp (libs.moshi.kotlin.codegen)
 
     implementation(libs.core.ktx)
     implementation(libs.appcompat)

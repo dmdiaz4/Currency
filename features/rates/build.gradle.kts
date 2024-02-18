@@ -27,15 +27,15 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-    kotlin("kapt")
+    alias(libs.plugins.devtools.ksp)
 }
 
 android {
     namespace = "com.dmdiaz.currency.features.rates"
-    compileSdk = 34
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
-        minSdk = 24
+        minSdk = ProjectConfig.minSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -62,21 +62,16 @@ android {
     }
 }
 
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
-}
-
 dependencies {
 
-    implementation(project(":libs:common"))
-    implementation(project(":libs:ui"))
+    implementation(project(":libs:util"))
+    implementation(project(":libs:designsystem"))
 
     implementation(project(":core:domain"))
 
     //hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.preference.ktx)
     implementation(libs.datastore.preferences)

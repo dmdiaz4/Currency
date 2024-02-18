@@ -22,32 +22,27 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.libs.util.di
+
+import com.dmdiaz.currency.libs.util.di.qualifiers.ApplicationScope
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.Default
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object CoroutineScopesModule {
+    @Provides
+    @Singleton
+    @ApplicationScope
+    fun providesCoroutineScope(
+        @Dispatcher(Default) dispatcher: CoroutineDispatcher,
+    ): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-include(":app")
-
-include(":libs:util")
-include(":libs:designsystem")
-
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-
-
