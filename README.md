@@ -7,7 +7,10 @@
   <a href="https://android-arsenal.com/api?level=24"><img alt="API" src="https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat"/></a>
 </p>
 
-## Tech stack & Open-source libraries
+## Architecture, Tech stack & Open-source libraries
+
+<img src="/app_architecture.png" align="right" width="320"/>
+
 - **Minimum SDK level**
   - Android 24
   
