@@ -22,28 +22,23 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.network.handlers
+package com.dmdiaz.currency.core.database.di
 
-import android.content.Context
-import android.net.NetworkCapabilities
-import android.os.Build
-import com.dmdiaz.currency.libs.util.extensions.connectivityManager
+import com.dmdiaz.currency.core.database.PersistingDatabase
+import com.dmdiaz.currency.core.database.daos.DBRatesDao
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 
-class NetworkHandler(
-    private val context: Context
-) {
-    fun isNetworkAvailable(): Boolean {
-        val connectivityManager = context.connectivityManager
-
-        val network= connectivityManager.activeNetwork ?: return false
-        val activeNetwork =
-            connectivityManager.getNetworkCapabilities(network) ?: return false
-
-        return when {
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
-    }
+@Module
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [DaosModule::class]
+)
+object TestDaosModule {
+    @Provides
+    fun providesTopicsDao(
+        database: PersistingDatabase,
+    ): DBRatesDao = database.ratesDao()
 }

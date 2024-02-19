@@ -8,19 +8,22 @@ constraintlayout = "2.1.4"
 core-ktx = "1.12.0"
 datastore-preferences = "1.0.0"
 espresso-core = "3.5.1"
-hilt-android-compiler = "2.50"
-hilt-gradle-plugin = "2.50"
+hilt = "2.50"
 joda-money = "1.0.4"
 junit = "4.13.2"
 kotlin-gradle-plugin = "1.9.22"
+kotlinx-coroutines = "1.7.3"
 ksp-gradle-plugin = "1.9.22-1.0.16"
 logging-interceptor = "4.12.0"
 material = "1.11.0"
+mockk-android = "1.13.9"
 moshi = "1.15.0"
-navigation-fragment-ktx = "2.7.6"
+navigation-fragment-ktx = "2.7.7"
 preference-ktx = "1.2.1"
 retrofit = "2.9.0"
+roboelectric = "4.11.1"
 room-runtime = "2.6.1"
+truth = "1.1.5"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -33,12 +36,16 @@ core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android-compiler" }
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android-compiler" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 joda-money = { module = "org.joda:joda-money", version.ref = "joda-money" }
 junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "logging-interceptor" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk-android" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk-android" }
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshi" }
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
@@ -46,13 +53,15 @@ navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-kt
 navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation-fragment-ktx" }
 preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference-ktx" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+roboelectric = { module = "org.robolectric:robolectric",  version.ref = "roboelectric"}
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-runtime" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-runtime" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-gradle-plugin" }
-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt-gradle-plugin"}
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-gradle-plugin"}
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
