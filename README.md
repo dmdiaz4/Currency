@@ -21,7 +21,7 @@
    - Android - [View Binding](https://developer.android.com/topic/libraries/view-binding)
   
 - **Architecture**
-  - [MVVM Architecture](https://developer.android.com/topic/architecture) (Model - View - ViewModel)
+  - [MVI Architecture](https://developer.android.com/topic/architecture) (Model - View - Intent)
   - [Repository Pattern](https://proandroiddev.com/the-real-repository-pattern-in-android-efba8662b754)
   - [Clean Code Architecture](https://proandroiddev.com/why-you-need-use-cases-interactors-142e8a6fe576) (Usecase + mappers)
     
@@ -31,6 +31,7 @@
 - [Moshi](https://github.com/square/moshi/): A modern JSON serialization library for Kotlin.
 - [Dagger/Hilt](https://github.com/google/dagger) : A fast dependency injector for Java and Android
 - [Room](https://github.com/androidx-releases/Room): Persistence library that provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite
+- [MockK](https://github.com/mockk/mockk) : A modern mocking library for Kotlin
 
 ----
 
