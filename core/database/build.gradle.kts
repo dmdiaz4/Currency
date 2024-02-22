@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 
     implementation(libs.datastore.preferences)
 
@@ -96,6 +97,7 @@ dependencies {
     implementation(libs.arrow.core.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
+    testImplementation(libs.mock.server)
     implementation(libs.moshi)
     implementation(libs.moshi.adapters)
     ksp (libs.moshi.kotlin.codegen)

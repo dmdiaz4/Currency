@@ -22,30 +22,35 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.network.handlers
+package com.dmdiaz.currency.libs.util.di
 
-import android.content.Context
-import android.net.NetworkCapabilities
-import android.os.Build
-import com.dmdiaz.currency.libs.util.extensions.connectivityManager
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import com.dmdiaz.currency.libs.util.di.qualifiers.ApplicationScope
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.Default
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import javax.inject.Singleton
 
- class NetworkHandler @Inject constructor (
-    @ApplicationContext private val context: Context,
-) {
-    fun isNetworkAvailable(): Boolean {
-        val connectivityManager = context.connectivityManager
+@Module
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [CoroutineScopesModule::class],
+)
+object TestCoroutineScopesModule {
 
-        val network= connectivityManager.activeNetwork ?: return false
-        val activeNetwork =
-            connectivityManager.getNetworkCapabilities(network) ?: return false
-
-        return when {
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
-    }
+    @Provides
+    @Singleton
+    @ApplicationScope
+    fun providesCoroutineScope(
+        testDispatcher: TestDispatcher,
+    ): CoroutineScope = TestScope(testDispatcher)
 }

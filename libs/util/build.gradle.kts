@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 
     //arrow
     implementation(libs.arrow.core)

@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 
     //joda
     implementation(libs.joda.money)
@@ -105,6 +106,7 @@ dependencies {
     implementation(libs.arrow.core.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
+    testImplementation(libs.mock.server)
     implementation(libs.moshi)
     implementation(libs.moshi.adapters)
     ksp (libs.moshi.kotlin.codegen)
@@ -117,8 +119,10 @@ dependencies {
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.mock.server)
     testImplementation(libs.truth)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.roboelectric)
     testImplementation(libs.mockk.android)
     testImplementation(libs.mockk.agent)
     androidTestImplementation(libs.ext.junit)

@@ -22,38 +22,49 @@
  * SOFTWARE.
  */
 
-
 package com.dmdiaz.currency.core.network.di
 
-
-
-import android.content.Context
 import com.dmdiaz.currency.core.network.BuildConfig
-import com.dmdiaz.currency.core.network.handlers.NetworkHandler
+import com.dmdiaz.currency.core.network.dispatcher.NetworkMockDispatcher
 import com.dmdiaz.currency.core.network.serializers.BigDecimalSerializer
 import com.dmdiaz.currency.core.network.serializers.CurrencyUnitSerializer
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.logging.HttpLoggingInterceptor.Level
+import okhttp3.mockwebserver.Dispatcher
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.RecordedRequest
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.net.HttpURLConnection
-import java.util.*
+import java.util.Date
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
-object NetworkModule {
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [NetworkModule::class]
+)
+object TestNetworkModule {
+
+    @Provides
+    @Singleton
+    fun provideMockServer(
+        networkMockDispatcher: NetworkMockDispatcher
+    ): MockWebServer {
+        return MockWebServer().apply {
+            dispatcher = networkMockDispatcher
+        }
+    }
 
     @Provides
     @Singleton
@@ -63,7 +74,7 @@ object NetworkModule {
 
         // Log network bodies to help debug
         if (BuildConfig.DEBUG) {
-            interceptors.add(HttpLoggingInterceptor().apply { setLevel(Level.BODY) })
+            interceptors.add(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
         }
 
         // Add environment headers to requests
@@ -103,15 +114,19 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    open fun provideRetrofit(
+    fun provideRetrofit(
         client: OkHttpClient,
-        moshi: Moshi
+        moshi: Moshi,
+        mockWebServer: MockWebServer
     ): Retrofit {
         return Retrofit.Builder()
             .client(client)
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl(mockWebServer.url("/"))
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
+
+
+
 
 }

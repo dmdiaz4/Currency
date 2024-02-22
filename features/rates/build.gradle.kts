@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 
     implementation(libs.preference.ktx)
     implementation(libs.datastore.preferences)
