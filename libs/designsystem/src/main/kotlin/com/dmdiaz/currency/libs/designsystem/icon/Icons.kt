@@ -22,16 +22,15 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.libs.ui.extensions
+package com.dmdiaz.currency.libs.designsystem.icon
 
-import androidx.annotation.IdRes
-import androidx.fragment.app.FragmentActivity
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.ui.graphics.vector.ImageVector
 
-// For finding your navController for a NavHostFragment that was inflated in this activity
-fun FragmentActivity.findNavController(@IdRes viewId: Int): NavController {
-    val navHostFragment =
-        supportFragmentManager.findFragmentById(viewId) as NavHostFragment
-    return navHostFragment.navController
+/**
+ * Now in Android icons. Material icons are [ImageVector]s, custom icons are drawable resource IDs.
+ */
+object Icons {
+    val Add = Icons.Rounded.Add
 }

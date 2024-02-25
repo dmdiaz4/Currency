@@ -25,4 +25,6 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="feature_rates_title">Rates</string>
+
 </resources>

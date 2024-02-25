@@ -22,9 +22,19 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 24
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.features.rates.navigation
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
+import com.dmdiaz.currency.features.rates.RatesRoute
+
+const val RATES_ROUTE = "rates_route"
+fun NavController.navigateToRates(navOptions: NavOptions) = navigate(RATES_ROUTE, navOptions)
+
+fun NavGraphBuilder.ratesScreen() {
+    composable(route = RATES_ROUTE) {
+        RatesRoute()
+    }
 }

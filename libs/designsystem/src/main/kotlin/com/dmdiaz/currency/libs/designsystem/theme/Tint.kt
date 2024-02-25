@@ -22,21 +22,21 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.libs.ui.adapters
+package com.dmdiaz.currency.libs.designsystem.theme
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
+/**
+ * A class to model background color and tonal elevation values for Now in Android.
+ */
+@Immutable
+data class TintTheme(
+    val iconTint: Color = Color.Unspecified,
+)
 
-
-abstract class BaseAdapter<T, VH : BaseAdapter.BaseHolder<*>> : RecyclerView.Adapter<VH>() {
-
-    abstract fun updateList(state: List<T>)
-
-    open class BaseHolder<VB : ViewBinding>(
-            val binding: VB,
-    ) : RecyclerView.ViewHolder(binding.root)
-}
-
-
-
+/**
+ * A composition local for [TintTheme].
+ */
+val LocalTintTheme = staticCompositionLocalOf { TintTheme() }

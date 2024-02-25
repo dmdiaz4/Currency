@@ -22,9 +22,29 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 24
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.navigation
+
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.dmdiaz.currency.R
+import com.dmdiaz.currency.libs.designsystem.icon.Icons
+import com.dmdiaz.currency.features.rates.R as rates
+
+/**
+ * Type for the top level destinations in the application. Each of these destinations
+ * can contain one or more screens (based on the window size). Navigation from one screen to the
+ * next within a single destination will be handled directly in composables.
+ */
+enum class TopLevelDestination(
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val iconTextId: Int,
+    val titleTextId: Int,
+) {
+    RATES(
+        selectedIcon = Icons.Add,
+        unselectedIcon = Icons.Add,
+        iconTextId = rates.string.feature_rates_title,
+        titleTextId = R.string.app_name,
+    ),
+
 }

@@ -38,6 +38,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Currency"
+
 include(":app")
 
 include(":libs:util")

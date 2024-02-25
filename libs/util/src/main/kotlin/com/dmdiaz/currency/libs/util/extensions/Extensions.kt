@@ -28,6 +28,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Build
+import android.text.TextUtils
 import android.view.View
 import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
@@ -49,12 +50,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
+import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import org.joda.money.format.MoneyAmountStyle
 import org.joda.money.format.MoneyFormatter
 import org.joda.money.format.MoneyFormatterBuilder
 import java.util.*
-
+import java.util.regex.Pattern
 
 
 fun Job?.cancelIfActive() {
@@ -83,6 +85,40 @@ fun Money.toFormattedString(): String {
     val formatter = moneyFormatterMap[currencyUnit.numericCode]!!.withLocale(currentLocale)
 
     return formatter.print(this)
+}
+
+private val nonNumericPattern = Pattern.compile("[^0-9]")
+private val leadingZeroPattern = Pattern.compile("^0+")
+fun String.toMoney(currencyUnit: CurrencyUnit): Money{
+    var cleaned = this
+    cleaned = nonNumericPattern.matcher(cleaned).replaceAll("")
+    cleaned = leadingZeroPattern.matcher(cleaned).replaceAll("")
+
+    val money = if (TextUtils.isEmpty(cleaned)) {
+        // If null or empty, set to zero
+        Money.zero(currencyUnit)
+    } else {
+        // Set to entered amount
+        try {
+            val longValue = cleaned.toLong()
+            Money.zero(currencyUnit).plusMinor(longValue)
+        }catch (e : NumberFormatException){
+            Money.zero(currencyUnit).apply {
+                cleaned.chunked(5).forEach { valueChunk ->
+                    plusMinor(valueChunk.toLong())
+                }
+            }
+        }
+    }
+    return money
+}
+
+private fun cleanNumericString(input: String): String {
+    if (TextUtils.isEmpty(input)) return input
+    var cleaned = input
+    cleaned = nonNumericPattern.matcher(cleaned).replaceAll("")
+    cleaned = leadingZeroPattern.matcher(cleaned).replaceAll("")
+    return cleaned
 }
 
 inline fun <reified T> RecyclerView.Adapter<*>.createSortedList(

@@ -60,7 +60,10 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-        viewBinding = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = ProjectConfig.extensionVersion
     }
 }
 
@@ -75,6 +78,22 @@ dependencies {
     implementation(project(":core:network"))
 
     implementation(project(":features:rates"))
+
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
+    androidTestImplementation(libs.compose.ui.test)
+    debugImplementation(libs.compose.ui.test.manifest)
+    implementation(libs.compose.material3.windowSizeClass)
+    implementation(libs.activity.compose)
+    implementation(libs.viewmodel.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    debugImplementation(libs.navigation.testing)
+    implementation(libs.tracing.ktx)
 
 
     implementation(libs.navigation.fragment.ktx)
