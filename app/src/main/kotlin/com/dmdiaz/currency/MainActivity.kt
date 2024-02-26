@@ -25,20 +25,17 @@
 package com.dmdiaz.currency
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.DisposableEffect
-import androidx.navigation.compose.rememberNavController
 import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
-import com.dmdiaz.currency.navigation.CurrencyNavHost
 import com.dmdiaz.currency.ui.CurrencyApp
-import com.dmdiaz.currency.ui.CurrencyAppState
 import dagger.hilt.android.AndroidEntryPoint
 
 

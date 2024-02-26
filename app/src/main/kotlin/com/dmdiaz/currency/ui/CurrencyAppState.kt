@@ -102,8 +102,10 @@ class CurrencyAppState(
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations
                 // on the back stack as users select items
-                popUpTo(navController.graph.findStartDestination().id) {
+                val destination = navController.currentDestination?:navController.graph.findStartDestination()
+                popUpTo(destination.id) {
                     saveState = true
+                    inclusive = true
                 }
                 // Avoid multiple copies of the same destination when
                 // reselecting the same item

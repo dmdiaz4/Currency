@@ -25,8 +25,8 @@
 package com.dmdiaz.currency.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -164,6 +164,7 @@ private fun CurrencyNavRail(
     modifier: Modifier = Modifier,
 ) {
     CurrencyNavigationRail(modifier = modifier) {
+        Spacer(Modifier.weight(1f))
         destinations.forEach { destination ->
             val selected = currentDestination.isTopLevelDestinationInHierarchy(destination)
             CurrencyNavigationRailItem(
@@ -185,6 +186,7 @@ private fun CurrencyNavRail(
                 modifier = Modifier,
             )
         }
+        Spacer(Modifier.weight(1f))
     }
 }
 
