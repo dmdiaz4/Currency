@@ -50,5 +50,4 @@ include(":core:database")
 include(":core:network")
 
 include(":features:rates")
-
-
+include(":features:convert")

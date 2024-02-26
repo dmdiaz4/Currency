@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.features.rates
+package com.dmdiaz.currency.features.convert
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dmdiaz.currency.core.domain.models.Resource
-import com.dmdiaz.currency.core.domain.usecases.GetRatesUseCase
+import com.dmdiaz.currency.core.domain.usecases.GetConvertedAmountsUseCase
 import com.dmdiaz.currency.libs.util.extensions.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -38,51 +38,51 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.joda.money.CurrencyUnit
 import org.joda.money.CurrencyUnit.USD
+import org.joda.money.Money
 import javax.inject.Inject
 
 @HiltViewModel
-class RatesViewModel @Inject constructor(
+class ConvertViewModel @Inject constructor(
     private val handle: SavedStateHandle,
-    private val getRatesUseCase: GetRatesUseCase,
+    private val getConvertedAmountsUseCase: GetConvertedAmountsUseCase,
 ) : ViewModel() {
 
 
-    private val _state = MutableStateFlow(RatesState(baseCurrencyUnit = handle["currency_unit"] ?: USD))
+    private val _state = MutableStateFlow(ConvertState(enteredAmount = handle["money"] ?: Money.zero(USD)))
     val state = _state.asStateFlow()
 
     init {
-        getRates(state.value.baseCurrencyUnit)
+        getConvertedAmounts(state.value.enteredAmount)
     }
 
     @MainThread
-    fun onEvent(event: RatesEvent){
+    fun onEvent(event: ConvertEvent){
         when(event){
-            is RatesEvent.CurrencyUnitChanged -> {
-                val currencyUnit = event.currencyUnit
-                val previousState = _state.getAndUpdate { it.copy(baseCurrencyUnit = currencyUnit) }
+            is ConvertEvent.AmountChanged -> {
+                val money = event.money
+                val previousState = _state.getAndUpdate { it.copy(enteredAmount = money) }
+                handle["money"] = money
 
-                if (previousState.baseCurrencyUnit != currencyUnit){
-                    handle["currency_unit"] = currencyUnit
-                    getRates(currencyUnit)
+                if (previousState.enteredAmount != money){
+                    getConvertedAmounts(money)
                 }
             }
         }
     }
 
-    private var getRatesJob: Job? = null
-    private fun getRates(currencyUnit: CurrencyUnit) {
-        getRatesJob.cancelIfActive()
-        _state.update { it.copy(rates = Resource.Loading) }
-        getRatesJob = viewModelScope.launch {
-            getRatesUseCase(currencyUnit).collect { results ->
+    private var getConvertedAmountsJob: Job? = null
+    private fun getConvertedAmounts(amount: Money) {
+        getConvertedAmountsJob.cancelIfActive()
+        _state.update { it.copy(convertedAmounts = Resource.Loading) }
+        getConvertedAmountsJob = viewModelScope.launch {
+            getConvertedAmountsUseCase(amount).collect { results ->
                 results.fold(
                     ifLeft = { failure ->
-                        _state.update { it.copy(rates = Resource.Failed(failure)) }
+                        _state.update { it.copy(convertedAmounts = Resource.Failed(failure)) }
                     },
                     ifRight = { success ->
-                        _state.update { it.copy(rates = Resource.Success(success)) }
+                        _state.update { it.copy(convertedAmounts = Resource.Success(success)) }
                     }
                 )
             }

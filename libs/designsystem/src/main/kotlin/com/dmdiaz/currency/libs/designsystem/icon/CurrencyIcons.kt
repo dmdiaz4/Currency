@@ -22,13 +22,35 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.models.rates
+package com.dmdiaz.currency.libs.designsystem.icon
 
-import org.joda.money.CurrencyUnit
-import java.util.Date
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 
-data class Rates(
-    val base: CurrencyUnit,
-    val date: Date,
-    val rates: List<Rate>
-)
+/**
+ * Now in Android icons. Material icons are [ImageVector]s, custom icons are drawable resource IDs.
+ */
+object CurrencyIcons {
+    val Add = Icons.Rounded.Add
+    val ChartLine = Icons.ChartLine
+    val ArrowLeftRight = Icons.ArrowLeftRight
+    val SwapHorizontal = Icons.SwapHorizontal
+    val SwapVertical = Icons.SwapVertical
+}
+
+internal inline fun imageVector(
+    name: String,
+    width: Float,
+    height: Float,
+    viewportWidth: Float,
+    viewportHeight: Float,
+    block: ImageVector.Builder.() -> ImageVector.Builder,
+): ImageVector = ImageVector.Builder(
+    name = name,
+    defaultWidth = width.dp,
+    defaultHeight = height.dp,
+    viewportWidth = viewportWidth,
+    viewportHeight = viewportHeight,
+).block().build()

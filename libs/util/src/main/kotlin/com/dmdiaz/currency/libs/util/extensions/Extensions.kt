@@ -55,7 +55,7 @@ import org.joda.money.Money
 import org.joda.money.format.MoneyAmountStyle
 import org.joda.money.format.MoneyFormatter
 import org.joda.money.format.MoneyFormatterBuilder
-import java.util.*
+import java.util.Locale
 import java.util.regex.Pattern
 
 
@@ -175,7 +175,7 @@ suspend fun <A,B> FlowCollector<Either<A, B>>.emitAllLeft(leftFlow: Flow<A>) = e
 suspend fun <A,B> FlowCollector<Either<A, B>>.emitAllRight(rightFlow: Flow<B>) = emitAll(rightFlow.map { it.right() })
 
 @OptIn(ExperimentalCoroutinesApi::class)
-inline fun <A,B,C> Flow<Either<A, B>>.eitherFlatMapLatest(crossinline transform: suspend (value: B) -> Flow<Either<A,C>>): Flow<Either<A,C>> =
+inline fun <A,B,C> Flow<Either<A, B>>.flatMapRightLatest(crossinline transform: suspend (value: B) -> Flow<Either<A,C>>): Flow<Either<A,C>> =
     flatMapLatest {latest ->
         flow {
             latest.fold(

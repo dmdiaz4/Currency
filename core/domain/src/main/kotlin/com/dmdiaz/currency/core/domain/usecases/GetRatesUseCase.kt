@@ -22,17 +22,15 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.repositories
+package com.dmdiaz.currency.core.domain.usecases
 
-import arrow.core.Either
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rate
-import kotlinx.coroutines.flow.Flow
+import com.dmdiaz.currency.core.domain.repositories.RatesRepository
 import org.joda.money.CurrencyUnit
 import java.util.Date
+import javax.inject.Inject
 
-interface RatesRepository {
-
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, List<Rate>>>
-
+class GetRatesUseCase @Inject constructor(
+    private val repository: RatesRepository
+) {
+    operator fun invoke(currencyUnit: CurrencyUnit) = repository.getRates(Date(), currencyUnit)
 }

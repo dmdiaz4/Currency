@@ -36,9 +36,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import androidx.tracing.trace
+import com.dmdiaz.currency.features.convert.navigation.CONVERT_ROUTE
+import com.dmdiaz.currency.features.convert.navigation.navigateToConvert
 import com.dmdiaz.currency.features.rates.navigation.RATES_ROUTE
 import com.dmdiaz.currency.features.rates.navigation.navigateToRates
 import com.dmdiaz.currency.navigation.TopLevelDestination
+import com.dmdiaz.currency.navigation.TopLevelDestination.CONVERT
 import com.dmdiaz.currency.navigation.TopLevelDestination.RATES
 
 @Composable
@@ -69,6 +72,7 @@ class CurrencyAppState(
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when (currentDestination?.route) {
             RATES_ROUTE -> RATES
+            CONVERT_ROUTE -> CONVERT
             else -> null
         }
 
@@ -110,6 +114,7 @@ class CurrencyAppState(
 
             when (topLevelDestination) {
                 RATES -> navController.navigateToRates(topLevelNavOptions)
+                CONVERT -> navController.navigateToConvert(topLevelNavOptions)
             }
         }
     }

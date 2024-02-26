@@ -28,7 +28,6 @@ import com.dmdiaz.currency.core.network.dtos.APIRatesResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
-import java.util.Date
 
 interface APIRatesService {
 
@@ -36,7 +35,5 @@ interface APIRatesService {
     suspend fun getRates(
         @Query("base")
         base: String? = null,
-        @Query("date")
-        date: Date? = null
     ): Response<APIRatesResponse>
 }

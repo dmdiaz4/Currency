@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.features.rates
+package com.dmdiaz.currency.features.convert
 
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,18 +40,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dmdiaz.currency.core.domain.models.Resource
-import com.dmdiaz.currency.features.rates.RatesEvent.CurrencyUnitChanged
+import com.dmdiaz.currency.features.convert.ConvertEvent.AmountChanged
+import com.dmdiaz.currency.libs.designsystem.components.MoneyTextField
+import com.dmdiaz.currency.libs.util.extensions.toFormattedString
 import org.joda.money.CurrencyUnit
+import org.joda.money.Money
 
 @Composable
-internal fun RatesRoute(
+internal fun ConvertRoute(
     modifier: Modifier = Modifier,
-    viewModel: RatesViewModel = hiltViewModel(),
+    viewModel: ConvertViewModel = hiltViewModel(),
 ) {
 
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-    RatesScreen(
+    ConvertScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         modifier = modifier,
@@ -60,9 +62,9 @@ internal fun RatesRoute(
 }
 
 @Composable
-internal fun RatesScreen(
-    uiState: RatesState,
-    onEvent: (RatesEvent) -> Unit,
+internal fun ConvertScreen(
+    uiState: ConvertState,
+    onEvent: (ConvertEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -71,8 +73,16 @@ internal fun RatesScreen(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ){
+        MoneyTextField(
+            value = uiState.enteredAmount,
+            onValueChange = {
+                onEvent(AmountChanged(it))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+        )
 
-        when (uiState.rates){
+        when (uiState.convertedAmounts){
             is Resource.Failed -> {
 
             }
@@ -84,12 +94,9 @@ internal fun RatesScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(uiState.rates.data){
+                    items(uiState.convertedAmounts.data){
                         Text(
-                            text = it.rate.toString(),
-                            modifier = Modifier.clickable {
-                                onEvent(CurrencyUnitChanged(it.currencyUnit))
-                            }
+                            text = it.toFormattedString(),
                         )
                     }
                 }
@@ -103,11 +110,11 @@ internal fun RatesScreen(
 
 @Preview
 @Composable
-fun RatesScreenPopulated() {
-    RatesScreen(
-        uiState = RatesState(
-            baseCurrencyUnit = CurrencyUnit.USD,
-            rates = Resource.Loading
+fun ConvertScreenPopulated() {
+    ConvertScreen(
+        uiState = ConvertState(
+            enteredAmount = Money.zero(CurrencyUnit.USD),
+            convertedAmounts = Resource.Loading
         ),
         onEvent = {}
     )

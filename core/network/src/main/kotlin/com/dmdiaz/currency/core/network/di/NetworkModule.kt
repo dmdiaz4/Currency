@@ -27,17 +27,14 @@ package com.dmdiaz.currency.core.network.di
 
 
 
-import android.content.Context
 import com.dmdiaz.currency.core.network.BuildConfig
-import com.dmdiaz.currency.core.network.handlers.NetworkHandler
 import com.dmdiaz.currency.core.network.serializers.BigDecimalSerializer
 import com.dmdiaz.currency.core.network.serializers.CurrencyUnitSerializer
+import com.dmdiaz.currency.core.network.serializers.DateSerializer
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -95,7 +92,7 @@ object NetworkModule {
     @Singleton
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
-            .add(Date::class.java,  Rfc3339DateJsonAdapter())
+            .add(DateSerializer)
             .add(BigDecimalSerializer)
             .add(CurrencyUnitSerializer)
             .build()

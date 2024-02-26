@@ -25,10 +25,10 @@
 package com.dmdiaz.currency.core.data.datasources
 
 import arrow.core.raise.either
-import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
-import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.IO
 import com.dmdiaz.currency.core.network.handlers.NetworkHandler
 import com.dmdiaz.currency.core.network.services.APIRatesService
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
+import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.IO
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit
@@ -47,7 +47,7 @@ class RatesRemoteDataSourceImpl @Inject constructor(
     ) = either {
         val service = getAvailableService().bind()
         val rates = withContext(networkDispatcher) {
-            service.getRates(base = currencyUnit.code)
+            service.getRates(base = currencyUnit.code,)
         }
         processRemoteResponse(rates).bind()
     }

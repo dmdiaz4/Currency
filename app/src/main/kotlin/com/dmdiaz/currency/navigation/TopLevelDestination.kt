@@ -25,9 +25,10 @@
 package com.dmdiaz.currency.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.dmdiaz.currency.R
-import com.dmdiaz.currency.libs.designsystem.icon.Icons
+import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
+import com.dmdiaz.currency.features.convert.R as convert
 import com.dmdiaz.currency.features.rates.R as rates
+
 
 /**
  * Type for the top level destinations in the application. Each of these destinations
@@ -41,10 +42,17 @@ enum class TopLevelDestination(
     val titleTextId: Int,
 ) {
     RATES(
-        selectedIcon = Icons.Add,
-        unselectedIcon = Icons.Add,
+        selectedIcon = CurrencyIcons.ChartLine,
+        unselectedIcon = CurrencyIcons.ChartLine,
         iconTextId = rates.string.feature_rates_title,
-        titleTextId = R.string.app_name,
+        titleTextId = rates.string.feature_rates_title,
+    ),
+
+    CONVERT(
+        selectedIcon = CurrencyIcons.ArrowLeftRight,
+        unselectedIcon = CurrencyIcons.ArrowLeftRight,
+        iconTextId = convert.string.feature_convert_title,
+        titleTextId = convert.string.feature_convert_title,
     ),
 
 }

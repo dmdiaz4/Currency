@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
+
 <!--
   ~ MIT License
   ~
@@ -23,19 +25,8 @@
   ~ SOFTWARE.
   -->
 
-<androidx.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<resources>
 
-    <androidx.preference.PreferenceCategory>
+    <string name="feature_convert_title">Convert</string>
 
-        <androidx.preference.MultiSelectListPreference
-            android:icon="@drawable/ic_cash_24dp"
-            android:key="@string/pref_currency_formats"
-            android:persistent="true"
-            android:title="Types"/>
-
-
-    </androidx.preference.PreferenceCategory>
-
-</androidx.preference.PreferenceScreen>
+</resources>

@@ -27,6 +27,7 @@ package com.dmdiaz.currency.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.dmdiaz.currency.features.convert.navigation.convertScreen
 import com.dmdiaz.currency.features.rates.navigation.RATES_ROUTE
 import com.dmdiaz.currency.features.rates.navigation.ratesScreen
 import com.dmdiaz.currency.ui.CurrencyAppState
@@ -47,6 +48,8 @@ fun CurrencyNavHost(
     ) {
 
         ratesScreen()
+
+        convertScreen()
 
     }
 }

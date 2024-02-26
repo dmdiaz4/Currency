@@ -22,15 +22,26 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.libs.designsystem.icon
+package com.dmdiaz.currency.core.network.serializers
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-/**
- * Now in Android icons. Material icons are [ImageVector]s, custom icons are drawable resource IDs.
- */
-object Icons {
-    val Add = Icons.Rounded.Add
+object DateSerializer {
+
+    private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+    @ToJson
+    fun serialize(date: Date?): String? {
+        return date?.let { formatter.format(it) }
+    }
+
+    @FromJson
+    fun deserialize(json: String?): Date? {
+        return json?.let { formatter.parse(it) }
+    }
+
 }

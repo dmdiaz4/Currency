@@ -22,17 +22,19 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.repositories
+package com.dmdiaz.currency.features.convert.navigation
 
-import arrow.core.Either
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rate
-import kotlinx.coroutines.flow.Flow
-import org.joda.money.CurrencyUnit
-import java.util.Date
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
+import com.dmdiaz.currency.features.convert.ConvertRoute
 
-interface RatesRepository {
+const val CONVERT_ROUTE = "convert_route"
+fun NavController.navigateToConvert(navOptions: NavOptions) = navigate(CONVERT_ROUTE, navOptions)
 
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, List<Rate>>>
-
+fun NavGraphBuilder.convertScreen() {
+    composable(route = CONVERT_ROUTE) {
+        ConvertRoute()
+    }
 }

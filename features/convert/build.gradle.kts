@@ -22,25 +22,23 @@
  * SOFTWARE.
  */
 
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.devtools.ksp)
 }
 
 android {
-    namespace = "com.dmdiaz.currency"
+    namespace = "com.dmdiaz.currency.features.convert"
     compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
-        applicationId = "com.dmdiaz.currency"
         minSdk = ProjectConfig.minSdk
-        targetSdk = ProjectConfig.targetSdk
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -73,12 +71,6 @@ dependencies {
     implementation(project(":libs:designsystem"))
 
     implementation(project(":core:domain"))
-    implementation(project(":core:data"))
-    implementation(project(":core:database"))
-    implementation(project(":core:network"))
-
-    implementation(project(":features:rates"))
-    implementation(project(":features:convert"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)
@@ -96,16 +88,14 @@ dependencies {
     debugImplementation(libs.navigation.testing)
     implementation(libs.tracing.ktx)
 
-
-    implementation(libs.navigation.fragment.ktx)
-    implementation(libs.navigation.ui.ktx)
-
-
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.android.compiler)
+
+    implementation(libs.preference.ktx)
+    implementation(libs.datastore.preferences)
 
     //joda
     implementation(libs.joda.money)
@@ -113,23 +103,6 @@ dependencies {
     //arrow
     implementation(libs.arrow.core)
     implementation(libs.arrow.fx.coroutines)
-
-    //Room
-    implementation(libs.room.runtime)
-    ksp(libs.room.compiler)
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.room.ktx)
-
-    //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.arrow.core.retrofit)
-    implementation(libs.converter.moshi)
-    implementation(libs.logging.interceptor)
-    testImplementation(libs.mock.server)
-    implementation(libs.moshi)
-    implementation(libs.moshi.adapters)
-    ksp (libs.moshi.kotlin.codegen)
 
 
     implementation(libs.core.ktx)
@@ -139,7 +112,6 @@ dependencies {
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
     testImplementation(libs.junit)
-    testImplementation(libs.mock.server)
     testImplementation(libs.truth)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.roboelectric)

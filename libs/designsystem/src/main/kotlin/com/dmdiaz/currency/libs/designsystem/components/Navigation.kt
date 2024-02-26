@@ -39,7 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.dmdiaz.currency.libs.designsystem.icon.Icons
+import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
 import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
 
 /**
@@ -178,14 +178,14 @@ fun CurrencyNavigationRail(
 fun CurrencyNavigationPreview() {
     val items = listOf("For you", "Saved", "Interests")
     val icons = listOf(
-        Icons.Add,
-        Icons.Add,
-        Icons.Add,
+        CurrencyIcons.Add,
+        CurrencyIcons.Add,
+        CurrencyIcons.Add,
     )
     val selectedIcons = listOf(
-        Icons.Add,
-        Icons.Add,
-        Icons.Add,
+        CurrencyIcons.Add,
+        CurrencyIcons.Add,
+        CurrencyIcons.Add,
     )
 
     CurrencyTheme {

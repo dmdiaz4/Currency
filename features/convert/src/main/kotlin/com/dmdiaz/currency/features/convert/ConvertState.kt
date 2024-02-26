@@ -22,17 +22,12 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.repositories
+package com.dmdiaz.currency.features.convert
 
-import arrow.core.Either
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rate
-import kotlinx.coroutines.flow.Flow
-import org.joda.money.CurrencyUnit
-import java.util.Date
+import com.dmdiaz.currency.core.domain.models.Resource
+import org.joda.money.Money
 
-interface RatesRepository {
-
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, List<Rate>>>
-
-}
+data class ConvertState(
+    val enteredAmount: Money,
+    val convertedAmounts: Resource<List<Money>> = Resource.Loading
+)

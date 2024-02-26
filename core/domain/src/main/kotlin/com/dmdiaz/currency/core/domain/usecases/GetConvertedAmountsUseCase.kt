@@ -25,11 +25,11 @@
 package com.dmdiaz.currency.core.domain.usecases
 
 import arrow.core.Either
-import com.dmdiaz.currency.libs.util.extensions.mapRight
 import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.core.domain.repositories.RatesRepository
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers
+import com.dmdiaz.currency.libs.util.extensions.mapRight
 import com.dmdiaz.currency.libs.util.extensions.pmap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +50,7 @@ class GetConvertedAmountsUseCase @Inject constructor(
             .getRates(Date(), currencyUnit = amount.currencyUnit)
             .mapRight { rates ->
                 withContext(dispatcher){
-                    rates.rates.pmap { rate ->
+                    rates.pmap { rate ->
                         Money.zero(rate.currencyUnit)
                             .plus(amount.multipliedBy(rate.rate, HALF_UP).amount, HALF_UP)
                     }
