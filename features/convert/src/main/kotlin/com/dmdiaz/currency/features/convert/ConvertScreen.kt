@@ -25,23 +25,35 @@
 package com.dmdiaz.currency.features.convert
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dmdiaz.currency.core.domain.models.Resource
 import com.dmdiaz.currency.features.convert.ConvertEvent.AmountChanged
 import com.dmdiaz.currency.libs.designsystem.components.MoneyTextField
+import com.dmdiaz.currency.libs.designsystem.components.ThemePreviews
+import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
 import com.dmdiaz.currency.libs.util.extensions.toFormattedString
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
@@ -75,6 +87,7 @@ internal fun ConvertScreen(
     ){
         MoneyTextField(
             value = uiState.enteredAmount,
+            textStyle = LocalTextStyle.current.copy(fontSize = 28.sp),
             onValueChange = {
                 onEvent(AmountChanged(it))
             },
@@ -92,11 +105,17 @@ internal fun ConvertScreen(
             }
             is Resource.Success -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
-                    items(uiState.convertedAmounts.data){
-                        Text(
-                            text = it.toFormattedString(),
+                    items(
+                        items = uiState.convertedAmounts.data,
+                        key = { it.currencyUnit.code }
+                    ){
+                        ConvertValue(
+                            money = it,
+                            modifier = Modifier
+                                .padding(top = 16.dp)
                         )
                     }
                 }
@@ -108,13 +127,62 @@ internal fun ConvertScreen(
 
 }
 
-@Preview
+@Composable
+internal fun ConvertValue(
+    money: Money,
+    modifier: Modifier = Modifier
+){
+    val flag = when(money.currencyUnit.code){
+        "USD" -> CurrencyIcons.Flags.Us
+        "CAD" -> CurrencyIcons.Flags.Ca
+        "HKD" -> CurrencyIcons.Flags.Hk
+        "ISK" -> CurrencyIcons.Flags.Is
+        "PHP" -> CurrencyIcons.Flags.Ph
+        "DKK" -> CurrencyIcons.Flags.Dk
+        "GBP" -> CurrencyIcons.Flags.Gb
+        "SEK" -> CurrencyIcons.Flags.Se
+        else -> Icons.Default.Warning
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        Image(
+            imageVector = flag,
+            contentDescription = null,
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)                       // clip to the circle shape
+        )
+
+        Text(
+            text = money.currencyUnit.code,
+            fontSize = 20.sp,
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp)
+        )
+
+        Spacer(Modifier.weight(1f))
+
+        Text(
+            text = money.toFormattedString(),
+            fontSize = 28.sp,
+            modifier = Modifier
+        )
+    }
+
+
+}
+
+@ThemePreviews
 @Composable
 fun ConvertScreenPopulated() {
     ConvertScreen(
         uiState = ConvertState(
             enteredAmount = Money.zero(CurrencyUnit.USD),
-            convertedAmounts = Resource.Loading
+            convertedAmounts = Resource.Success(listOf(Money.zero(CurrencyUnit.CAD)))
         ),
         onEvent = {}
     )

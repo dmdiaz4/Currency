@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 
-public val Icons.SwapVertical: ImageVector
+val Icons.SwapVertical: ImageVector
     get() {
         if (_swapVertical != null) {
             return _swapVertical!!

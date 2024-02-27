@@ -28,6 +28,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagCa
+import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagDk
+import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagGb
+import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagHk
+import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagIs
+import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagPh
+import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagSe
+import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagUs
 
 /**
  * Now in Android icons. Material icons are [ImageVector]s, custom icons are drawable resource IDs.
@@ -38,6 +46,16 @@ object CurrencyIcons {
     val ArrowLeftRight = Icons.ArrowLeftRight
     val SwapHorizontal = Icons.SwapHorizontal
     val SwapVertical = Icons.SwapVertical
+    object Flags {
+        val Us = Icons.FlagUs
+        val Ca = Icons.FlagCa
+        val Hk = Icons.FlagHk
+        val Is = Icons.FlagIs
+        val Ph = Icons.FlagPh
+        val Dk = Icons.FlagDk
+        val Gb = Icons.FlagGb
+        val Se = Icons.FlagSe
+    }
 }
 
 internal inline fun imageVector(
