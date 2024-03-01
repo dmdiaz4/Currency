@@ -25,50 +25,54 @@
 package com.dmdiaz.currency.libs.designsystem.icon
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
-import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagCa
-import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagDk
-import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagGb
-import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagHk
-import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagIs
-import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagPh
-import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagSe
-import com.dmdiaz.currency.libs.designsystem.icon.flags.FlagUs
+import com.dmdiaz.currency.libs.designsystem.R
+import org.joda.money.CurrencyUnit
 
 /**
- * Now in Android icons. Material icons are [ImageVector]s, custom icons are drawable resource IDs.
+ * Currency Icons are [ImageVector]s,
  */
 object CurrencyIcons {
-    val Add = Icons.Rounded.Add
-    val ChartLine = Icons.ChartLine
-    val ArrowLeftRight = Icons.ArrowLeftRight
-    val SwapHorizontal = Icons.SwapHorizontal
-    val SwapVertical = Icons.SwapVertical
-    object Flags {
-        val Us = Icons.FlagUs
-        val Ca = Icons.FlagCa
-        val Hk = Icons.FlagHk
-        val Is = Icons.FlagIs
-        val Ph = Icons.FlagPh
-        val Dk = Icons.FlagDk
-        val Gb = Icons.FlagGb
-        val Se = Icons.FlagSe
+    val Warning = Icons.Rounded.Warning
+
+
+    fun getFlagDrawableId(currencyUnit: CurrencyUnit): Int{
+        return  when(currencyUnit.code){
+            "CAD" -> R.drawable.flag_ca
+            "HKD" -> R.drawable.flag_hk
+            "ISK" -> R.drawable.flag_is
+            "PHP" -> R.drawable.flag_ph
+            "DKK" -> R.drawable.flag_dk
+            "HUF" -> R.drawable.flag_hu
+            "CZK" -> R.drawable.flag_cz
+            "GBP" -> R.drawable.flag_gb
+            "RON" -> R.drawable.flag_ro
+            "SEK" -> R.drawable.flag_se
+            "IDR" -> R.drawable.flag_id
+            "INR" -> R.drawable.flag_in
+            "BRL" -> R.drawable.flag_br
+            "RUB" -> R.drawable.flag_ru
+            "HRK" -> R.drawable.flag_hr
+            "JPY" -> R.drawable.flag_jp
+            "THB" -> R.drawable.flag_th
+            "CHF" -> R.drawable.flag_ch
+            "EUR" -> R.drawable.flag_eu
+            "MYR" -> R.drawable.flag_my
+            "BGN" -> R.drawable.flag_bg
+            "TRY" -> R.drawable.flag_tr
+            "CNY" -> R.drawable.flag_cn
+            "NOK" -> R.drawable.flag_no
+            "NZD" -> R.drawable.flag_nz
+            "ZAR" -> R.drawable.flag_za
+            "USD" -> R.drawable.flag_us
+            "MXN" -> R.drawable.flag_mx
+            "SGD" -> R.drawable.flag_sg
+            "AUD" -> R.drawable.flag_au
+            "ILS" -> R.drawable.flag_is
+            "KRW" -> R.drawable.flag_kr
+            "PLN" -> R.drawable.flag_pl
+            else -> R.drawable.flag__unknown
+        }
     }
 }
-
-internal inline fun imageVector(
-    name: String,
-    width: Float,
-    height: Float,
-    viewportWidth: Float,
-    viewportHeight: Float,
-    block: ImageVector.Builder.() -> ImageVector.Builder,
-): ImageVector = ImageVector.Builder(
-    name = name,
-    defaultWidth = width.dp,
-    defaultHeight = height.dp,
-    viewportWidth = viewportWidth,
-    viewportHeight = viewportHeight,
-).block().build()

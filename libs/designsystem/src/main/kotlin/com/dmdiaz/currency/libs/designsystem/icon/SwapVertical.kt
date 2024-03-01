@@ -24,26 +24,27 @@
 
 package com.dmdiaz.currency.libs.designsystem.icon
 
-import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.unit.dp
 
-val Icons.SwapVertical: ImageVector
+val CurrencyIcons.SwapVertical: ImageVector
     get() {
         if (_swapVertical != null) {
             return _swapVertical!!
         }
-        _swapVertical = imageVector(
-        	name = "SwapVertical",
-        	width = 24f,
-        	height = 24f,
-        	viewportWidth = 24.0f,
-        	viewportHeight = 24.0f
-        ) {
+        _swapVertical = Builder(
+            name = "SwapVertical",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24.0f,
+            viewportHeight = 24.0f
+        ).apply{
             path(
-            	fill = SolidColor(Color(0xFF000000))
+                fill = SolidColor(Color(0xFF000000))
             ) {
                 moveTo(9.0f, 3.0f)
                 lineTo(5.0f, 7.0f)
@@ -62,7 +63,7 @@ val Icons.SwapVertical: ImageVector
                 horizontalLineTo(16.0f)
                 close()
             }
-        }
+        }.build()
         return _swapVertical!!
     }
 

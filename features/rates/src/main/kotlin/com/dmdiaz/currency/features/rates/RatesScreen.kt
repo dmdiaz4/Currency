@@ -25,19 +25,15 @@
 package com.dmdiaz.currency.features.rates
 
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dmdiaz.currency.core.domain.models.Resource
@@ -69,7 +65,6 @@ internal fun RatesScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
     ){
 
         when (uiState.rates){
@@ -77,22 +72,19 @@ internal fun RatesScreen(
 
             }
             Resource.Loading -> {
-
-
+                Spacer(Modifier.weight(1f))
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(alignment = Alignment.CenterHorizontally)
+                )
+                Spacer(Modifier.weight(1f))
             }
             is Resource.Success -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(uiState.rates.data){
-                        Text(
-                            text = it.rate.toString(),
-                            modifier = Modifier.clickable {
-                                onEvent(CurrencyUnitChanged(it.currencyUnit))
-                            }
-                        )
-                    }
-                }
+                RatesLists(
+                    baseCurrencyUnit = uiState.baseCurrencyUnit,
+                    list = uiState.rates.data,
+                    onCurrencyUnitClicked = { onEvent(CurrencyUnitChanged(it))}
+                )
             }
         }
         

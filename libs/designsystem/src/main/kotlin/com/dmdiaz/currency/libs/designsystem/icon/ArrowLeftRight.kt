@@ -24,26 +24,27 @@
 
 package com.dmdiaz.currency.libs.designsystem.icon
 
-import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.unit.dp
 
-val Icons.ArrowLeftRight: ImageVector
+val CurrencyIcons.ArrowLeftRight: ImageVector
     get() {
         if (_arrowLeftRight != null) {
             return _arrowLeftRight!!
         }
-        _arrowLeftRight = imageVector(
-        	name = "ArrowLeftRight",
-        	width = 24f,
-        	height = 24f,
-        	viewportWidth = 24.0f,
-        	viewportHeight = 24.0f
-        ) {
+        _arrowLeftRight = Builder(
+            name = "ArrowLeftRight",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24.0f,
+            viewportHeight = 24.0f
+        ).apply {
             path(
-            	fill = SolidColor(Color(0xFF000000))
+                fill = SolidColor(Color(0xFF000000))
             ) {
                 moveTo(6.45f, 17.45f)
                 lineTo(1.0f, 12.0f)
@@ -62,7 +63,7 @@ val Icons.ArrowLeftRight: ImageVector
                 lineTo(6.45f, 17.45f)
                 close()
             }
-        }
+        }.build()
         return _arrowLeftRight!!
     }
 

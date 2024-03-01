@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2024 David Diaz
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="72dp"
+        android:height="48dp"
+        android:viewportWidth="72"
+        android:viewportHeight="48">
+
+    <path
+        android:fillColor="#fff"
+        android:pathData="M0,0h72v48h-72z" />
+
+    <group
+        android:pivotX="36"
+        android:pivotY="24"
+        android:rotation="30">
+        <path
+            android:fillColor="#C60C30"
+            android:pathData="M36,24h-12 a12,12 0 0,1 24,0z" />
+
+        <path
+            android:fillColor="#003478"
+            android:pathData="M36,24h12 a12,12 0 0,1 -24,0z" />
+
+        <path
+            android:fillColor="#C60C30"
+            android:pathData="M36,24h-12 a6,6 0 0,1 12,0 a6,6 0 0,1 -12,0z" />
+
+        <path
+            android:fillColor="#003478"
+            android:pathData="M36,24 a6,6 0 0,1 12,0 a6,6 0 0,1 -12,0z" />
+    </group>
+
+    <group
+        android:pivotX="36"
+        android:pivotY="24"
+        android:rotation="-150">
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m18,-6 h2v12h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m21,-6 h2v12h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m24,-6 h2v12h-2" />
+    </group>
+
+    <group
+        android:pivotX="36"
+        android:pivotY="24"
+        android:rotation="150">
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m18,-6 h2v12h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m21,-6 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m21,0.5 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m24,-6 h2v12h-2" />
+    </group>
+
+    <group
+        android:pivotX="36"
+        android:pivotY="24"
+        android:rotation="-30">
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m18,-6 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m18,0.5 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m24,-6 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m24,0.5 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m21,-6 h2v12h-2" />
+    </group>
+
+    <group
+        android:pivotX="36"
+        android:pivotY="24"
+        android:rotation="30">
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m18,-6 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m18,0.5 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m24,-6 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m24,0.5 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m21,-6 h2v5.5h-2" />
+        <path
+            android:fillColor="#000"
+            android:pathData="M36,24m21,0.5 h2v5.5h-2" />
+    </group>
+</vector>

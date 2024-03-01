@@ -45,7 +45,6 @@ class GetConvertedAmountsUseCase @Inject constructor(
     @Dispatcher(Dispatchers.Default) val dispatcher: CoroutineDispatcher
 ) {
     operator fun invoke(amount: Money): Flow<Either<Failure, List<Money>>> {
-
         return repository
             .getRates(Date(), currencyUnit = amount.currencyUnit)
             .mapRight { rates ->

@@ -24,26 +24,27 @@
 
 package com.dmdiaz.currency.libs.designsystem.icon
 
-import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.unit.dp
 
-val Icons.ChartLine: ImageVector
+val CurrencyIcons.ChartLine: ImageVector
     get() {
         if (_chartLine != null) {
             return _chartLine!!
         }
-        _chartLine = imageVector(
-        	name = "ChartLine",
-        	width = 24f,
-        	height = 24f,
-        	viewportWidth = 24.0f,
-        	viewportHeight = 24.0f
-        ) {
+        _chartLine = Builder(
+            name = "ChartLine",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24.0f,
+            viewportHeight = 24.0f
+        ).apply {
             path(
-            	fill = SolidColor(Color(0xFF000000))
+                fill = SolidColor(Color(0xFF000000))
             ) {
                 moveTo(16.0f, 11.78f)
                 lineTo(20.24f, 4.45f)
@@ -61,7 +62,7 @@ val Icons.ChartLine: ImageVector
                 lineTo(16.0f, 11.78f)
                 close()
             }
-        }
+        }.build()
         return _chartLine!!
     }
 

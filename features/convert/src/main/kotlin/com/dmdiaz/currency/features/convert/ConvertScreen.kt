@@ -26,35 +26,40 @@ package com.dmdiaz.currency.features.convert
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.core.domain.models.Resource
 import com.dmdiaz.currency.features.convert.ConvertEvent.AmountChanged
+import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
+import com.dmdiaz.currency.libs.designsystem.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.MoneyTextField
 import com.dmdiaz.currency.libs.designsystem.components.ThemePreviews
 import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
-import com.dmdiaz.currency.libs.util.extensions.toFormattedString
+import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
+import com.dmdiaz.currency.libs.designsystem.theme.LocalTintTheme
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 
@@ -83,42 +88,59 @@ internal fun ConvertScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
     ){
         MoneyTextField(
             value = uiState.enteredAmount,
-            textStyle = LocalTextStyle.current.copy(fontSize = 28.sp),
+            textStyle = MaterialTheme.typography.headlineMedium.copy(
+                textAlign = TextAlign.End
+            ),
             onValueChange = {
                 onEvent(AmountChanged(it))
             },
+            leadingIcon = {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CurrencyUnitIcon(
+                        currencyUnit = uiState.enteredAmount.currencyUnit,
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
+                            .padding(horizontal = 8.dp)
+                    )
+
+                    Text(
+                        text = uiState.enteredAmount.currencyUnit.code,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                    )
+                }
+            },
             modifier = Modifier
+                .padding(horizontal = 8.dp)
                 .fillMaxWidth()
         )
 
         when (uiState.convertedAmounts){
             is Resource.Failed -> {
-
+                ErrorState(error = uiState.convertedAmounts.exception)
             }
             Resource.Loading -> {
-
-
+                Spacer(Modifier.weight(1f))
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(alignment = Alignment.CenterHorizontally)
+                )
+                Spacer(Modifier.weight(1f))
             }
             is Resource.Success -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    items(
-                        items = uiState.convertedAmounts.data,
-                        key = { it.currencyUnit.code }
-                    ){
-                        ConvertValue(
-                            money = it,
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                        )
+                ConvertedList(
+                    list = uiState.convertedAmounts.data,
+                    onMoneyClicked = {
+                        onEvent(AmountChanged(it))
                     }
-                }
+                )
             }
         }
         
@@ -127,63 +149,67 @@ internal fun ConvertScreen(
 
 }
 
+
+
 @Composable
-internal fun ConvertValue(
-    money: Money,
+private fun ErrorState(
+    error: Failure,
     modifier: Modifier = Modifier
 ){
-    val flag = when(money.currencyUnit.code){
-        "USD" -> CurrencyIcons.Flags.Us
-        "CAD" -> CurrencyIcons.Flags.Ca
-        "HKD" -> CurrencyIcons.Flags.Hk
-        "ISK" -> CurrencyIcons.Flags.Is
-        "PHP" -> CurrencyIcons.Flags.Ph
-        "DKK" -> CurrencyIcons.Flags.Dk
-        "GBP" -> CurrencyIcons.Flags.Gb
-        "SEK" -> CurrencyIcons.Flags.Se
-        else -> Icons.Default.Warning
-    }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
         modifier = modifier
-            .fillMaxWidth()
+            .padding(16.dp)
+            .fillMaxSize()
+            .testTag("bookmarks:empty"),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
+        val iconTint = LocalTintTheme.current.iconTint
+
         Image(
-            imageVector = flag,
+            imageVector = CurrencyIcons.Warning,
+            colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
             contentDescription = null,
             modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)                       // clip to the circle shape
+                .fillMaxWidth()
+                .size(64.dp)
+            ,
         )
 
+        Spacer(modifier = Modifier.height(48.dp))
+
         Text(
-            text = money.currencyUnit.code,
-            fontSize = 20.sp,
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp)
+            text = "Error",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
         )
 
-        Spacer(Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = money.toFormattedString(),
-            fontSize = 28.sp,
-            modifier = Modifier
+            text = "This is an error",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
-
-
 }
 
 @ThemePreviews
 @Composable
-fun ConvertScreenPopulated() {
-    ConvertScreen(
-        uiState = ConvertState(
-            enteredAmount = Money.zero(CurrencyUnit.USD),
-            convertedAmounts = Resource.Success(listOf(Money.zero(CurrencyUnit.CAD)))
-        ),
-        onEvent = {}
-    )
+fun ConvertScreenFailure() {
+    CurrencyTheme {
+        CurrencyBackground {
+            ConvertScreen(
+                uiState = ConvertState(
+                    enteredAmount = Money.zero(CurrencyUnit.USD),
+                    convertedAmounts = Resource.Failed(Failure.NetworkUnavailable)
+                ),
+                onEvent = {}
+            )
+        }
+    }
 }

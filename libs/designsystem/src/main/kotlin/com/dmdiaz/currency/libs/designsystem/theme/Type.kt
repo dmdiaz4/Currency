@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 /**
- * Now in Android typography.
+ * Currency app typography.
  */
 internal val CurrencyTypography = Typography(
     displayLarge = TextStyle(

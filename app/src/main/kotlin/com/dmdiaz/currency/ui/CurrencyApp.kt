@@ -57,14 +57,11 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
-import com.dmdiaz.currency.libs.designsystem.components.CurrencyGradientBackground
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyNavigationBar
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyNavigationBarItem
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyNavigationRail
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyNavigationRailItem
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyTopAppBar
-import com.dmdiaz.currency.libs.designsystem.theme.GradientColors
-import com.dmdiaz.currency.libs.designsystem.theme.LocalGradientColors
 import com.dmdiaz.currency.navigation.CurrencyNavHost
 import com.dmdiaz.currency.navigation.TopLevelDestination
 
@@ -79,78 +76,69 @@ fun CurrencyApp(
         windowSizeClass = windowSizeClass,
     ),
 ) {
-    val shouldShowGradientBackground = false //appState.currentTopLevelDestination == TopLevelDestination.RATES
 
     CurrencyBackground {
-        CurrencyGradientBackground(
-            gradientColors = if (shouldShowGradientBackground) {
-                LocalGradientColors.current
-            } else {
-                GradientColors()
+
+        val snackbarHostState = remember { SnackbarHostState() }
+
+        Scaffold(
+            modifier = Modifier.semantics {
+                testTagsAsResourceId = true
             },
-        ) {
-            val snackbarHostState = remember { SnackbarHostState() }
-
-
-            Scaffold(
-                modifier = Modifier.semantics {
-                    testTagsAsResourceId = true
-                },
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                contentWindowInsets = WindowInsets(0, 0, 0, 0),
-                snackbarHost = { SnackbarHost(snackbarHostState) },
-                bottomBar = {
-                    if (appState.shouldShowBottomBar) {
-                        CurrencyBottomBar(
-                            destinations = appState.topLevelDestinations,
-                            onNavigateToDestination = appState::navigateToTopLevelDestination,
-                            currentDestination = appState.currentDestination,
-                            modifier = Modifier.testTag("CurrencyBottomBar"),
-                        )
-                    }
-                },
-            ) { padding ->
-                Row(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .consumeWindowInsets(padding)
-                        .windowInsetsPadding(
-                            WindowInsets.safeDrawing.only(
-                                WindowInsetsSides.Horizontal,
-                            ),
-                        ),
-                ) {
-                    if (appState.shouldShowNavRail) {
-                        CurrencyNavRail(
-                            destinations = appState.topLevelDestinations,
-                            onNavigateToDestination = appState::navigateToTopLevelDestination,
-                            currentDestination = appState.currentDestination,
-                            modifier = Modifier
-                                .testTag("CurrencyNavRail")
-                                .safeDrawingPadding(),
-                        )
-                    }
-
-                    Column(Modifier.fillMaxSize()) {
-                        // Show the top app bar on top level destinations.
-                        val destination = appState.currentTopLevelDestination
-                        if (destination != null) {
-                            CurrencyTopAppBar(
-                                titleRes = destination.titleTextId,
-                                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                    containerColor = Color.Transparent,
-                                ),
-                            )
-                        }
-
-                        CurrencyNavHost(appState = appState)
-                    }
-
-                    // TODO: We may want to add padding or spacer when the snackbar is shown so that
-                    //  content doesn't display behind it.
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            bottomBar = {
+                if (appState.shouldShowBottomBar) {
+                    CurrencyBottomBar(
+                        destinations = appState.topLevelDestinations,
+                        onNavigateToDestination = appState::navigateToTopLevelDestination,
+                        currentDestination = appState.currentDestination,
+                        modifier = Modifier.testTag("CurrencyBottomBar"),
+                    )
                 }
+            },
+        ) { padding ->
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .consumeWindowInsets(padding)
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(
+                            WindowInsetsSides.Horizontal,
+                        ),
+                    ),
+            ) {
+                if (appState.shouldShowNavRail) {
+                    CurrencyNavRail(
+                        destinations = appState.topLevelDestinations,
+                        onNavigateToDestination = appState::navigateToTopLevelDestination,
+                        currentDestination = appState.currentDestination,
+                        modifier = Modifier
+                            .testTag("CurrencyNavRail")
+                            .safeDrawingPadding(),
+                    )
+                }
+
+                Column(Modifier.fillMaxSize()) {
+                    // Show the top app bar on top level destinations.
+                    val destination = appState.currentTopLevelDestination
+                    if (destination != null) {
+                        CurrencyTopAppBar(
+                            titleRes = destination.titleTextId,
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                containerColor = Color.Transparent,
+                            ),
+                        )
+                    }
+
+                    CurrencyNavHost(appState = appState)
+                }
+
+                // TODO: We may want to add padding or spacer when the snackbar is shown so that
+                //  content doesn't display behind it.
             }
         }
     }

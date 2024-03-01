@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.dmdiaz.currency.libs.designsystem.components
 

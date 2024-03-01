@@ -39,11 +39,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.dmdiaz.currency.libs.designsystem.icon.ArrowLeftRight
+import com.dmdiaz.currency.libs.designsystem.icon.ChartLine
 import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
 import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
 
 /**
- * Now in Android navigation bar item with icon and label content slots. Wraps Material 3
+ * Currency navigation bar item with icon and label content slots. Wraps Material 3
  * [NavigationBarItem].
  *
  * @param selected Whether this item is selected.
@@ -87,7 +89,7 @@ fun RowScope.CurrencyNavigationBarItem(
 }
 
 /**
- * Now in Android navigation bar with content slot. Wraps Material 3 [NavigationBar].
+ * Currency navigation bar with content slot. Wraps Material 3 [NavigationBar].
  *
  * @param modifier Modifier to be applied to the navigation bar.
  * @param content Destinations inside the navigation bar. This should contain multiple
@@ -107,7 +109,7 @@ fun CurrencyNavigationBar(
 }
 
 /**
- * Now in Android navigation rail item with icon and label content slots. Wraps Material 3
+ * Currency navigation rail item with icon and label content slots. Wraps Material 3
  * [NavigationRailItem].
  *
  * @param selected Whether this item is selected.
@@ -151,7 +153,7 @@ fun CurrencyNavigationRailItem(
 }
 
 /**
- * Now in Android navigation rail with header and content slots. Wraps Material 3 [NavigationRail].
+ * Currency navigation rail with header and content slots. Wraps Material 3 [NavigationRail].
  *
  * @param modifier Modifier to be applied to the navigation rail.
  * @param header Optional header that may hold a floating action button or a logo.
@@ -178,14 +180,12 @@ fun CurrencyNavigationRail(
 fun CurrencyNavigationPreview() {
     val items = listOf("For you", "Saved", "Interests")
     val icons = listOf(
-        CurrencyIcons.Add,
-        CurrencyIcons.Add,
-        CurrencyIcons.Add,
+        CurrencyIcons.ChartLine,
+        CurrencyIcons.ArrowLeftRight,
     )
     val selectedIcons = listOf(
-        CurrencyIcons.Add,
-        CurrencyIcons.Add,
-        CurrencyIcons.Add,
+        CurrencyIcons.ChartLine,
+        CurrencyIcons.ArrowLeftRight,
     )
 
     CurrencyTheme {
@@ -214,7 +214,7 @@ fun CurrencyNavigationPreview() {
 }
 
 /**
- * Now in Android navigation default values.
+ * Currency navigation default values.
  */
 object CurrencyNavigationDefaults {
     @Composable

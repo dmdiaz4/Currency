@@ -25,6 +25,8 @@
 package com.dmdiaz.currency.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.dmdiaz.currency.libs.designsystem.icon.ArrowLeftRight
+import com.dmdiaz.currency.libs.designsystem.icon.ChartLine
 import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
 import com.dmdiaz.currency.features.convert.R as convert
 import com.dmdiaz.currency.features.rates.R as rates
