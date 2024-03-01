@@ -68,6 +68,10 @@ class RatesViewModel @Inject constructor(
                     getRates(currencyUnit)
                 }
             }
+
+            RatesEvent.Retry -> {
+                getRates(state.value.baseCurrencyUnit)
+            }
         }
     }
 

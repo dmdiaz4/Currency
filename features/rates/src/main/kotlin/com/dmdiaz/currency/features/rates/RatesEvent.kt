@@ -28,4 +28,6 @@ import org.joda.money.CurrencyUnit
 
 sealed class RatesEvent {
     data class CurrencyUnitChanged(val currencyUnit: CurrencyUnit): RatesEvent()
+
+    data object Retry: RatesEvent()
 }

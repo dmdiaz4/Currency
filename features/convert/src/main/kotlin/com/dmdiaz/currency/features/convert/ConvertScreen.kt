@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,15 +45,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dmdiaz.currency.core.domain.models.Failure
+import com.dmdiaz.currency.core.domain.models.Failure.NetworkError
+import com.dmdiaz.currency.core.domain.models.Failure.NetworkUnavailable
 import com.dmdiaz.currency.core.domain.models.Resource
 import com.dmdiaz.currency.features.convert.ConvertEvent.AmountChanged
+import com.dmdiaz.currency.features.convert.ConvertEvent.Retry
+import com.dmdiaz.currency.libs.designsystem.R
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.MoneyTextField
@@ -124,7 +129,10 @@ internal fun ConvertScreen(
 
         when (uiState.convertedAmounts){
             is Resource.Failed -> {
-                ErrorState(error = uiState.convertedAmounts.exception)
+                ErrorState(
+                    error = uiState.convertedAmounts.exception,
+                    onRetryClicked = { onEvent(Retry) }
+                )
             }
             Resource.Loading -> {
                 Spacer(Modifier.weight(1f))
@@ -154,13 +162,13 @@ internal fun ConvertScreen(
 @Composable
 private fun ErrorState(
     error: Failure,
+    onRetryClicked: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Column(
         modifier = modifier
             .padding(16.dp)
-            .fillMaxSize()
-            .testTag("bookmarks:empty"),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -180,7 +188,7 @@ private fun ErrorState(
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            text = "Error",
+            text = stringResource(id = R.string.error),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium,
@@ -189,12 +197,29 @@ private fun ErrorState(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        val errorRes = when(error){
+            is NetworkError -> R.string.network_error
+            NetworkUnavailable -> R.string.network_unavailable
+            else -> R.string.unknown_error
+        }
+
         Text(
-            text = "This is an error",
+            text = stringResource(id = errorRes),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        Button(onClick = {
+            onRetryClicked()
+        }) {
+            Text(
+                text = stringResource(id = R.string.retry),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
     }
 }
 
@@ -206,7 +231,7 @@ fun ConvertScreenFailure() {
             ConvertScreen(
                 uiState = ConvertState(
                     enteredAmount = Money.zero(CurrencyUnit.USD),
-                    convertedAmounts = Resource.Failed(Failure.NetworkUnavailable)
+                    convertedAmounts = Resource.Failed(NetworkUnavailable)
                 ),
                 onEvent = {}
             )

@@ -28,4 +28,5 @@ import org.joda.money.Money
 
 sealed class ConvertEvent {
     data class AmountChanged(val money: Money): ConvertEvent()
+    data object Retry: ConvertEvent()
 }

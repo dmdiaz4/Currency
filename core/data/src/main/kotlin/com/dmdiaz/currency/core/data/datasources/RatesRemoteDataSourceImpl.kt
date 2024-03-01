@@ -47,7 +47,7 @@ class RatesRemoteDataSourceImpl @Inject constructor(
     ) = either {
         val service = getAvailableService().bind()
         val rates = withContext(networkDispatcher) {
-            service.getRates(base = currencyUnit.code,)
+            service.getRates(base = currencyUnit.code)
         }
         processRemoteResponse(rates).bind()
     }

@@ -68,6 +68,10 @@ class ConvertViewModel @Inject constructor(
                     getConvertedAmounts(money)
                 }
             }
+
+            ConvertEvent.Retry -> {
+                getConvertedAmounts(state.value.enteredAmount)
+            }
         }
     }
 
