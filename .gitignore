@@ -39,7 +39,11 @@ proguard/
 # the project can be imported from settings.gradle.kts
 *.iml
 .idea/*
+# Keep the code copyright
 !.idea/copyright
+# Keep project icons
+!.idea/icon.png
+!.idea/icon_dark.png
 # Keep the code styles.
 !/.idea/codeStyles
 /.idea/codeStyles/*
