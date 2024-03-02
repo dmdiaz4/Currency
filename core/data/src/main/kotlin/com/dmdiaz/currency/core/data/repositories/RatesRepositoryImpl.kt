@@ -73,6 +73,9 @@ class RatesRepositoryImpl @Inject constructor(
             val save = fetch.toDBRates().copy(date = date)
             localSource.saveLatestRates(save).bind()
         }
-    ).mapRight { it.second }
+    )
+        .mapRight { pair ->
+            pair.second.filterNot { it.currencyUnit == currencyUnit }
+        }
 
 }

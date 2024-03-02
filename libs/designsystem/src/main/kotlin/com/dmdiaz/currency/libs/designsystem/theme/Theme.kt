@@ -129,7 +129,7 @@ fun CurrencyTheme(
     // Background theme
     val defaultBackgroundTheme = BackgroundTheme(
         color = colorScheme.surface,
-        tonalElevation = 2.dp,
+        tonalElevation = 0.dp,
     )
 
     // Tint theme

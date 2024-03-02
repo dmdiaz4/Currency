@@ -86,7 +86,7 @@ fun CurrencyApp(
                 testTagsAsResourceId = true
             },
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
@@ -136,9 +136,6 @@ fun CurrencyApp(
 
                     CurrencyNavHost(appState = appState)
                 }
-
-                // TODO: We may want to add padding or spacer when the snackbar is shown so that
-                //  content doesn't display behind it.
             }
         }
     }

@@ -38,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.dmdiaz.currency.libs.designsystem.icon.ArrowLeftRight
 import com.dmdiaz.currency.libs.designsystem.icon.ChartLine
 import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
@@ -103,7 +102,6 @@ fun CurrencyNavigationBar(
     NavigationBar(
         modifier = modifier,
         contentColor = CurrencyNavigationDefaults.navigationContentColor(),
-        tonalElevation = 0.dp,
         content = content,
     )
 }
@@ -221,8 +219,8 @@ object CurrencyNavigationDefaults {
     fun navigationContentColor() = MaterialTheme.colorScheme.onSurfaceVariant
 
     @Composable
-    fun navigationSelectedItemColor() = MaterialTheme.colorScheme.onPrimaryContainer
+    fun navigationSelectedItemColor() = MaterialTheme.colorScheme.onSecondaryContainer
 
     @Composable
-    fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
+    fun navigationIndicatorColor() = MaterialTheme.colorScheme.secondaryContainer
 }

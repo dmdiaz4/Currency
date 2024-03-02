@@ -52,7 +52,7 @@ fun CurrencyTopAppBar(
         navigationIcon = navigationIcon,
         actions = actions,
         colors = colors,
-        modifier = modifier.testTag("niaTopAppBar"),
+        modifier = modifier.testTag("TopAppBar"),
     )
 }
 
