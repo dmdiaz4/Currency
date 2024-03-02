@@ -18,7 +18,7 @@
    - [Kotlin](https://kotlinlang.org/)
 
 - **UI Framework**
-   - Android - [View Binding](https://developer.android.com/topic/libraries/view-binding)
+   - [Jetpack Compose](https://developer.android.com/jetpack/compose)
   
 - **Architecture**
   - [MVI Architecture](https://developer.android.com/topic/architecture) (Model - View - Intent)
@@ -39,6 +39,11 @@
 <p align="center">
 <img src="/screen_shot.png" width="35%"/>
 <img src="/screen_shot2.png" width="35%"/>
+</p>
+
+<p align="center">
+<img src="/screen_shot3.png" width="35%"/>
+<img src="/screen_shot4.png" width="35%"/>
 </p>
 
 

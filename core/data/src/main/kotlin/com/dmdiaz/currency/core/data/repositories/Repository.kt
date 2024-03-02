@@ -25,48 +25,65 @@
 package com.dmdiaz.currency.core.data.repositories
 
 import arrow.core.Either
-import arrow.core.raise.either
+import arrow.core.flatten
 import arrow.core.left
 import arrow.core.raise.Raise
-import com.dmdiaz.currency.libs.util.extensions.filterNotNullRight
+import arrow.core.raise.either
 import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.core.domain.models.Failure.UnknownError
+import com.dmdiaz.currency.libs.util.extensions.filterNotNullRight
+import com.dmdiaz.currency.libs.util.extensions.flatMapRightLatest
+import com.dmdiaz.currency.libs.util.extensions.mapRight
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 @Suppress("unused", "MemberVisibilityCanBePrivate", "RedundantAsync")
 abstract class Repository(
     protected val defaultDispatcher: CoroutineDispatcher
 ) {
 
-
     fun <FETCH, DOMAIN> get(
         domainFlow: suspend FlowCollector<Either<Failure, DOMAIN>>.() -> Unit,
-        shouldFetch: suspend Raise<Failure>.(DOMAIN) -> Boolean,
-        fetch: suspend Raise<Failure>.() -> FETCH,
+        fetchFlow: suspend FlowCollector<Either<Failure, FETCH>>.(DOMAIN) -> Unit,
         saveFetchSuccess: suspend Raise<Failure>.(FETCH) -> Unit,
-    ) = flow(domainFlow)
-        .map { domain ->
-            either{
-                val domainSuccess = domain.bind()
-                val shouldFetchSuccess =  either { shouldFetch.invoke(this, domainSuccess) }.bind()
-                if (shouldFetchSuccess){
-                    val fetchSuccess = either { fetch.invoke(this) }.bind()
-                    either { saveFetchSuccess.invoke(this, fetchSuccess)}.bind()
-                }
-                domainSuccess
+    ) = flow {
+
+        val sharedFlow = MutableSharedFlow<Either<Failure, DOMAIN>>(replay = 1)
+
+        coroutineScope {
+            launch {
+                sharedFlow.emitAll(flow(domainFlow))
             }
+
+            launch {
+                sharedFlow.flatMapRightLatest {
+                    flow{fetchFlow.invoke(this,it)}.mapRight {
+                        either { saveFetchSuccess.invoke(this, it) }
+                    }.map { it.flatten() }
+                }.collect {
+                    val failure = it.leftOrNull()
+                    if (failure != null) {
+                        sharedFlow.emit(failure.left())
+                    }
+                }
+            }
+
+            emitAll(sharedFlow)  // Emit all the flow updates
         }
+    }
         .catch { emit(UnknownError(it).left()) }
         .filterNotNullRight()
         .flowOn(defaultDispatcher)
         .cancellable()
         .conflate()
-
 }

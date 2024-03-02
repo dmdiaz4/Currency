@@ -24,10 +24,13 @@
 
 package com.dmdiaz.currency.features.rates
 
-import org.joda.money.Money
+import androidx.compose.runtime.Immutable
 import com.dmdiaz.currency.core.domain.models.Resource
+import com.dmdiaz.currency.core.domain.models.rates.Rate
+import org.joda.money.CurrencyUnit
 
+@Immutable
 data class RatesState(
-    val enteredAmount: Money,
-    val convertedAmounts: Resource<List<Money>> = Resource.Loading
+    val baseCurrencyUnit: CurrencyUnit,
+    val rates: Resource<List<Rate>> = Resource.Loading
 )

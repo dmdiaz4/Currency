@@ -28,9 +28,11 @@ import android.content.Context
 import android.net.NetworkCapabilities
 import android.os.Build
 import com.dmdiaz.currency.libs.util.extensions.connectivityManager
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class NetworkHandler(
-    private val context: Context
+ class NetworkHandler @Inject constructor (
+    @ApplicationContext private val context: Context,
 ) {
     fun isNetworkAvailable(): Boolean {
         val connectivityManager = context.connectivityManager

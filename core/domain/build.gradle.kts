@@ -62,10 +62,12 @@ android {
 dependencies {
 
     implementation(project(":libs:util"))
+    testImplementation(project(":libs:util"))
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 
     //joda
     implementation(libs.joda.money)
@@ -78,6 +80,7 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
+    testImplementation(libs.mock.server)
     testImplementation(libs.truth)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.roboelectric)

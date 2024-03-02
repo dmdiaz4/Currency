@@ -60,7 +60,10 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-        viewBinding = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = ProjectConfig.extensionVersion
     }
 }
 
@@ -75,6 +78,23 @@ dependencies {
     implementation(project(":core:network"))
 
     implementation(project(":features:rates"))
+    implementation(project(":features:convert"))
+
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
+    androidTestImplementation(libs.compose.ui.test)
+    debugImplementation(libs.compose.ui.test.manifest)
+    implementation(libs.compose.material3.windowSizeClass)
+    implementation(libs.activity.compose)
+    implementation(libs.viewmodel.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    debugImplementation(libs.navigation.testing)
+    implementation(libs.tracing.ktx)
 
 
     implementation(libs.navigation.fragment.ktx)
@@ -85,6 +105,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 
     //joda
     implementation(libs.joda.money)
@@ -105,6 +126,7 @@ dependencies {
     implementation(libs.arrow.core.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
+    testImplementation(libs.mock.server)
     implementation(libs.moshi)
     implementation(libs.moshi.adapters)
     ksp (libs.moshi.kotlin.codegen)
@@ -117,8 +139,10 @@ dependencies {
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.mock.server)
     testImplementation(libs.truth)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.roboelectric)
     testImplementation(libs.mockk.android)
     testImplementation(libs.mockk.agent)
     androidTestImplementation(libs.ext.junit)

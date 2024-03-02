@@ -24,8 +24,10 @@
 
 package com.dmdiaz.currency.features.rates
 
-import org.joda.money.Money
+import org.joda.money.CurrencyUnit
 
 sealed class RatesEvent {
-    data class AmountChanged(val money: Money): RatesEvent()
+    data class CurrencyUnitChanged(val currencyUnit: CurrencyUnit): RatesEvent()
+
+    data object Retry: RatesEvent()
 }

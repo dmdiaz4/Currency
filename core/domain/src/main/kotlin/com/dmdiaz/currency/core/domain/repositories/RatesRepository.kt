@@ -26,13 +26,13 @@ package com.dmdiaz.currency.core.domain.repositories
 
 import arrow.core.Either
 import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rates
+import com.dmdiaz.currency.core.domain.models.rates.Rate
 import kotlinx.coroutines.flow.Flow
 import org.joda.money.CurrencyUnit
 import java.util.Date
 
 interface RatesRepository {
 
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, Rates>>
+    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, List<Rate>>>
 
 }
