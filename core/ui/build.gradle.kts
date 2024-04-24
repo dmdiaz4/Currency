@@ -26,8 +26,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.devtools.ksp)
 }
 
 android {
@@ -64,7 +62,6 @@ dependencies {
 
     implementation(project(":core:domain"))
     implementation(project(":libs:util"))
-    testImplementation(project(":libs:util"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)
@@ -82,16 +79,11 @@ dependencies {
     debugImplementation(libs.navigation.testing)
     implementation(libs.tracing.ktx)
 
-    implementation(libs.compose.recyclerview)
 
-    //hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.android.compiler)
 
-    implementation(libs.preference.ktx)
-    implementation(libs.datastore.preferences)
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
+
 
     //joda
     implementation(libs.joda.money)
@@ -102,9 +94,6 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
-    implementation(libs.constraintlayout)
-    implementation(libs.navigation.fragment.ktx)
-    implementation(libs.navigation.ui.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.truth)
     testImplementation(libs.kotlinx.coroutines.test)

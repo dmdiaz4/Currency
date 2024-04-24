@@ -41,7 +41,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dmdiaz.currency.core.domain.models.rates.Rate
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
-import com.dmdiaz.currency.libs.designsystem.components.CurrencyUnitIcon
+import com.dmdiaz.currency.core.ui.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.OverlappingRow
 import com.dmdiaz.currency.libs.designsystem.components.ThemePreviews
 import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme

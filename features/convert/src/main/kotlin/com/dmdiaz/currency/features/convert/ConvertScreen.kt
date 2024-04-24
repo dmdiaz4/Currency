@@ -59,7 +59,7 @@ import com.dmdiaz.currency.core.ui.R
 import com.dmdiaz.currency.features.convert.ConvertEvent.AmountChanged
 import com.dmdiaz.currency.features.convert.ConvertEvent.Retry
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
-import com.dmdiaz.currency.libs.designsystem.components.CurrencyUnitIcon
+import com.dmdiaz.currency.core.ui.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.MoneyTextField
 import com.dmdiaz.currency.libs.designsystem.components.ThemePreviews
 import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
