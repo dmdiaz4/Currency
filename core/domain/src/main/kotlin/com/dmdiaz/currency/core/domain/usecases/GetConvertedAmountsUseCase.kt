@@ -26,7 +26,6 @@ package com.dmdiaz.currency.core.domain.usecases
 
 import arrow.core.Either
 import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.repositories.RatesRepository
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers
 import com.dmdiaz.currency.libs.util.extensions.mapRight
@@ -36,18 +35,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.joda.money.Money
 import java.math.RoundingMode.HALF_UP
-import java.util.Date
 import javax.inject.Inject
 
 
 class GetConvertedAmountsUseCase @Inject constructor(
-    private val repository: RatesRepository,
+    private val getCurrentRatesUseCase: GetCurrentRatesUseCase,
     @Dispatcher(Dispatchers.Default) val dispatcher: CoroutineDispatcher
 ) {
     operator fun invoke(amount: Money): Flow<Either<Failure, List<Money>>> {
-        return repository
-            .getRates(Date(), currencyUnit = amount.currencyUnit)
-            .mapRight { rates ->
+        return getCurrentRatesUseCase(amount.currencyUnit).mapRight { rates ->
                 withContext(dispatcher){
                     rates.pmap { rate ->
                         Money.zero(rate.currencyUnit)

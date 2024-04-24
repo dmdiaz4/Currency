@@ -22,15 +22,40 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.domain.models
+package com.dmdiaz.currency.core.ui
+
+import arrow.core.Either
+import arrow.core.raise.Raise
+import arrow.core.raise.recover
+import kotlin.experimental.ExperimentalTypeInference
 
 
-
-sealed class Resource<out T>{
-    data object Loading : Resource<Nothing>()
-
-    data class Failed(val exception: Failure): Resource<Nothing>()
-
-    data class Success<T>(val data: T): Resource<T>()
+sealed interface Lce<out E, out C> {
+    data object Loading : Lce<Nothing, Nothing>
+    data class Content<C>(val value: C) : Lce<Nothing, C>
+    data class Failure<E>(val error: E) : Lce<E, Nothing>
 }
+
+
+context(Raise<Lce<E, Nothing>>)
+fun <E, C> Lce<E, C>.bind(): C = when (this) {
+    is Lce.Content -> value
+    is Lce.Failure -> raise(this)
+    Lce.Loading -> raise(Lce.Loading)
+}
+
+context(Raise<Lce<E, Nothing>>)
+fun <E, C> Either<E, C>.bind(): C = fold(
+    ifLeft = { raise(Lce.Failure(it)) },
+    ifRight = { it }
+)
+
+@OptIn(ExperimentalTypeInference::class)
+inline fun <E, C> lce(@BuilderInference block: Raise<Lce<E, Nothing>>.() -> C): Lce<E, C> =
+    recover({ Lce.Content(block(this)) }) { e: Lce<E, Nothing> -> e }
+
+
+
+
+
 

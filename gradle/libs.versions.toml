@@ -37,7 +37,6 @@ activity-compose = { module = "androidx.activity:activity-compose", version.ref 
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow-fx-coroutines" }
 arrow-core-retrofit = { module = "io.arrow-kt:arrow-core-retrofit", version.ref = "arrow-core-retrofit" }
-arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow-fx-coroutines" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }

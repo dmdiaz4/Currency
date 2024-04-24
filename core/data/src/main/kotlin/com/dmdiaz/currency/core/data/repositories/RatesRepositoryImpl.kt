@@ -42,6 +42,7 @@ import org.joda.money.CurrencyUnit
 import java.util.Date
 import javax.inject.Inject
 
+@Suppress("RemoveExplicitTypeArguments")
 class RatesRepositoryImpl @Inject constructor(
     private val remoteSource: RatesRemoteDataSource,
     private val localSource: RatesLocalDataSource,
@@ -52,17 +53,17 @@ class RatesRepositoryImpl @Inject constructor(
     override fun getRates(
         date: Date,
         currencyUnit: CurrencyUnit
-    ) = get<APIRatesResponse, Pair<Date, List<Rate>>?>(
+    ) = get<APIRatesResponse, List<Rate>?>(
         domainFlow = {
             val domainFlow =
                 localSource
                     .getLatestRates(currencyUnit)
-                    .mapRight { dbRates -> dbRates?.let { it.date to it.toRates() } }
+                    .mapRight { dbRates -> dbRates?.toRates() }
 
             emitAll(domainFlow)
         },
         fetchFlow = {
-            val localDate = DateConverter.dateToString(it?.first)
+            val localDate = DateConverter.dateToString(it?.first()?.date)
             val nowDate = DateConverter.dateToString(date)
 
             if(localDate != nowDate){
@@ -74,8 +75,21 @@ class RatesRepositoryImpl @Inject constructor(
             localSource.saveLatestRates(save).bind()
         }
     )
-        .mapRight { pair ->
-            pair.second.filterNot { it.currencyUnit == currencyUnit }
+        .mapRight { rates ->
+            rates.filterNot { it.currencyUnit == currencyUnit }
         }
+
+    override suspend fun refreshRates(
+        date: Date,
+        currencyUnit: CurrencyUnit,
+    ) = crud(
+        operation = {
+            remoteSource.getRates(date, currencyUnit).bind()
+        },
+        saveOperationSuccess = { response ->
+            val save = response.toDBRates().copy(date = date)
+            localSource.saveLatestRates(save).bind()
+        }
+    )
 
 }

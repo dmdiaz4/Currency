@@ -28,67 +28,60 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dmdiaz.currency.core.domain.models.Resource
-import com.dmdiaz.currency.core.domain.usecases.GetRatesUseCase
-import com.dmdiaz.currency.libs.util.extensions.cancelIfActive
+import com.dmdiaz.currency.core.domain.usecases.GetCurrentRatesUseCase
+import com.dmdiaz.currency.core.domain.usecases.RefreshRatesUseCase
+import com.dmdiaz.currency.core.ui.Lce
+import com.dmdiaz.currency.core.ui.bind
+import com.dmdiaz.currency.core.ui.lce
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.getAndUpdate
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.joda.money.CurrencyUnit
 import org.joda.money.CurrencyUnit.USD
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class RatesViewModel @Inject constructor(
     private val handle: SavedStateHandle,
-    private val getRatesUseCase: GetRatesUseCase,
+    private val getRatesUseCase: GetCurrentRatesUseCase,
+    private val refreshRatesUseCase: RefreshRatesUseCase
 ) : ViewModel() {
 
+    private val baseCurrency = handle.getStateFlow("currency_unit", USD)
 
-    private val _state = MutableStateFlow(RatesState(baseCurrencyUnit = handle["currency_unit"] ?: USD))
-    val state = _state.asStateFlow()
-
-    init {
-        getRates(state.value.baseCurrencyUnit)
-    }
-
-    @MainThread
-    fun onEvent(event: RatesEvent){
-        when(event){
-            is RatesEvent.CurrencyUnitChanged -> {
-                val currencyUnit = event.currencyUnit
-                val previousState = _state.getAndUpdate { it.copy(baseCurrencyUnit = currencyUnit) }
-
-                if (previousState.baseCurrencyUnit != currencyUnit){
-                    handle["currency_unit"] = currencyUnit
-                    getRates(currencyUnit)
-                }
-            }
-
-            RatesEvent.Retry -> {
-                getRates(state.value.baseCurrencyUnit)
-            }
+    private val rates = baseCurrency.flatMapLatest { currencyUnit ->
+        flow {
+            emit(Lce.Loading)
+            emitAll(getRatesUseCase(currencyUnit).map { lce { it.bind() } })
         }
     }
 
-    private var getRatesJob: Job? = null
-    private fun getRates(currencyUnit: CurrencyUnit) {
-        getRatesJob.cancelIfActive()
-        _state.update { it.copy(rates = Resource.Loading) }
-        getRatesJob = viewModelScope.launch {
-            getRatesUseCase(currencyUnit).collect { results ->
-                results.fold(
-                    ifLeft = { failure ->
-                        _state.update { it.copy(rates = Resource.Failed(failure)) }
-                    },
-                    ifRight = { success ->
-                        _state.update { it.copy(rates = Resource.Success(success)) }
-                    }
-                )
+    val state = combine(baseCurrency, rates, ::RatesState)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = RatesState(baseCurrency.value),
+        )
+
+
+    @MainThread
+    fun onEvent(event: RatesEvent) {
+        when (event) {
+            is RatesEvent.CurrencyUnitChanged -> {
+                handle["currency_unit"] = event.currencyUnit
+            }
+
+            RatesEvent.Retry -> {
+                viewModelScope.launch {
+                    refreshRatesUseCase(baseCurrency.value)
+                }
             }
         }
     }

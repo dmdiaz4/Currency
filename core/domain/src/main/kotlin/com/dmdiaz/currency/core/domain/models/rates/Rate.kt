@@ -25,11 +25,11 @@
 package com.dmdiaz.currency.core.domain.models.rates
 
 import org.joda.money.CurrencyUnit
-import org.joda.money.CurrencyUnit.USD
 import java.math.BigDecimal
-import java.math.BigDecimal.ONE
+import java.util.Date
 
 data class Rate(
     val currencyUnit: CurrencyUnit,
+    val date: Date,
     val rate: BigDecimal
 )

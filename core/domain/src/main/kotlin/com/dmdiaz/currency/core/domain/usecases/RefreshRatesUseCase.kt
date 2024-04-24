@@ -29,8 +29,10 @@ import org.joda.money.CurrencyUnit
 import java.util.Date
 import javax.inject.Inject
 
-class GetRatesUseCase @Inject constructor(
+
+class RefreshRatesUseCase @Inject constructor(
     private val repository: RatesRepository
 ) {
-    operator fun invoke(currencyUnit: CurrencyUnit) = repository.getRates(Date(), currencyUnit)
+    suspend operator fun invoke(currencyUnit: CurrencyUnit) =
+        repository.refreshRates(Date(), currencyUnit)
 }

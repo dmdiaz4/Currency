@@ -25,27 +25,25 @@
 package com.dmdiaz.currency.core.data.repositories
 
 import arrow.core.Either
-import arrow.core.flatten
 import arrow.core.left
 import arrow.core.raise.Raise
+import arrow.core.raise.catch
 import arrow.core.raise.either
+import arrow.core.right
 import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.core.domain.models.Failure.UnknownError
 import com.dmdiaz.currency.libs.util.extensions.filterNotNullRight
 import com.dmdiaz.currency.libs.util.extensions.flatMapRightLatest
-import com.dmdiaz.currency.libs.util.extensions.mapRight
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("unused", "MemberVisibilityCanBePrivate", "RedundantAsync")
 abstract class Repository(
@@ -56,29 +54,19 @@ abstract class Repository(
         domainFlow: suspend FlowCollector<Either<Failure, DOMAIN>>.() -> Unit,
         fetchFlow: suspend FlowCollector<Either<Failure, FETCH>>.(DOMAIN) -> Unit,
         saveFetchSuccess: suspend Raise<Failure>.(FETCH) -> Unit,
-    ) = flow {
-
-        val sharedFlow = MutableSharedFlow<Either<Failure, DOMAIN>>(replay = 1)
-
-        coroutineScope {
-            launch {
-                sharedFlow.emitAll(flow(domainFlow))
-            }
-
-            launch {
-                sharedFlow.flatMapRightLatest {
-                    flow{fetchFlow.invoke(this,it)}.mapRight {
-                        either { saveFetchSuccess.invoke(this, it) }
-                    }.map { it.flatten() }
-                }.collect {
-                    val failure = it.leftOrNull()
-                    if (failure != null) {
-                        sharedFlow.emit(failure.left())
+    ) = flow(domainFlow).flatMapRightLatest { domain ->
+        flow {
+            emit(domain.right())
+            emitAll(
+                flow { fetchFlow.invoke(this, domain) }.flatMapRightLatest { fetch ->
+                    flow {
+                        emit(either {
+                            saveFetchSuccess.invoke(this, fetch)
+                            domain
+                        })
                     }
                 }
-            }
-
-            emitAll(sharedFlow)  // Emit all the flow updates
+            )
         }
     }
         .catch { emit(UnknownError(it).left()) }
@@ -86,4 +74,21 @@ abstract class Repository(
         .flowOn(defaultDispatcher)
         .cancellable()
         .conflate()
+
+
+    suspend fun <RESPONSE, DOMAIN> crud(
+        operation: suspend Raise<Failure>.() -> RESPONSE,
+        saveOperationSuccess: suspend Raise<Failure>.(RESPONSE) -> DOMAIN,
+    ) = withContext(defaultDispatcher) {
+        either {
+            catch(
+                block = {
+                    val success = operation()
+                    saveOperationSuccess(success)
+                }) {
+                raise(UnknownError(it))
+            }
+        }
+    }
+
 }

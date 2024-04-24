@@ -35,4 +35,6 @@ interface RatesRepository {
 
     fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, List<Rate>>>
 
+    suspend fun refreshRates(date: Date, currencyUnit: CurrencyUnit): Either<Failure, Unit>
+
 }

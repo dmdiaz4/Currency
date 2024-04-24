@@ -52,10 +52,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.Resource
+import com.dmdiaz.currency.core.ui.Lce
+import com.dmdiaz.currency.core.ui.R
 import com.dmdiaz.currency.features.rates.RatesEvent.CurrencyUnitChanged
 import com.dmdiaz.currency.features.rates.RatesEvent.Retry
-import com.dmdiaz.currency.libs.designsystem.R
 import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
 import com.dmdiaz.currency.libs.designsystem.theme.LocalTintTheme
 import org.joda.money.CurrencyUnit
@@ -88,13 +88,14 @@ internal fun RatesScreen(
     ){
 
         when (uiState.rates){
-            is Resource.Failed -> {
+            is Lce.Failure -> {
                 ErrorState(
-                    error = uiState.rates.exception,
+                    error = uiState.rates.error,
                     onRetryClicked = { onEvent(Retry) }
                 )
             }
-            Resource.Loading -> {
+
+            Lce.Loading -> {
                 Spacer(Modifier.weight(1f))
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -102,10 +103,11 @@ internal fun RatesScreen(
                 )
                 Spacer(Modifier.weight(1f))
             }
-            is Resource.Success -> {
+
+            is Lce.Content -> {
                 RatesLists(
                     baseCurrencyUnit = uiState.baseCurrencyUnit,
-                    list = uiState.rates.data,
+                    list = uiState.rates.value,
                     onCurrencyUnitClicked = { onEvent(CurrencyUnitChanged(it))}
                 )
             }
@@ -186,7 +188,7 @@ fun RatesScreenPopulated() {
     RatesScreen(
         uiState = RatesState(
             baseCurrencyUnit = CurrencyUnit.USD,
-            rates = Resource.Loading
+            rates = Lce.Loading
         ),
         onEvent = {}
     )

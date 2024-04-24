@@ -26,7 +26,7 @@ package com.dmdiaz.currency.core.domain.models
 
 /**
  * Base Class for handling errors/failures/exceptions.
- * Every feature specific failure should extend [FeatureFailure] class.
+ * Every feature specific failure should extend [FeatureError] class.
  */
 sealed class Failure {
     data object NetworkUnavailable: Failure()
@@ -34,5 +34,5 @@ sealed class Failure {
     data class UnknownError(val throwable: Throwable) : Failure()
 
     /** * Extend this class for feature specific failures.*/
-    abstract class FeatureFailure : Failure()
+    abstract class FeatureError : Failure()
 }

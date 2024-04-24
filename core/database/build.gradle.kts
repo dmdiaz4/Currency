@@ -56,6 +56,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
     buildFeatures {
         buildConfig = true
@@ -83,7 +84,6 @@ dependencies {
 
     //arrow
     implementation(libs.arrow.core)
-    implementation(libs.arrow.fx.coroutines)
 
     //Room
     implementation(libs.room.runtime)

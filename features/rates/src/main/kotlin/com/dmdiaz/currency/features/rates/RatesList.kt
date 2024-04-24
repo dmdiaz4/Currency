@@ -48,6 +48,7 @@ import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
 import com.example.compose_recyclerview.ComposeRecyclerView
 import org.joda.money.CurrencyUnit
 import java.math.BigDecimal
+import java.util.Date
 
 @Composable
 fun RatesLists(
@@ -149,10 +150,12 @@ fun RatesListsPreview(){
                 list = listOf(
                     Rate(
                         currencyUnit = CurrencyUnit.CAD,
+                        date = Date(),
                         rate = BigDecimal.valueOf(1.3595972658414928)
                     ),
                     Rate(
                         currencyUnit = CurrencyUnit.EUR,
+                        date = Date(),
                         rate = BigDecimal.valueOf(0.9237021984112322)
                     ),
                 ),

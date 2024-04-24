@@ -58,6 +58,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
     buildFeatures {
         compose = true
@@ -76,6 +77,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:database"))
     implementation(project(":core:network"))
+    implementation(project(":core:ui"))
 
     implementation(project(":features:rates"))
     implementation(project(":features:convert"))
@@ -112,7 +114,6 @@ dependencies {
 
     //arrow
     implementation(libs.arrow.core)
-    implementation(libs.arrow.fx.coroutines)
 
     //Room
     implementation(libs.room.runtime)

@@ -31,7 +31,7 @@ plugins {
 }
 
 android {
-    namespace = "com.dmdiaz.currency.features.convert"
+    namespace = "com.dmdiaz.currency.core.ui"
     compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
@@ -58,21 +58,13 @@ android {
         jvmTarget = "1.8"
         freeCompilerArgs = listOf("-Xcontext-receivers")
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = ProjectConfig.extensionVersion
-    }
 }
 
 dependencies {
 
-    implementation(project(":libs:util"))
-    implementation(project(":libs:designsystem"))
-
-    implementation(project(":core:ui"))
     implementation(project(":core:domain"))
+    implementation(project(":libs:util"))
+    testImplementation(project(":libs:util"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)

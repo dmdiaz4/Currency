@@ -22,33 +22,15 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package com.dmdiaz.currency.core.domain.usecases
+
+import com.dmdiaz.currency.core.domain.repositories.RatesRepository
+import org.joda.money.CurrencyUnit
+import java.util.Date
+import javax.inject.Inject
+
+class GetCurrentRatesUseCase @Inject constructor(
+    private val repository: RatesRepository
+) {
+    operator fun invoke(currencyUnit: CurrencyUnit) = repository.getRates(Date(), currencyUnit)
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "Currency"
-
-include(":app")
-
-include(":libs:util")
-include(":libs:designsystem")
-
-include(":core:ui")
-include(":core:domain")
-include(":core:data")
-include(":core:database")
-include(":core:network")
-
-include(":features:rates")
-include(":features:convert")

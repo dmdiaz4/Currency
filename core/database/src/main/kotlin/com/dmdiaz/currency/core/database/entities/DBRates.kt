@@ -65,10 +65,6 @@ data class DBRates(
     val INR: BigDecimal,
     @ColumnInfo(name = "BRL")
     val BRL: BigDecimal,
-    @ColumnInfo(name = "RUB")
-    val RUB: BigDecimal,
-    @ColumnInfo(name = "HRK")
-    val HRK: BigDecimal,
     @ColumnInfo(name = "JPY")
     val JPY: BigDecimal,
     @ColumnInfo(name = "THB")

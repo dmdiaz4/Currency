@@ -58,10 +58,6 @@ data class APIRates(
     var INR: BigDecimal = ONE,
     @Json(name = "BRL")
     var BRL: BigDecimal = ONE,
-    @Json(name = "RUB")
-    var RUB: BigDecimal = ONE,
-    @Json(name = "HRK")
-    var HRK: BigDecimal = ONE,
     @Json(name = "JPY")
     var JPY: BigDecimal = ONE,
     @Json(name = "THB")
