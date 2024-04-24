@@ -26,7 +26,7 @@ package com.dmdiaz.currency.features.convert
 
 import androidx.compose.runtime.Immutable
 import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.ui.Lce
+import com.dmdiaz.currency.core.ui.state.Lce
 import org.joda.money.Money
 
 @Immutable

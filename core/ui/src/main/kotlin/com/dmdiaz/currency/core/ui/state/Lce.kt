@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.dmdiaz.currency.core.ui
+package com.dmdiaz.currency.core.ui.state
 
 import arrow.core.Either
 import arrow.core.raise.Raise

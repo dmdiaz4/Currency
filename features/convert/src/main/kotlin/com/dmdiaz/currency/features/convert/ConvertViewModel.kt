@@ -30,9 +30,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dmdiaz.currency.core.domain.usecases.GetConvertedAmountsUseCase
 import com.dmdiaz.currency.core.domain.usecases.RefreshRatesUseCase
-import com.dmdiaz.currency.core.ui.Lce
-import com.dmdiaz.currency.core.ui.bind
-import com.dmdiaz.currency.core.ui.lce
+import com.dmdiaz.currency.core.ui.state.Lce
+import com.dmdiaz.currency.core.ui.state.bind
+import com.dmdiaz.currency.core.ui.state.lce
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted

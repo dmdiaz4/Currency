@@ -54,7 +54,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.core.domain.models.Failure.NetworkError
 import com.dmdiaz.currency.core.domain.models.Failure.NetworkUnavailable
-import com.dmdiaz.currency.core.ui.Lce
+import com.dmdiaz.currency.core.ui.state.Lce
 import com.dmdiaz.currency.core.ui.R
 import com.dmdiaz.currency.features.convert.ConvertEvent.AmountChanged
 import com.dmdiaz.currency.features.convert.ConvertEvent.Retry
