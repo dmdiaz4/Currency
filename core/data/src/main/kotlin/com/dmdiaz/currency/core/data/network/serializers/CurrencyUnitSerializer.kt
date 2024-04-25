@@ -22,9 +22,24 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.network.serializers
+
+import androidx.room.TypeConverter
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
+import org.joda.money.CurrencyUnit
+
+object CurrencyUnitSerializer {
+
+    @ToJson
+    @TypeConverter
+    fun serialize(currencyUnit: CurrencyUnit): String {
+        return currencyUnit.code
+    }
+
+    @FromJson
+    @TypeConverter
+    fun deserialize(json: String): CurrencyUnit {
+        return CurrencyUnit.of(json)
+    }
 }

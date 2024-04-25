@@ -22,9 +22,22 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data
+
+import com.dmdiaz.currency.core.data.di.DaosModule
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
+
+@Module
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [DaosModule::class]
+)
+object TestDaosModule {
+    @Provides
+    fun providesTopicsDao(
+        database: com.dmdiaz.currency.core.data.database.PersistingDatabase,
+    ): com.dmdiaz.currency.core.data.database.daos.DBRatesDao = database.ratesDao()
 }

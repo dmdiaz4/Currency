@@ -22,9 +22,21 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
-}
+package com.dmdiaz.currency.core.data.network.dtos
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import org.joda.money.CurrencyUnit
+import org.joda.money.CurrencyUnit.USD
+import java.util.Date
+
+// API DTO
+@JsonClass(generateAdapter = true)
+data class APIRatesResponse(
+    @Json(name = "base")
+    var base: CurrencyUnit = USD,
+    @Json(name = "date")
+    var date: Date = Date(),
+    @Json(name = "rates")
+    var rates: APIRates = APIRates()
+)

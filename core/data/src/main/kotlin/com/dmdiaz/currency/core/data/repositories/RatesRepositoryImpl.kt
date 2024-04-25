@@ -25,19 +25,20 @@
 package com.dmdiaz.currency.core.data.repositories
 
 
+import com.dmdiaz.currency.core.data.database.converters.DateConverter
 import com.dmdiaz.currency.core.data.datasources.RatesLocalDataSource
 import com.dmdiaz.currency.core.data.datasources.RatesRemoteDataSource
 import com.dmdiaz.currency.core.data.mappers.toDBRates
 import com.dmdiaz.currency.core.data.mappers.toRates
-import com.dmdiaz.currency.core.database.converters.DateConverter
+import com.dmdiaz.currency.core.data.network.dtos.APIRatesResponse
 import com.dmdiaz.currency.core.domain.models.rates.Rate
 import com.dmdiaz.currency.core.domain.repositories.RatesRepository
-import com.dmdiaz.currency.core.network.dtos.APIRatesResponse
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.Default
 import com.dmdiaz.currency.libs.util.extensions.mapRight
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import org.joda.money.CurrencyUnit
 import java.util.Date
 import javax.inject.Inject
@@ -67,7 +68,7 @@ class RatesRepositoryImpl @Inject constructor(
             val nowDate = DateConverter.dateToString(date)
 
             if(localDate != nowDate){
-                emit(remoteSource.getRates(date, currencyUnit))
+                emitAll(remoteSource.getRates(date, currencyUnit))
             }
         },
         saveFetchSuccess = { fetch ->
@@ -84,7 +85,7 @@ class RatesRepositoryImpl @Inject constructor(
         currencyUnit: CurrencyUnit,
     ) = crud(
         operation = {
-            remoteSource.getRates(date, currencyUnit).bind()
+            remoteSource.getRates(date, currencyUnit).first().bind()
         },
         saveOperationSuccess = { response ->
             val save = response.toDBRates().copy(date = date)

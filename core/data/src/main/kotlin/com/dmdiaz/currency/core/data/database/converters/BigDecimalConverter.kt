@@ -22,9 +22,20 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.database.converters
+
+import androidx.room.TypeConverter
+import java.math.BigDecimal
+
+object BigDecimalConverter {
+
+    @TypeConverter
+    fun decimalToString(amount: BigDecimal?): String? {
+        return amount?.toString()
+    }
+
+    @TypeConverter
+    fun fromString(string: String?): BigDecimal? {
+        return string?.let { BigDecimal(it) }
+    }
 }

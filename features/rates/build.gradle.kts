@@ -90,8 +90,6 @@ dependencies {
     debugImplementation(libs.navigation.testing)
     implementation(libs.tracing.ktx)
 
-    implementation(libs.compose.recyclerview)
-
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

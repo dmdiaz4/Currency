@@ -25,13 +25,14 @@
 package com.dmdiaz.currency.core.data.datasources
 
 import arrow.core.Either
+import com.dmdiaz.currency.core.data.network.dtos.APIRatesResponse
 import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.network.dtos.APIRatesResponse
+import kotlinx.coroutines.flow.Flow
 import org.joda.money.CurrencyUnit
 import java.util.Date
 
 
 interface RatesRemoteDataSource{
 
-    suspend fun getRates(date: Date, currencyUnit: CurrencyUnit): Either<Failure, APIRatesResponse>
+    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, APIRatesResponse>>
 }

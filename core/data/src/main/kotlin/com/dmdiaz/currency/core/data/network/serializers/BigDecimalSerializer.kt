@@ -22,9 +22,21 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.network.serializers
+
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
+import java.math.BigDecimal
+
+object BigDecimalSerializer {
+
+    @ToJson
+    fun serialize(amount: BigDecimal): String {
+        return amount.toString()
+    }
+
+    @FromJson
+    fun deserialize(json: String): BigDecimal {
+        return BigDecimal(json)
+    }
 }

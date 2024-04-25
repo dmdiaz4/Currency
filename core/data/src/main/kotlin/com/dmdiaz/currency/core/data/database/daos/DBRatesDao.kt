@@ -22,9 +22,23 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.database.daos
+
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Upsert
+import com.dmdiaz.currency.core.data.database.entities.DBRates
+import kotlinx.coroutines.flow.Flow
+import org.joda.money.CurrencyUnit
+
+
+@Dao
+interface DBRatesDao {
+
+    @Query("SELECT * from rates WHERE base = :base")
+    fun get(base: CurrencyUnit): Flow<DBRates?>
+
+    @Upsert
+    suspend fun upsert(rates: DBRates)
+
 }

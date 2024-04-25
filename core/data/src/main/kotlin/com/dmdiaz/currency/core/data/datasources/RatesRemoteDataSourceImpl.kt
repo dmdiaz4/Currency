@@ -25,30 +25,51 @@
 package com.dmdiaz.currency.core.data.datasources
 
 import arrow.core.raise.either
-import com.dmdiaz.currency.core.network.handlers.NetworkHandler
-import com.dmdiaz.currency.core.network.services.APIRatesService
+import arrow.core.raise.ensure
+import arrow.retrofit.adapter.either.networkhandling.HttpError
+import arrow.retrofit.adapter.either.networkhandling.IOError
+import arrow.retrofit.adapter.either.networkhandling.UnexpectedCallError
+import com.dmdiaz.currency.core.data.network.services.APIRatesService
+import com.dmdiaz.currency.core.data.util.NetworkMonitor
+import com.dmdiaz.currency.core.domain.models.Failure
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.IO
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit
 import java.util.Date
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class RatesRemoteDataSourceImpl @Inject constructor(
-    service: APIRatesService,
-    networkHandler: NetworkHandler,
+    private val service: APIRatesService,
+    private val networkMonitor: NetworkMonitor,
     @Dispatcher(IO) private val networkDispatcher: CoroutineDispatcher
-):RatesRemoteDataSource, RemoteDataSource<APIRatesService>(service, networkHandler){
+) : RatesRemoteDataSource {
 
-    override suspend fun getRates(
+    override fun getRates(
         date: Date,
         currencyUnit: CurrencyUnit,
-    ) = either {
-        val service = getAvailableService().bind()
-        val rates = withContext(networkDispatcher) {
-            service.getRates(base = currencyUnit.code)
+    ) = networkMonitor.isOnline.flatMapLatest { online ->
+        flow {
+            emit(
+                either {
+                    ensure(online) { Failure.NetworkUnavailable }
+                    withContext(networkDispatcher) {
+                        service.getRates(base = currencyUnit.code)
+                    }
+                        .mapLeft { error ->
+                            when (error) {
+                                is HttpError -> Failure.NetworkError(error.code)
+                                is IOError -> Failure.NetworkUnavailable
+                                is UnexpectedCallError -> Failure.UnknownError(error.cause)
+                            }
+                        }.bind()
+                }
+            )
         }
-        processRemoteResponse(rates).bind()
     }
 }

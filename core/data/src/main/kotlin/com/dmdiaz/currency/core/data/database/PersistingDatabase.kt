@@ -22,9 +22,21 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.database
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.dmdiaz.currency.core.data.database.converters.BigDecimalConverter
+import com.dmdiaz.currency.core.data.database.converters.CurrencyUnitConverter
+import com.dmdiaz.currency.core.data.database.converters.DateConverter
+import com.dmdiaz.currency.core.data.database.daos.DBRatesDao
+import com.dmdiaz.currency.core.data.database.entities.DBRates
+
+
+@Database(entities = [DBRates::class], version = 1, exportSchema = false)
+@TypeConverters(value = [BigDecimalConverter::class, CurrencyUnitConverter::class, DateConverter::class])
+abstract class PersistingDatabase : RoomDatabase() {
+
+    abstract fun ratesDao(): DBRatesDao
 }

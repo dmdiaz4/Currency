@@ -22,9 +22,23 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.di
+
+import com.dmdiaz.currency.core.data.util.ConnectivityManagerNetworkMonitor
+import com.dmdiaz.currency.core.data.util.NetworkMonitor
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface MonitorsModule {
+
+    @Binds
+    @Singleton
+    fun bindsNetworkMonitor(
+        networkMonitor: ConnectivityManagerNetworkMonitor,
+    ): NetworkMonitor
 }

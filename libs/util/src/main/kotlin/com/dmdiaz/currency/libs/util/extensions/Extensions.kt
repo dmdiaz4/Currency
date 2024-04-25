@@ -26,14 +26,11 @@ package com.dmdiaz.currency.libs.util.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SortedList
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -121,10 +118,6 @@ private fun cleanNumericString(input: String): String {
     return cleaned
 }
 
-inline fun <reified T> RecyclerView.Adapter<*>.createSortedList(
-    callback: SortedList.Callback<T>
-) = SortedList(T::class.java, callback)
-
 
 private fun hideKeyboard(context: Context, view: View) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -184,6 +177,3 @@ inline fun <A,B,C> Flow<Either<A, B>>.flatMapRightLatest(crossinline transform: 
             )
         }
     }
-
-val Context.connectivityManager: ConnectivityManager
-    get() = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

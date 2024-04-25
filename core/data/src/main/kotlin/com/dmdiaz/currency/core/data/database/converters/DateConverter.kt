@@ -22,9 +22,25 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.database.converters
+
+import androidx.room.TypeConverter
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+object DateConverter {
+
+    private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+    @TypeConverter
+    fun dateToString(date: Date?): String? {
+        return date?.let { formatter.format(it) }
+    }
+
+    @TypeConverter
+    fun fromString(string: String?): Date? {
+        return string?.let { formatter.parse(it) }
+    }
+
 }

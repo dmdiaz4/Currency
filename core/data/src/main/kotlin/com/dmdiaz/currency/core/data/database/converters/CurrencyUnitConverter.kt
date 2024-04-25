@@ -22,9 +22,20 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.database.converters
+
+import androidx.room.TypeConverter
+import org.joda.money.CurrencyUnit
+
+object CurrencyUnitConverter {
+
+    @TypeConverter
+    fun currencyToString(currencyUnit: CurrencyUnit?): String? {
+        return currencyUnit?.code
+    }
+
+    @TypeConverter
+    fun fromString(string: String?): CurrencyUnit? {
+        return string?.let { CurrencyUnit.of(it) }
+    }
 }

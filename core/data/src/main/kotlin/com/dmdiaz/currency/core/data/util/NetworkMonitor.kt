@@ -22,9 +22,13 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.util
+
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * Utility for reporting app connectivity status
+ */
+interface NetworkMonitor {
+    val isOnline: Flow<Boolean>
 }

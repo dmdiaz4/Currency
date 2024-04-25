@@ -47,8 +47,6 @@ include(":libs:designsystem")
 include(":core:ui")
 include(":core:domain")
 include(":core:data")
-include(":core:database")
-include(":core:network")
 
 include(":features:rates")
 include(":features:convert")

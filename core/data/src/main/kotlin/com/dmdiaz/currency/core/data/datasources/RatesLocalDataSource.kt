@@ -26,7 +26,7 @@ package com.dmdiaz.currency.core.data.datasources
 
 
 import arrow.core.Either
-import com.dmdiaz.currency.core.database.entities.DBRates
+import com.dmdiaz.currency.core.data.database.entities.DBRates
 import com.dmdiaz.currency.core.domain.models.Failure
 import kotlinx.coroutines.flow.Flow
 

@@ -22,9 +22,19 @@
  * SOFTWARE.
  */
 
-object ProjectConfig {
-    const val compileSdk = 34
-    const val minSdk = 21
-    const val targetSdk = 34
-    const val extensionVersion = "1.5.9"
+package com.dmdiaz.currency.core.data.network.services
+
+import arrow.core.Either
+import arrow.retrofit.adapter.either.networkhandling.CallError
+import com.dmdiaz.currency.core.data.network.dtos.APIRatesResponse
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+interface APIRatesService {
+
+    @GET("rates")
+    suspend fun getRates(
+        @Query("base")
+        base: String? = null,
+    ): Either<CallError, APIRatesResponse>
 }

@@ -67,8 +67,6 @@ dependencies {
 
     implementation(project(":libs:util"))
     implementation(project(":core:domain"))
-    implementation(project(":core:database"))
-    implementation(project(":core:network"))
 
 
     //hilt
@@ -85,6 +83,7 @@ dependencies {
 
     //arrow
     implementation(libs.arrow.core)
+    implementation(libs.arrow.retrofit)
 
     //Room
     implementation(libs.room.runtime)
