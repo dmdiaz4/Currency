@@ -24,12 +24,14 @@
 
 package com.dmdiaz.currency.core.data.mappers
 
-import com.dmdiaz.currency.core.database.entities.DBRates
-import com.dmdiaz.currency.core.network.dtos.APIRates
-import com.dmdiaz.currency.core.network.dtos.APIRatesResponse
+import com.dmdiaz.currency.core.data.rates.local.db.entities.DBRates
+import com.dmdiaz.currency.core.data.rates.mappers.toDBRates
+import com.dmdiaz.currency.core.data.rates.mappers.toRates
+import com.dmdiaz.currency.core.data.rates.remote.network.dtos.APIRates
+import com.dmdiaz.currency.core.data.rates.remote.network.dtos.APIRatesResponse
+import com.google.common.truth.Truth.assertThat
 import org.joda.money.CurrencyUnit
 import org.junit.Test
-import com.google.common.truth.Truth.assertThat
 import java.math.BigDecimal
 import java.util.Date
 
@@ -55,8 +57,6 @@ class RatesMappersTests {
                 IDR = BigDecimal.ONE,
                 INR = BigDecimal.ONE,
                 BRL = BigDecimal.ONE,
-                RUB = BigDecimal.ONE,
-                HRK = BigDecimal.ONE,
                 JPY = BigDecimal.ONE,
                 THB = BigDecimal.ONE,
                 CHF = BigDecimal.ONE,
@@ -94,8 +94,6 @@ class RatesMappersTests {
         assertThat(mapped.IDR).isEqualTo(BigDecimal.ONE)
         assertThat(mapped.INR).isEqualTo(BigDecimal.ONE)
         assertThat(mapped.BRL).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.RUB).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.HRK).isEqualTo(BigDecimal.ONE)
         assertThat(mapped.JPY).isEqualTo(BigDecimal.ONE)
         assertThat(mapped.THB).isEqualTo(BigDecimal.ONE)
         assertThat(mapped.CHF).isEqualTo(BigDecimal.ONE)
@@ -135,8 +133,6 @@ class RatesMappersTests {
             IDR = BigDecimal.ONE,
             INR = BigDecimal.ONE,
             BRL = BigDecimal.ONE,
-            RUB = BigDecimal.ONE,
-            HRK = BigDecimal.ONE,
             JPY = BigDecimal.ONE,
             THB = BigDecimal.ONE,
             CHF = BigDecimal.ONE,
@@ -158,41 +154,105 @@ class RatesMappersTests {
         )
         val mapped = dbRates.toRates()
 
-        assertThat(mapped.base).isEqualTo(CurrencyUnit.USD)
-        assertThat(mapped.date).isEqualTo(Date(1))
-        assertThat(mapped.rates).hasSize(33)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("CAD")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("HKD")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("ISK")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("PHP")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("DKK")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("HUF")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("CZK")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("GBP")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("RON")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("SEK")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("IDR")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("INR")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("BRL")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("RUB")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("HRK")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("JPY")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("THB")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("CHF")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("EUR")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("MYR")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("BGN")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("TRY")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("CNY")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("NOK")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("NZD")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("ZAR")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("USD")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("MXN")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("SGD")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("AUD")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("ILS")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("KRW")}?.rate).isEqualTo(BigDecimal.ONE)
-        assertThat(mapped.rates.find { it.currencyUnit == CurrencyUnit.of("PLN")}?.rate).isEqualTo(BigDecimal.ONE)
+
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("CAD") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("HKD") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("ISK") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("PHP") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("DKK") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("HUF") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("CZK") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("GBP") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("RON") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("SEK") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("IDR") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("INR") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("BRL") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("RUB") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("HRK") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("JPY") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("THB") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("CHF") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("EUR") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("MYR") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("BGN") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("TRY") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("CNY") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("NOK") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("NZD") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("ZAR") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("USD") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("MXN") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("SGD") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("AUD") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("ILS") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("KRW") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
+        assertThat(mapped.find { it.currencyUnit == CurrencyUnit.of("PLN") }?.rate).isEqualTo(
+            BigDecimal.ONE
+        )
     }
 }

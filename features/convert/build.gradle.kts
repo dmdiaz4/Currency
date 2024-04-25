@@ -56,6 +56,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
     buildFeatures {
         compose = true
@@ -70,6 +71,7 @@ dependencies {
     implementation(project(":libs:util"))
     implementation(project(":libs:designsystem"))
 
+    implementation(project(":core:ui"))
     implementation(project(":core:domain"))
 
     implementation(platform(libs.compose.bom))
@@ -88,7 +90,6 @@ dependencies {
     debugImplementation(libs.navigation.testing)
     implementation(libs.tracing.ktx)
 
-    implementation(libs.compose.recyclerview)
 
     //hilt
     implementation(libs.hilt.android)
@@ -104,8 +105,6 @@ dependencies {
 
     //arrow
     implementation(libs.arrow.core)
-    implementation(libs.arrow.fx.coroutines)
-
 
     implementation(libs.core.ktx)
     implementation(libs.appcompat)

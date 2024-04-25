@@ -29,20 +29,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.dmdiaz.currency.core.ui.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
-import com.dmdiaz.currency.libs.designsystem.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.ThemePreviews
 import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
 import com.dmdiaz.currency.libs.util.extensions.toFormattedString
-import com.example.compose_recyclerview.ComposeRecyclerView
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import java.math.BigDecimal
@@ -50,15 +51,21 @@ import java.math.BigDecimal
 @Composable
 fun ConvertedList(
     list: List<Money>,
+    modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
     onMoneyClicked: (Money) -> Unit,
-    modifier: Modifier = Modifier
 ) {
-    ComposeRecyclerView(
+
+
+    LazyColumn(
         modifier = modifier
             .fillMaxWidth(),
-        itemCount = list.size,
-        itemBuilder = { index ->
-            val item = list[index]
+        state = listState
+    ) {
+        itemsIndexed(
+            items = list,
+            key = { _, item -> item.currencyUnit.code }
+        ) { index, item ->
 
             val topExtraPadding = if (index == 0) 8.dp else 0.dp
 
@@ -80,10 +87,7 @@ fun ConvertedList(
                         bottom = 8.dp
                     )
             )
-        }) {
-
-        it.layoutManager = LinearLayoutManager(it.context, RecyclerView.VERTICAL, false)
-
+        }
     }
 }
 

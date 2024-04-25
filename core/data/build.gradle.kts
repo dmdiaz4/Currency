@@ -28,7 +28,14 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.room)
 }
+
+// For KSP
+ksp {
+    arg("generateKotlin", "true")
+}
+
 
 android {
     namespace = "com.dmdiaz.currency.core.data"
@@ -56,9 +63,13 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
     buildFeatures {
         buildConfig = true
+    }
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 
@@ -66,8 +77,6 @@ dependencies {
 
     implementation(project(":libs:util"))
     implementation(project(":core:domain"))
-    implementation(project(":core:database"))
-    implementation(project(":core:network"))
 
 
     //hilt
@@ -84,7 +93,7 @@ dependencies {
 
     //arrow
     implementation(libs.arrow.core)
-    implementation(libs.arrow.fx.coroutines)
+    implementation(libs.arrow.retrofit)
 
     //Room
     implementation(libs.room.runtime)

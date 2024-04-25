@@ -24,11 +24,12 @@
 
 package com.dmdiaz.currency.core.data.datasources
 
-import com.dmdiaz.currency.core.database.daos.DBRatesDao
+import com.dmdiaz.currency.core.data.rates.local.datasource.RatesLocalDataSource
+import com.dmdiaz.currency.core.data.rates.local.datasource.RatesLocalDataSourceImpl
+import com.dmdiaz.currency.core.data.rates.local.db.DBRatesDao
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow

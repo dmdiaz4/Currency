@@ -51,15 +51,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.Failure.NetworkError
-import com.dmdiaz.currency.core.domain.models.Failure.NetworkUnavailable
-import com.dmdiaz.currency.core.domain.models.Resource
+import com.dmdiaz.currency.core.domain.common.models.Failure
+import com.dmdiaz.currency.core.domain.common.models.Failure.NetworkError
+import com.dmdiaz.currency.core.domain.common.models.Failure.NetworkUnavailable
+import com.dmdiaz.currency.core.ui.R
+import com.dmdiaz.currency.core.ui.components.CurrencyUnitIcon
+import com.dmdiaz.currency.core.ui.state.Lce
 import com.dmdiaz.currency.features.convert.ConvertEvent.AmountChanged
 import com.dmdiaz.currency.features.convert.ConvertEvent.Retry
-import com.dmdiaz.currency.libs.designsystem.R
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
-import com.dmdiaz.currency.libs.designsystem.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.MoneyTextField
 import com.dmdiaz.currency.libs.designsystem.components.ThemePreviews
 import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
@@ -91,9 +91,8 @@ internal fun ConvertScreen(
 ) {
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-    ){
+        modifier = modifier.fillMaxSize()
+    ) {
         MoneyTextField(
             value = uiState.enteredAmount,
             textStyle = MaterialTheme.typography.headlineMedium.copy(
@@ -117,8 +116,7 @@ internal fun ConvertScreen(
                     Text(
                         text = uiState.enteredAmount.currencyUnit.code,
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
             },
@@ -127,44 +125,37 @@ internal fun ConvertScreen(
                 .fillMaxWidth()
         )
 
-        when (uiState.convertedAmounts){
-            is Resource.Failed -> {
-                ErrorState(
-                    error = uiState.convertedAmounts.exception,
-                    onRetryClicked = { onEvent(Retry) }
-                )
+        when (uiState.convertedAmounts) {
+            is Lce.Failure -> {
+                ErrorState(error = uiState.convertedAmounts.error,
+                    onRetryClicked = { onEvent(Retry) })
             }
-            Resource.Loading -> {
+
+            Lce.Loading -> {
                 Spacer(Modifier.weight(1f))
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
+                    modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
                 )
                 Spacer(Modifier.weight(1f))
             }
-            is Resource.Success -> {
-                ConvertedList(
-                    list = uiState.convertedAmounts.data,
-                    onMoneyClicked = {
-                        onEvent(AmountChanged(it))
-                    }
-                )
+
+            is Lce.Content -> {
+                ConvertedList(list = uiState.convertedAmounts.value, onMoneyClicked = {
+                    onEvent(AmountChanged(it))
+                })
             }
         }
-        
+
 
     }
 
 }
 
 
-
 @Composable
 private fun ErrorState(
-    error: Failure,
-    onRetryClicked: () -> Unit,
-    modifier: Modifier = Modifier
-){
+    error: Failure, onRetryClicked: () -> Unit, modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -181,8 +172,7 @@ private fun ErrorState(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .size(64.dp)
-            ,
+                .size(64.dp),
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -197,7 +187,7 @@ private fun ErrorState(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val errorRes = when(error){
+        val errorRes = when (error) {
             is NetworkError -> R.string.network_error
             NetworkUnavailable -> R.string.network_unavailable
             else -> R.string.unknown_error
@@ -211,7 +201,7 @@ private fun ErrorState(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         Button(onClick = {
             onRetryClicked()
         }) {
@@ -228,13 +218,10 @@ private fun ErrorState(
 fun ConvertScreenFailure() {
     CurrencyTheme {
         CurrencyBackground {
-            ConvertScreen(
-                uiState = ConvertState(
-                    enteredAmount = Money.zero(CurrencyUnit.USD),
-                    convertedAmounts = Resource.Failed(NetworkUnavailable)
-                ),
-                onEvent = {}
-            )
+            ConvertScreen(uiState = ConvertState(
+                enteredAmount = Money.zero(CurrencyUnit.USD),
+                convertedAmounts = Lce.Failure(NetworkUnavailable)
+            ), onEvent = {})
         }
     }
 }

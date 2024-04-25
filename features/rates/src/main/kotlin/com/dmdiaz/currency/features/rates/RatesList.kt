@@ -31,38 +31,44 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.dmdiaz.currency.core.domain.models.rates.Rate
+import com.dmdiaz.currency.core.domain.rates.models.Rate
+import com.dmdiaz.currency.core.ui.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
-import com.dmdiaz.currency.libs.designsystem.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.OverlappingRow
 import com.dmdiaz.currency.libs.designsystem.components.ThemePreviews
 import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
-import com.example.compose_recyclerview.ComposeRecyclerView
 import org.joda.money.CurrencyUnit
 import java.math.BigDecimal
+import java.util.Date
 
 @Composable
 fun RatesLists(
     baseCurrencyUnit: CurrencyUnit,
     list: List<Rate>,
+    modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
     onCurrencyUnitClicked: (CurrencyUnit) -> Unit,
-    modifier: Modifier = Modifier
 ){
-    ComposeRecyclerView(
+
+    LazyColumn(
         modifier = modifier
             .fillMaxWidth(),
-        itemCount = list.size,
-        itemBuilder = {index ->
-            val item = list[index]
-
+        state = listState
+    ) {
+        itemsIndexed(
+            items = list,
+            key = { _, item -> item.currencyUnit.code }
+        ) { index, item ->
             val topExtraPadding = if (index == 0) 8.dp else 0.dp
 
             //if this is the last item add bottom padding
@@ -84,10 +90,7 @@ fun RatesLists(
                         bottom = 8.dp
                     )
             )
-        }){
-
-        it.layoutManager = LinearLayoutManager(it.context, RecyclerView.VERTICAL, false)
-
+        }
     }
 }
 
@@ -149,10 +152,12 @@ fun RatesListsPreview(){
                 list = listOf(
                     Rate(
                         currencyUnit = CurrencyUnit.CAD,
+                        date = Date(),
                         rate = BigDecimal.valueOf(1.3595972658414928)
                     ),
                     Rate(
                         currencyUnit = CurrencyUnit.EUR,
+                        date = Date(),
                         rate = BigDecimal.valueOf(0.9237021984112322)
                     ),
                 ),

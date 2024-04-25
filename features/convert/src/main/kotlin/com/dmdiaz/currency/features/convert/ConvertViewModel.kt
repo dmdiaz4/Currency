@@ -28,67 +28,63 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dmdiaz.currency.core.domain.models.Resource
-import com.dmdiaz.currency.core.domain.usecases.GetConvertedAmountsUseCase
-import com.dmdiaz.currency.libs.util.extensions.cancelIfActive
+import com.dmdiaz.currency.core.domain.common.usecases.GetConvertedAmountsUseCase
+import com.dmdiaz.currency.core.domain.rates.usecases.RefreshRatesUseCase
+import com.dmdiaz.currency.core.ui.state.Lce
+import com.dmdiaz.currency.core.ui.state.bind
+import com.dmdiaz.currency.core.ui.state.lce
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.getAndUpdate
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.joda.money.CurrencyUnit.USD
 import org.joda.money.Money
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ConvertViewModel @Inject constructor(
     private val handle: SavedStateHandle,
     private val getConvertedAmountsUseCase: GetConvertedAmountsUseCase,
+    private val refreshRatesUseCase: RefreshRatesUseCase
 ) : ViewModel() {
 
 
-    private val _state = MutableStateFlow(ConvertState(enteredAmount = handle["money"] ?: Money.zero(USD)))
-    val state = _state.asStateFlow()
+    private val enteredAmount = handle.getStateFlow("money", Money.zero(USD))
 
-    init {
-        getConvertedAmounts(state.value.enteredAmount)
-    }
-
-    @MainThread
-    fun onEvent(event: ConvertEvent){
-        when(event){
-            is ConvertEvent.AmountChanged -> {
-                val money = event.money
-                val previousState = _state.getAndUpdate { it.copy(enteredAmount = money) }
-                handle["money"] = money
-
-                if (previousState.enteredAmount != money){
-                    getConvertedAmounts(money)
-                }
-            }
-
-            ConvertEvent.Retry -> {
-                getConvertedAmounts(state.value.enteredAmount)
-            }
+    private val convertedAmounts = enteredAmount.flatMapLatest { amount ->
+        flow {
+            emit(Lce.Loading)
+            emitAll(getConvertedAmountsUseCase(amount).map { lce { it.bind() } })
         }
     }
 
-    private var getConvertedAmountsJob: Job? = null
-    private fun getConvertedAmounts(amount: Money) {
-        getConvertedAmountsJob.cancelIfActive()
-        _state.update { it.copy(convertedAmounts = Resource.Loading) }
-        getConvertedAmountsJob = viewModelScope.launch {
-            getConvertedAmountsUseCase(amount).collect { results ->
-                results.fold(
-                    ifLeft = { failure ->
-                        _state.update { it.copy(convertedAmounts = Resource.Failed(failure)) }
-                    },
-                    ifRight = { success ->
-                        _state.update { it.copy(convertedAmounts = Resource.Success(success)) }
-                    }
-                )
+
+    val state = combine(enteredAmount, convertedAmounts, ::ConvertState)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = ConvertState(enteredAmount.value),
+        )
+
+
+    @MainThread
+    fun onEvent(event: ConvertEvent) {
+        when (event) {
+            is ConvertEvent.AmountChanged -> {
+                handle["money"] = event.money
+            }
+
+            ConvertEvent.Retry -> {
+                viewModelScope.launch {
+                    refreshRatesUseCase(state.value.enteredAmount.currencyUnit)
+                }
             }
         }
     }

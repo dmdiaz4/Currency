@@ -24,22 +24,20 @@
 
 package com.dmdiaz.currency.core.data.datasources
 
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.network.handlers.NetworkHandler
-import com.dmdiaz.currency.core.network.services.APIRatesService
-import com.google.common.truth.Truth
+import com.dmdiaz.currency.core.data.network.handlers.NetworkHandler
+import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSource
+import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSourceImpl
+import com.dmdiaz.currency.core.data.rates.remote.network.APIRatesService
+import com.dmdiaz.currency.core.domain.common.models.Failure
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Before
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit
+import org.junit.Before
 import org.junit.Test
 import java.util.Date
 

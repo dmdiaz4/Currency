@@ -40,14 +40,14 @@ dependencyResolutionManagement {
 rootProject.name = "Currency"
 
 include(":app")
+include(":app-convert-only")
 
 include(":libs:util")
 include(":libs:designsystem")
 
+include(":core:ui")
 include(":core:domain")
 include(":core:data")
-include(":core:database")
-include(":core:network")
 
 include(":features:rates")
 include(":features:convert")

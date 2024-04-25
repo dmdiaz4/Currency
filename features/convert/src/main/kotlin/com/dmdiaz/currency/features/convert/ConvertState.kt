@@ -25,11 +25,12 @@
 package com.dmdiaz.currency.features.convert
 
 import androidx.compose.runtime.Immutable
-import com.dmdiaz.currency.core.domain.models.Resource
+import com.dmdiaz.currency.core.domain.common.models.Failure
+import com.dmdiaz.currency.core.ui.state.Lce
 import org.joda.money.Money
 
 @Immutable
 data class ConvertState(
     val enteredAmount: Money,
-    val convertedAmounts: Resource<List<Money>> = Resource.Loading
+    val convertedAmounts: Lce<Failure, List<Money>> = Lce.Loading
 )

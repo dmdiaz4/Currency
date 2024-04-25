@@ -12,7 +12,7 @@
 <img src="/app_architecture.png" align="right" width="320"/>
 
 - **Minimum SDK level**
-  - Android 24
+  - Android 21
   
 - **Language**
    - [Kotlin](https://kotlinlang.org/)

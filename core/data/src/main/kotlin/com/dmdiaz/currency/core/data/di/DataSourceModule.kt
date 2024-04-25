@@ -24,10 +24,10 @@
 
 package com.dmdiaz.currency.core.data.di
 
-import com.dmdiaz.currency.core.data.datasources.RatesLocalDataSource
-import com.dmdiaz.currency.core.data.datasources.RatesLocalDataSourceImpl
-import com.dmdiaz.currency.core.data.datasources.RatesRemoteDataSource
-import com.dmdiaz.currency.core.data.datasources.RatesRemoteDataSourceImpl
+import com.dmdiaz.currency.core.data.rates.local.datasource.RatesLocalDataSource
+import com.dmdiaz.currency.core.data.rates.local.datasource.RatesLocalDataSourceImpl
+import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSource
+import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

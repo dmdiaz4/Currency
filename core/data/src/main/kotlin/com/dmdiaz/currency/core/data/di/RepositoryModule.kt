@@ -24,8 +24,8 @@
 
 package com.dmdiaz.currency.core.data.di
 
-import com.dmdiaz.currency.core.data.repositories.RatesRepositoryImpl
-import com.dmdiaz.currency.core.domain.repositories.RatesRepository
+import com.dmdiaz.currency.core.data.rates.RatesRepositoryImpl
+import com.dmdiaz.currency.core.domain.rates.RatesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
