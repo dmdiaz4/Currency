@@ -25,8 +25,8 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="false">api.vatcomply.com</domain>
-        <pin-set expiration="2024-03-12">
-            <pin digest="SHA-256">pxpcEPU7ekBngc6YC5IeSQO0f2FLYZURjEtxQLQAxko=</pin>
+        <pin-set expiration="2024-07-11">
+            <pin digest="SHA-256">jhq5O0GB465lZJkewQgK0QYpmNYkANDQ5ThD23YsVZw=</pin>
             <pin digest="SHA-256">hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=</pin>
         </pin-set>
     </domain-config>
