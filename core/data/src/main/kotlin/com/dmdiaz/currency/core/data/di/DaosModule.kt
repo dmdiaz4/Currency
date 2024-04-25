@@ -24,8 +24,8 @@
 
 package com.dmdiaz.currency.core.data.di
 
-import com.dmdiaz.currency.core.data.database.PersistingDatabase
-import com.dmdiaz.currency.core.data.database.daos.DBRatesDao
+import com.dmdiaz.currency.core.data.common.PersistingDatabase
+import com.dmdiaz.currency.core.data.rates.local.db.DBRatesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

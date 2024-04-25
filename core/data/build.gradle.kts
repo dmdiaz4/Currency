@@ -28,7 +28,14 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.room)
 }
+
+// For KSP
+ksp {
+    arg("generateKotlin", "true")
+}
+
 
 android {
     namespace = "com.dmdiaz.currency.core.data"
@@ -60,6 +67,9 @@ android {
     }
     buildFeatures {
         buildConfig = true
+    }
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 

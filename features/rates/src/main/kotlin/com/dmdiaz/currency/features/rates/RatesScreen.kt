@@ -51,9 +51,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.ui.state.Lce
+import com.dmdiaz.currency.core.domain.common.models.Failure
 import com.dmdiaz.currency.core.ui.R
+import com.dmdiaz.currency.core.ui.state.Lce
 import com.dmdiaz.currency.features.rates.RatesEvent.CurrencyUnitChanged
 import com.dmdiaz.currency.features.rates.RatesEvent.Retry
 import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons

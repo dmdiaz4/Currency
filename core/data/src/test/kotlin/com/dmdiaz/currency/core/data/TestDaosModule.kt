@@ -24,7 +24,9 @@
 
 package com.dmdiaz.currency.core.data
 
+import com.dmdiaz.currency.core.data.common.PersistingDatabase
 import com.dmdiaz.currency.core.data.di.DaosModule
+import com.dmdiaz.currency.core.data.rates.local.db.DBRatesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
@@ -38,6 +40,6 @@ import dagger.hilt.testing.TestInstallIn
 object TestDaosModule {
     @Provides
     fun providesTopicsDao(
-        database: com.dmdiaz.currency.core.data.database.PersistingDatabase,
-    ): com.dmdiaz.currency.core.data.database.daos.DBRatesDao = database.ratesDao()
+        database: PersistingDatabase,
+    ): DBRatesDao = database.ratesDao()
 }

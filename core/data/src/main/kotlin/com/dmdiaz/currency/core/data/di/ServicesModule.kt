@@ -24,7 +24,7 @@
 
 package com.dmdiaz.currency.core.data.di
 
-import com.dmdiaz.currency.core.data.network.services.APIRatesService
+import com.dmdiaz.currency.core.data.rates.remote.network.APIRatesService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

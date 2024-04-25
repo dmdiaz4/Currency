@@ -24,9 +24,11 @@
 
 package com.dmdiaz.currency.core.data.mappers
 
-import com.dmdiaz.currency.core.data.database.entities.DBRates
-import com.dmdiaz.currency.core.data.network.dtos.APIRates
-import com.dmdiaz.currency.core.data.network.dtos.APIRatesResponse
+import com.dmdiaz.currency.core.data.rates.local.db.entities.DBRates
+import com.dmdiaz.currency.core.data.rates.mappers.toDBRates
+import com.dmdiaz.currency.core.data.rates.mappers.toRates
+import com.dmdiaz.currency.core.data.rates.remote.network.dtos.APIRates
+import com.dmdiaz.currency.core.data.rates.remote.network.dtos.APIRatesResponse
 import com.google.common.truth.Truth.assertThat
 import org.joda.money.CurrencyUnit
 import org.junit.Test

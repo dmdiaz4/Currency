@@ -25,9 +25,10 @@
 package com.dmdiaz.currency.core.domain.usecases
 
 import arrow.core.right
-import com.dmdiaz.currency.core.domain.models.rates.Rate
+import com.dmdiaz.currency.core.domain.common.usecases.GetConvertedAmountsUseCase
 import com.dmdiaz.currency.core.domain.models.rates.Rates
-import com.dmdiaz.currency.core.domain.repositories.RatesRepository
+import com.dmdiaz.currency.core.domain.rates.RatesRepository
+import com.dmdiaz.currency.core.domain.rates.models.Rate
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -37,7 +38,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.joda.money.CurrencyUnit
 import org.joda.money.CurrencyUnit.CAD
 import org.joda.money.CurrencyUnit.USD
 import org.joda.money.Money
@@ -78,7 +78,7 @@ class GetConvertedAmountsUseCaseTests {
                 val rates = Rates(
                     base = USD,
                     date = Date(),
-                    rates = listOf(Rate(CurrencyUnit.CAD, BigDecimal("0.5")))
+                    rates = listOf(Rate(CAD, BigDecimal("0.5")))
                 )
                 emit(rates.right())
             }

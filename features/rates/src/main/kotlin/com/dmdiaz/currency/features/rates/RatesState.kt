@@ -25,8 +25,8 @@
 package com.dmdiaz.currency.features.rates
 
 import androidx.compose.runtime.Immutable
-import com.dmdiaz.currency.core.domain.models.Failure
-import com.dmdiaz.currency.core.domain.models.rates.Rate
+import com.dmdiaz.currency.core.domain.common.models.Failure
+import com.dmdiaz.currency.core.domain.rates.models.Rate
 import com.dmdiaz.currency.core.ui.state.Lce
 import org.joda.money.CurrencyUnit
 

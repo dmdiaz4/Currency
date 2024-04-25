@@ -25,8 +25,10 @@
 package com.dmdiaz.currency.core.data.datasources
 
 import com.dmdiaz.currency.core.data.network.handlers.NetworkHandler
-import com.dmdiaz.currency.core.data.network.services.APIRatesService
-import com.dmdiaz.currency.core.domain.models.Failure
+import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSource
+import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSourceImpl
+import com.dmdiaz.currency.core.data.rates.remote.network.APIRatesService
+import com.dmdiaz.currency.core.domain.common.models.Failure
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

@@ -85,5 +85,6 @@ viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose",
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-gradle-plugin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
+room = { id = "androidx.room", version.ref = "room-runtime" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-gradle-plugin"}
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }

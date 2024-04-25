@@ -28,8 +28,8 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dmdiaz.currency.core.domain.usecases.GetConvertedAmountsUseCase
-import com.dmdiaz.currency.core.domain.usecases.RefreshRatesUseCase
+import com.dmdiaz.currency.core.domain.common.usecases.GetConvertedAmountsUseCase
+import com.dmdiaz.currency.core.domain.rates.usecases.RefreshRatesUseCase
 import com.dmdiaz.currency.core.ui.state.Lce
 import com.dmdiaz.currency.core.ui.state.bind
 import com.dmdiaz.currency.core.ui.state.lce

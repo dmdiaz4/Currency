@@ -24,6 +24,8 @@
 
 package com.dmdiaz.currency.core.data.di
 
+import com.dmdiaz.currency.core.data.common.serializers.BigDecimalSerializer
+import com.dmdiaz.currency.core.data.common.serializers.CurrencyUnitSerializer
 import com.dmdiaz.currency.core.data.dispatcher.NetworkMockDispatcher
 import com.dmdiaz.currency.core.network.BuildConfig
 import com.squareup.moshi.Moshi
@@ -102,8 +104,8 @@ object TestNetworkModule {
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
             .add(Date::class.java,  Rfc3339DateJsonAdapter())
-            .add(com.dmdiaz.currency.core.data.network.serializers.BigDecimalSerializer)
-            .add(com.dmdiaz.currency.core.data.network.serializers.CurrencyUnitSerializer)
+            .add(BigDecimalSerializer)
+            .add(CurrencyUnitSerializer)
             .build()
     }
 

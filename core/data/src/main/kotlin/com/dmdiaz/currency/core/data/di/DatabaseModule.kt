@@ -26,7 +26,7 @@ package com.dmdiaz.currency.core.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.dmdiaz.currency.core.data.database.PersistingDatabase
+import com.dmdiaz.currency.core.data.common.PersistingDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

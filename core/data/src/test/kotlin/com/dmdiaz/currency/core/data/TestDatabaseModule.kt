@@ -26,6 +26,7 @@ package com.dmdiaz.currency.core.data
 
 import android.content.Context
 import androidx.room.Room
+import com.dmdiaz.currency.core.data.common.PersistingDatabase
 import com.dmdiaz.currency.core.data.di.DatabaseModule
 import dagger.Module
 import dagger.Provides
@@ -45,11 +46,11 @@ object TestDatabaseModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context
-    ): com.dmdiaz.currency.core.data.database.PersistingDatabase {
+    ): PersistingDatabase {
         return Room
             .inMemoryDatabaseBuilder(
                 context,
-                com.dmdiaz.currency.core.data.database.PersistingDatabase::class.java
+                PersistingDatabase::class.java
             )
             .allowMainThreadQueries()
             .build()

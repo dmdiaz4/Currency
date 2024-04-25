@@ -41,7 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.dmdiaz.currency.core.domain.models.rates.Rate
+import com.dmdiaz.currency.core.domain.rates.models.Rate
 import com.dmdiaz.currency.core.ui.components.CurrencyUnitIcon
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
 import com.dmdiaz.currency.libs.designsystem.components.OverlappingRow

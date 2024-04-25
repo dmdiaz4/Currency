@@ -28,9 +28,9 @@ package com.dmdiaz.currency.core.data.di
 
 import arrow.retrofit.adapter.either.EitherCallAdapterFactory
 import com.dmdiaz.currency.core.data.BuildConfig
-import com.dmdiaz.currency.core.data.network.serializers.BigDecimalSerializer
-import com.dmdiaz.currency.core.data.network.serializers.CurrencyUnitSerializer
-import com.dmdiaz.currency.core.data.network.serializers.DateSerializer
+import com.dmdiaz.currency.core.data.common.serializers.BigDecimalSerializer
+import com.dmdiaz.currency.core.data.common.serializers.CurrencyUnitSerializer
+import com.dmdiaz.currency.core.data.common.serializers.DateSerializer
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

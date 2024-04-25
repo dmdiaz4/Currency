@@ -1,0 +1,226 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "ab6b95e31aa9874c1bbe4b43ef344d31",
+    "entities": [
+      {
+        "tableName": "rates",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`base` TEXT NOT NULL, `date` TEXT NOT NULL, `CAD` TEXT NOT NULL, `HKD` TEXT NOT NULL, `ISK` TEXT NOT NULL, `PHP` TEXT NOT NULL, `DKK` TEXT NOT NULL, `HUF` TEXT NOT NULL, `CZK` TEXT NOT NULL, `GBP` TEXT NOT NULL, `RON` TEXT NOT NULL, `SEK` TEXT NOT NULL, `IDR` TEXT NOT NULL, `INR` TEXT NOT NULL, `BRL` TEXT NOT NULL, `JPY` TEXT NOT NULL, `THB` TEXT NOT NULL, `CHF` TEXT NOT NULL, `EUR` TEXT NOT NULL, `MYR` TEXT NOT NULL, `BGN` TEXT NOT NULL, `TRY` TEXT NOT NULL, `CNY` TEXT NOT NULL, `NOK` TEXT NOT NULL, `NZD` TEXT NOT NULL, `ZAR` TEXT NOT NULL, `USD` TEXT NOT NULL, `MXN` TEXT NOT NULL, `SGD` TEXT NOT NULL, `AUD` TEXT NOT NULL, `ILS` TEXT NOT NULL, `KRW` TEXT NOT NULL, `PLN` TEXT NOT NULL, PRIMARY KEY(`base`))",
+        "fields": [
+          {
+            "fieldPath": "base",
+            "columnName": "base",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "CAD",
+            "columnName": "CAD",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "HKD",
+            "columnName": "HKD",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ISK",
+            "columnName": "ISK",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "PHP",
+            "columnName": "PHP",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "DKK",
+            "columnName": "DKK",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "HUF",
+            "columnName": "HUF",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "CZK",
+            "columnName": "CZK",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "GBP",
+            "columnName": "GBP",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "RON",
+            "columnName": "RON",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "SEK",
+            "columnName": "SEK",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "IDR",
+            "columnName": "IDR",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "INR",
+            "columnName": "INR",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "BRL",
+            "columnName": "BRL",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "JPY",
+            "columnName": "JPY",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "THB",
+            "columnName": "THB",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "CHF",
+            "columnName": "CHF",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "EUR",
+            "columnName": "EUR",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "MYR",
+            "columnName": "MYR",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "BGN",
+            "columnName": "BGN",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "TRY",
+            "columnName": "TRY",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "CNY",
+            "columnName": "CNY",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "NOK",
+            "columnName": "NOK",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "NZD",
+            "columnName": "NZD",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ZAR",
+            "columnName": "ZAR",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "USD",
+            "columnName": "USD",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "MXN",
+            "columnName": "MXN",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "SGD",
+            "columnName": "SGD",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "AUD",
+            "columnName": "AUD",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ILS",
+            "columnName": "ILS",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "KRW",
+            "columnName": "KRW",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "PLN",
+            "columnName": "PLN",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "base"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ab6b95e31aa9874c1bbe4b43ef344d31')"
+    ]
+  }
+}
