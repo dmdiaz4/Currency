@@ -30,11 +30,13 @@ import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import arrow.core.raise.either
 import arrow.core.right
+import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.BlockingFetch
+import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.NoFetch
 import com.dmdiaz.currency.core.domain.common.models.Failure
 import com.dmdiaz.currency.core.domain.common.models.Failure.UnknownError
-import com.dmdiaz.currency.libs.util.extensions.filterNotNullRight
 import com.dmdiaz.currency.libs.util.extensions.flatMapRightLatest
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
@@ -49,35 +51,47 @@ abstract class Repository(
     protected val defaultDispatcher: CoroutineDispatcher
 ) {
 
-    fun <FETCH, DOMAIN> get(
-        domainFlow: suspend FlowCollector<Either<Failure, DOMAIN>>.() -> Unit,
-        fetchFlow: suspend FlowCollector<Either<Failure, FETCH>>.(DOMAIN) -> Unit,
-        saveFetchSuccess: suspend Raise<Failure>.(FETCH) -> Unit,
-    ) = flow(domainFlow).flatMapRightLatest { domain ->
-        flow {
-            emit(domain.right())
-            emitAll(
-                flow { fetchFlow.invoke(this, domain) }.flatMapRightLatest { fetch ->
-                    flow {
-                        emit(either {
-                            saveFetchSuccess.invoke(this, fetch)
-                            domain
+    sealed interface FetchPolicy {
+
+        object NoFetch : FetchPolicy
+        object BackgroundFetch : FetchPolicy
+        object BlockingFetch : FetchPolicy
+    }
+
+
+    fun <LOCAL, REMOTE> get(
+        localFlow: suspend FlowCollector<Either<Failure, LOCAL>>.() -> Unit,
+        fetchPolicy: suspend Raise<Failure>.(LOCAL) -> FetchPolicy,
+        fetchFlow: suspend FlowCollector<Either<Failure, REMOTE>>.(LOCAL, FetchPolicy) -> Unit,
+        saveFetchSuccess: suspend Raise<Failure>.(LOCAL, FetchPolicy, REMOTE) -> Unit,
+    ): Flow<Either<Failure, LOCAL>> =
+        flow(localFlow).flatMapRightLatest { local ->
+            flow<Either<Failure, LOCAL>> {
+                either {
+                    val policy = fetchPolicy(local)
+                    if (policy !is BlockingFetch) emit(local.right())
+                    if (policy !is NoFetch) {
+                        emitAll(flow { fetchFlow(local, policy) }.flatMapRightLatest { remote ->
+                            flow {
+                                emit(either {
+                                    saveFetchSuccess(local, policy, remote)
+                                    local
+                                })
+                            }
                         })
                     }
                 }
-            )
+            }
         }
-    }
-        .catch { emit(UnknownError(it).left()) }
-        .filterNotNullRight()
-        .flowOn(defaultDispatcher)
-        .cancellable()
-        .conflate()
+            .catch { emit(UnknownError(it).left()) }
+            .flowOn(defaultDispatcher)
+            .cancellable()
+            .conflate()
 
 
-    suspend fun <RESPONSE, DOMAIN> crud(
-        operation: suspend Raise<Failure>.() -> RESPONSE,
-        saveOperationSuccess: suspend Raise<Failure>.(RESPONSE) -> DOMAIN,
+    suspend fun <RETURN, REMOTE> crud(
+        operation: suspend Raise<Failure>.() -> REMOTE,
+        saveOperationSuccess: suspend Raise<Failure>.(REMOTE) -> RETURN,
     ) = withContext(defaultDispatcher) {
         either {
             catch(

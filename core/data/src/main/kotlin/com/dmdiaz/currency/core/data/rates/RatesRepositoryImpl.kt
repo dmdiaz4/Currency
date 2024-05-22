@@ -26,14 +26,17 @@ package com.dmdiaz.currency.core.data.rates
 
 
 import com.dmdiaz.currency.core.data.common.Repository
+import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.BackgroundFetch
+import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.BlockingFetch
+import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.NoFetch
 import com.dmdiaz.currency.core.data.common.serializers.DateSerializer
 import com.dmdiaz.currency.core.data.rates.local.datasource.RatesLocalDataSource
+import com.dmdiaz.currency.core.data.rates.local.db.entities.DBRates
 import com.dmdiaz.currency.core.data.rates.mappers.toDBRates
 import com.dmdiaz.currency.core.data.rates.mappers.toRates
 import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSource
 import com.dmdiaz.currency.core.data.rates.remote.network.dtos.APIRatesResponse
 import com.dmdiaz.currency.core.domain.rates.RatesRepository
-import com.dmdiaz.currency.core.domain.rates.models.Rate
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.Default
 import com.dmdiaz.currency.libs.util.extensions.mapRight
@@ -55,31 +58,35 @@ class RatesRepositoryImpl @Inject constructor(
     override fun getRates(
         date: Date,
         currencyUnit: CurrencyUnit
-    ) = get<APIRatesResponse, List<Rate>?>(
-        domainFlow = {
-            val domainFlow =
-                localSource
-                    .getLatestRates(currencyUnit)
-                    .mapRight { dbRates -> dbRates?.toRates() }
-
-            emitAll(domainFlow)
+    ) = get<DBRates?, APIRatesResponse>(
+        localFlow = {
+            emitAll(localSource.getLatestRates(currencyUnit))
         },
-        fetchFlow = {
-            val localDate = DateSerializer.serialize(it?.first()?.date)
+        fetchPolicy = { dbRates ->
+            val localDate = DateSerializer.serialize(dbRates?.date)
             val nowDate = DateSerializer.serialize(date)
 
-            if(localDate != nowDate){
-                emitAll(remoteSource.getRates(date, currencyUnit))
+            if (dbRates == null){
+                BlockingFetch
+            } else if(localDate != nowDate){
+                BackgroundFetch
+            } else {
+                NoFetch
             }
         },
-        saveFetchSuccess = { fetch ->
-            val save = fetch.toDBRates().copy(date = date)
+        fetchFlow = { _, _ ->
+            emitAll(remoteSource.getRates(date, currencyUnit))
+        },
+        saveFetchSuccess = { _, _, remote ->
+            val save = remote.toDBRates().copy(date = date)
             localSource.saveLatestRates(save).bind()
         }
     )
-        .mapRight { rates ->
-            rates.filterNot { it.currencyUnit == currencyUnit }
+
+        .mapRight { dbRates ->
+            dbRates?.toRates()?.filterNot { it.currencyUnit == currencyUnit }?: emptyList()
         }
+
 
     override suspend fun refreshRates(
         date: Date,
