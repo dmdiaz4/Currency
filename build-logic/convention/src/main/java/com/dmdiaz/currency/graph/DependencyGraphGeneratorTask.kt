@@ -1,0 +1,63 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2026 David Diaz
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdiaz.currency.graph
+
+import com.dmdiaz.currency.graph.DependencyGraphGeneratorExtension.Generator
+import guru.nidi.graphviz.engine.Graphviz
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Nested
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
+import java.io.File
+
+@CacheableTask open class DependencyGraphGeneratorTask : DefaultTask() {
+  @get:Nested lateinit var generator: Generator
+
+  @OutputDirectory lateinit var outputDirectory: File
+
+  @get:Internal val graph by lazy {
+    DependencyGraphGenerator(project, generator).generateGraph()
+  }
+
+  @get:Input val dotFormatGraph by lazy {
+    graph.toString()
+  }
+
+  @TaskAction fun run() {
+    val dot = File(outputDirectory, generator.outputFileNameDot)
+    dot.writeText(graph.toString())
+
+    val graphviz = Graphviz.fromGraph(graph).run(generator.graphviz)
+
+    val renders = generator.outputFormats.map {
+      graphviz.render(it).toFile(File(outputDirectory, generator.outputFileName))
+    }
+
+    listOf(dot).plus(renders).distinct().forEach { logger.lifecycle(it.absolutePath) }
+  }
+}

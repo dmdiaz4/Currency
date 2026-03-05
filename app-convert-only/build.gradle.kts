@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,48 +23,22 @@
  */
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.currency.android.application)
+    alias(libs.plugins.currency.hilt)
     alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.currency.android.compose)
+    alias(libs.plugins.currency.dependecy.graph.generator)
 }
 
 android {
     namespace = "com.dmdiaz.currency"
-    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
-        applicationId = "com.dmdiaz.currency"
-        minSdk = ProjectConfig.minSdk
-        targetSdk = ProjectConfig.targetSdk
-        versionCode = 1
-        versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xcontext-receivers")
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = ProjectConfig.extensionVersion
+        // To publish on the Play store a private signing key is required, but to allow anyone
+        // who clones the code to sign and run the release variant, use the debug signing key.
+        signingConfig = signingConfigs.named("debug").get()
     }
 }
 
@@ -121,7 +95,6 @@ dependencies {
 
     //Retrofit
     implementation(libs.retrofit)
-    implementation(libs.arrow.core.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
     testImplementation(libs.mock.server)

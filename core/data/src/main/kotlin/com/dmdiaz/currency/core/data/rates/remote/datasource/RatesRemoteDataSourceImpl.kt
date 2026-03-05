@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,17 @@
 
 package com.dmdiaz.currency.core.data.rates.remote.datasource
 
-import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.retrofit.adapter.either.networkhandling.HttpError
 import arrow.retrofit.adapter.either.networkhandling.IOError
 import arrow.retrofit.adapter.either.networkhandling.UnexpectedCallError
 import com.dmdiaz.currency.core.data.rates.remote.network.APIRatesService
 import com.dmdiaz.currency.core.data.util.NetworkMonitor
-import com.dmdiaz.currency.core.domain.common.models.Failure
+import com.dmdiaz.currency.core.domain.common.models.NoInternetError
+import com.dmdiaz.currency.core.domain.common.models.UnknownError
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.IO
+import com.dmdiaz.currency.libs.util.extensions.emitEither
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
@@ -55,21 +56,23 @@ class RatesRemoteDataSourceImpl @Inject constructor(
         currencyUnit: CurrencyUnit,
     ) = networkMonitor.isOnline.flatMapLatest { online ->
         flow {
-            emit(
-                either {
-                    ensure(online) { Failure.NetworkUnavailable }
-                    withContext(networkDispatcher) {
-                        service.getRates(base = currencyUnit.code)
-                    }
-                        .mapLeft { error ->
-                            when (error) {
-                                is HttpError -> Failure.NetworkError(error.code)
-                                is IOError -> Failure.NetworkUnavailable
-                                is UnexpectedCallError -> Failure.UnknownError(error.cause)
-                            }
-                        }.bind()
+            emitEither {
+                ensure(online) { NoInternetError }
+                withContext(networkDispatcher) {
+                    service.getRates(base = currencyUnit.code)
                 }
-            )
+                    .mapLeft { error ->
+                        when (error) {
+                            is HttpError -> com.dmdiaz.currency.core.domain.common.models.HttpError(
+                                code = error.code,
+                                message = error.message,
+                                body = error.body
+                            )
+                            is IOError -> com.dmdiaz.currency.core.domain.common.models.IOError(cause = error.cause)
+                            is UnexpectedCallError -> UnknownError(cause = error.cause)
+                        }
+                    }.bind()
+            }
         }
     }
 }

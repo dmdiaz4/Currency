@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,9 @@ package com.dmdiaz.currency.core.data.rates
 
 
 import com.dmdiaz.currency.core.data.common.Repository
-import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.BackgroundFetch
-import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.BlockingFetch
-import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.NoFetch
+import com.dmdiaz.currency.core.data.common.Repository.FetchStrategy.NoFetch
+import com.dmdiaz.currency.core.data.common.Repository.FetchStrategy.RemoteFetch.BackgroundFetch
+import com.dmdiaz.currency.core.data.common.Repository.FetchStrategy.RemoteFetch.BlockingFetch
 import com.dmdiaz.currency.core.data.common.serializers.DateSerializer
 import com.dmdiaz.currency.core.data.rates.local.datasource.RatesLocalDataSource
 import com.dmdiaz.currency.core.data.rates.local.db.entities.DBRates
@@ -37,8 +37,10 @@ import com.dmdiaz.currency.core.data.rates.mappers.toRates
 import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSource
 import com.dmdiaz.currency.core.data.rates.remote.network.dtos.APIRatesResponse
 import com.dmdiaz.currency.core.domain.rates.RatesRepository
+import com.dmdiaz.currency.core.domain.rates.models.RatesCommonError
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatcher
 import com.dmdiaz.currency.libs.util.di.qualifiers.Dispatchers.Default
+import com.dmdiaz.currency.libs.util.extensions.mapLeft
 import com.dmdiaz.currency.libs.util.extensions.mapRight
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.emitAll
@@ -62,7 +64,7 @@ class RatesRepositoryImpl @Inject constructor(
         localFlow = {
             emitAll(localSource.getLatestRates(currencyUnit))
         },
-        fetchPolicy = { dbRates ->
+        fetchPolicy = { _, dbRates ->
             val localDate = DateSerializer.serialize(dbRates?.date)
             val nowDate = DateSerializer.serialize(date)
 
@@ -82,23 +84,22 @@ class RatesRepositoryImpl @Inject constructor(
             localSource.saveLatestRates(save).bind()
         }
     )
-
         .mapRight { dbRates ->
             dbRates?.toRates()?.filterNot { it.currencyUnit == currencyUnit }?: emptyList()
+        }
+        .mapLeft {
+            RatesCommonError(it)
         }
 
 
     override suspend fun refreshRates(
         date: Date,
         currencyUnit: CurrencyUnit,
-    ) = crud(
-        operation = {
-            remoteSource.getRates(date, currencyUnit).first().bind()
-        },
-        saveOperationSuccess = { response ->
+    ) = crud {
+            val response = remoteSource.getRates(date, currencyUnit).first().bind()
             val save = response.toDBRates().copy(date = date)
             localSource.saveLatestRates(save).bind()
         }
-    )
+        .mapLeft { RatesCommonError(it) }
 
 }

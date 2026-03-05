@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,52 +22,26 @@
  * SOFTWARE.
  */
 
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
+
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.currency.android.library)
+    alias(libs.plugins.currency.android.compose)
+    alias(libs.plugins.currency.hilt)
 }
 
 android {
     namespace = "com.dmdiaz.currency.core.ui"
-    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
-        minSdk = ProjectConfig.minSdk
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xcontext-receivers")
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = ProjectConfig.extensionVersion
     }
 }
 
 dependencies {
 
-    implementation(project(":core:domain"))
-    implementation(project(":libs:util"))
+    implementation(projects.core.domain)
+    implementation(projects.libs.util)
+    implementation(projects.libs.designsystem)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)

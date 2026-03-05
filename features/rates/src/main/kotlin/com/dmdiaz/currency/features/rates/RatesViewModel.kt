@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,9 +30,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dmdiaz.currency.core.domain.rates.usecases.GetCurrentRatesUseCase
 import com.dmdiaz.currency.core.domain.rates.usecases.RefreshRatesUseCase
-import com.dmdiaz.currency.core.ui.state.Lce
-import com.dmdiaz.currency.core.ui.state.bind
-import com.dmdiaz.currency.core.ui.state.lce
+import com.dmdiaz.currency.libs.designsystem.extensions.toLCE
+import com.dmdiaz.currency.libs.designsystem.state.LCE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -58,12 +57,12 @@ class RatesViewModel @Inject constructor(
 
     private val rates = baseCurrency.flatMapLatest { currencyUnit ->
         flow {
-            emit(Lce.Loading)
-            emitAll(getRatesUseCase(currencyUnit).map { lce { it.bind() } })
+            emit(LCE.Loading)
+            emitAll(getRatesUseCase(currencyUnit).map { it.toLCE()})
         }
     }
 
-    val state = combine(baseCurrency, rates, ::RatesState)
+    val uiState = combine(baseCurrency, rates, ::RatesState)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

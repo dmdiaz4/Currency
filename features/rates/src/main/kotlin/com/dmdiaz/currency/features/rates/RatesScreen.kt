@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,15 @@
 package com.dmdiaz.currency.features.rates
 
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,23 +41,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dmdiaz.currency.core.domain.common.models.Failure
-import com.dmdiaz.currency.core.ui.R
-import com.dmdiaz.currency.core.ui.state.Lce
+import com.dmdiaz.currency.core.domain.common.models.NoInternetError
+import com.dmdiaz.currency.core.domain.rates.models.Rate
+import com.dmdiaz.currency.core.domain.rates.models.RatesCommonError
+import com.dmdiaz.currency.core.domain.rates.models.RatesError
+import com.dmdiaz.currency.core.ui.ScreenPreviews
+import com.dmdiaz.currency.core.ui.components.CurrencyUnitIcon
+import com.dmdiaz.currency.core.ui.components.Error
+import com.dmdiaz.currency.core.ui.components.SimpleList
 import com.dmdiaz.currency.features.rates.RatesEvent.CurrencyUnitChanged
 import com.dmdiaz.currency.features.rates.RatesEvent.Retry
-import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
-import com.dmdiaz.currency.libs.designsystem.theme.LocalTintTheme
+import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
+import com.dmdiaz.currency.libs.designsystem.components.LceComponent
+import com.dmdiaz.currency.libs.designsystem.components.OverlappingRow
+import com.dmdiaz.currency.libs.designsystem.state.LCE
+import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
 import org.joda.money.CurrencyUnit
+import java.math.BigDecimal
+import java.util.Date
 
 @Composable
 internal fun RatesRoute(
@@ -66,7 +69,7 @@ internal fun RatesRoute(
     viewModel: RatesViewModel = hiltViewModel(),
 ) {
 
-    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     RatesScreen(
         uiState = uiState,
@@ -87,109 +90,164 @@ internal fun RatesScreen(
             .fillMaxSize()
     ){
 
-        when (uiState.rates){
-            is Lce.Failure -> {
-                ErrorState(
-                    error = uiState.rates.error,
-                    onRetryClicked = { onEvent(Retry) }
-                )
-            }
-
-            Lce.Loading -> {
-                Spacer(Modifier.weight(1f))
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                )
-                Spacer(Modifier.weight(1f))
-            }
-
-            is Lce.Content -> {
-                RatesLists(
-                    baseCurrencyUnit = uiState.baseCurrencyUnit,
-                    list = uiState.rates.value,
-                    onCurrencyUnitClicked = { onEvent(CurrencyUnitChanged(it))}
-                )
-            }
-        }
-        
-
+        Rates(
+            baseCurrencyUnit = uiState.baseCurrencyUnit,
+            rates = uiState.rates,
+            onEvent = onEvent
+        )
     }
-
 }
 
 @Composable
-private fun ErrorState(
-    error: Failure,
-    onRetryClicked: () -> Unit,
+internal fun Rates(
+    baseCurrencyUnit: CurrencyUnit,
+    rates: LCE<RatesError, List<Rate>>,
+    onEvent: (RatesEvent) -> Unit,
     modifier: Modifier = Modifier
 ){
-    Column(
+
+    LceComponent(
+        state = rates,
+        modifier = modifier,
+        loading = {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Spacer(Modifier.weight(1f))
+                CircularProgressIndicator(
+                    modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+                )
+                Spacer(Modifier.weight(1f))
+            }
+        },
+        error = { error ->
+            Error(
+                error = (error as RatesCommonError).error,
+                onRetryClicked = { onEvent(Retry) }
+            )
+        },
+        content = { value ->
+            SimpleList(
+                modifier = Modifier.fillMaxWidth(),
+                items = value,
+                key = { _, item -> item.currencyUnit.code }
+            ) { topExtraPadding, bottomExtraPadding, item ->
+                RateListItem(
+                    baseCurrencyUnit = baseCurrencyUnit,
+                    rate = item,
+                    modifier = Modifier
+                        .padding(
+                            top = topExtraPadding,
+                            bottom = bottomExtraPadding
+                        )
+                        .clickable { onEvent(CurrencyUnitChanged(item.currencyUnit))}
+                        .padding(
+                            top = 8.dp,
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 8.dp
+                        )
+                )
+            }
+        }
+    )
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+internal fun RateListItem(
+    baseCurrencyUnit: CurrencyUnit,
+    rate: Rate,
+    modifier: Modifier = Modifier
+){
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .padding(16.dp)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .fillMaxWidth()
     ) {
 
-        val iconTint = LocalTintTheme.current.iconTint
+        OverlappingRow(
+            widthOverlapFactor = 0.5f,
+            heightOverlapFactor = 0.3f
+        ){
+            CurrencyUnitIcon(
+                currencyUnit = baseCurrencyUnit,
+                size = 36.dp
 
-        Image(
-            imageVector = CurrencyIcons.Warning,
-            colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(64.dp)
-            ,
-        )
-
-        Spacer(modifier = Modifier.height(48.dp))
-
-        Text(
-            text = stringResource(id = R.string.error),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        val errorRes = when(error){
-            is Failure.NetworkError -> R.string.network_error
-            Failure.NetworkUnavailable -> R.string.network_unavailable
-            else -> R.string.unknown_error
+            )
+            CurrencyUnitIcon(
+                currencyUnit = rate.currencyUnit,
+                size = 36.dp,
+            )
         }
 
+
         Text(
-            text = stringResource(id = errorRes),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
+            text = "${baseCurrencyUnit.code} to ${rate.currencyUnit.code}" ,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(Modifier.weight(1f))
 
-        Button(onClick = {
-            onRetryClicked()
-        }) {
-            Text(
-                text = stringResource(id = R.string.retry),
-                style = MaterialTheme.typography.bodyMedium,
-            )
+        Text(
+            text = "1 ${baseCurrencyUnit.code} = ${rate.rate} ${rate.currencyUnit.code}",
+            style = MaterialTheme.typography.bodyLarge,
+            maxLines = 1,
+            modifier = Modifier.basicMarquee(),
+        )
+    }
+}
+
+@ScreenPreviews
+@Composable
+fun RatesScreenFailure() {
+    CurrencyTheme {
+        CurrencyBackground {
+            RatesScreen(uiState = RatesState(
+                baseCurrencyUnit = CurrencyUnit.USD,
+                rates = LCE.Error(RatesCommonError(NoInternetError))
+            ), onEvent = {})
         }
     }
 }
 
-@Preview
+@ScreenPreviews
 @Composable
-fun RatesScreenPopulated() {
-    RatesScreen(
-        uiState = RatesState(
-            baseCurrencyUnit = CurrencyUnit.USD,
-            rates = Lce.Loading
-        ),
-        onEvent = {}
-    )
+fun RatesScreenLoading() {
+    CurrencyTheme {
+        CurrencyBackground {
+            RatesScreen(uiState = RatesState(
+                baseCurrencyUnit = CurrencyUnit.USD,
+                rates = LCE.Loading
+            ), onEvent = {})
+        }
+    }
+}
+
+@ScreenPreviews
+@Composable
+fun RatesScreenContent() {
+    CurrencyTheme {
+        CurrencyBackground {
+            RatesScreen(uiState = RatesState(
+                baseCurrencyUnit = CurrencyUnit.USD,
+                rates = LCE.Content(
+                    value = listOf(
+                        Rate(
+                            currencyUnit = CurrencyUnit.CAD,
+                            date = Date(),
+                            rate = BigDecimal.valueOf(1.3595972658414928)
+                        ),
+                        Rate(
+                            currencyUnit = CurrencyUnit.EUR,
+                            date = Date(),
+                            rate = BigDecimal.valueOf(0.9237021984112322)
+                        ),
+                    )
+                )
+            ), onEvent = {})
+        }
+    }
 }

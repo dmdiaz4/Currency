@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,13 @@ package com.dmdiaz.currency.core.data.rates.local.datasource
 
 import arrow.core.Either
 import com.dmdiaz.currency.core.data.rates.local.db.entities.DBRates
-import com.dmdiaz.currency.core.domain.common.models.Failure
+import com.dmdiaz.currency.core.domain.common.models.CommonLocalError
 import kotlinx.coroutines.flow.Flow
-
 import org.joda.money.CurrencyUnit
 
 interface RatesLocalDataSource {
 
-    fun getLatestRates(currencyUnit: CurrencyUnit): Flow<Either<Failure, DBRates?>>
+    fun getLatestRates(currencyUnit: CurrencyUnit): Flow<Either<CommonLocalError, DBRates?>>
 
-    suspend fun saveLatestRates(rates: DBRates): Either<Failure, Unit>
+    suspend fun saveLatestRates(rates: DBRates): Either<CommonLocalError, Unit>
 }

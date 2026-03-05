@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ package com.dmdiaz.currency.core.data.rates.remote.datasource
 
 import arrow.core.Either
 import com.dmdiaz.currency.core.data.rates.remote.network.dtos.APIRatesResponse
-import com.dmdiaz.currency.core.domain.common.models.Failure
+import com.dmdiaz.currency.core.domain.common.models.CommonRemoteError
 import kotlinx.coroutines.flow.Flow
 import org.joda.money.CurrencyUnit
 import java.util.Date
@@ -34,5 +34,5 @@ import java.util.Date
 
 interface RatesRemoteDataSource{
 
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, APIRatesResponse>>
+    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<CommonRemoteError, APIRatesResponse>>
 }

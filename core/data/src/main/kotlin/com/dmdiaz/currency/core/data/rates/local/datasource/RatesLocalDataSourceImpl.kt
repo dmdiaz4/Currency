@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,12 @@
 package com.dmdiaz.currency.core.data.rates.local.datasource
 
 import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
+import arrow.core.raise.catch
+import arrow.core.raise.either
 import com.dmdiaz.currency.core.data.rates.local.db.DBRatesDao
 import com.dmdiaz.currency.core.data.rates.local.db.entities.DBRates
-import com.dmdiaz.currency.core.domain.common.models.Failure
+import com.dmdiaz.currency.core.domain.common.models.CommonLocalError
+import com.dmdiaz.currency.core.domain.common.models.UnknownError
 import com.dmdiaz.currency.libs.util.extensions.emitAllRight
 import com.dmdiaz.currency.libs.util.extensions.emitLeft
 import kotlinx.coroutines.Dispatchers
@@ -46,23 +47,28 @@ class RatesLocalDataSourceImpl @Inject constructor(
 
     override fun getLatestRates(
         currencyUnit: CurrencyUnit,
-    ) = flow<Either<Failure, DBRates?>> {
+    ) = flow<Either<CommonLocalError, DBRates?>> {
         emitAllRight(
             ratesDao
                 .get(currencyUnit)
                 .distinctUntilChanged()
         )
     }.catch { throwable ->
-        emitLeft(Failure.UnknownError(throwable))
+        emitLeft(UnknownError(throwable))
     }
 
     override suspend fun saveLatestRates(
         rates: DBRates
-    ) = try {
-        withContext(Dispatchers.IO){
-            ratesDao.upsert(rates).right()
-        }
-    } catch (ex: Exception){
-        Failure.UnknownError(ex).left()
+    ) = either<CommonLocalError, Unit> {
+        catch(
+            block = {
+                withContext(Dispatchers.IO){
+                    ratesDao.upsert(rates)
+                }
+            },
+            catch = {
+                raise(UnknownError(it))
+            }
+        )
     }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,12 @@ import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import arrow.core.raise.either
 import arrow.core.right
-import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.BlockingFetch
-import com.dmdiaz.currency.core.data.common.Repository.FetchPolicy.NoFetch
-import com.dmdiaz.currency.core.domain.common.models.Failure
-import com.dmdiaz.currency.core.domain.common.models.Failure.UnknownError
+import com.dmdiaz.currency.core.data.common.Repository.FetchStrategy.NoFetch
+import com.dmdiaz.currency.core.data.common.Repository.FetchStrategy.RemoteFetch
+import com.dmdiaz.currency.core.data.common.Repository.FetchStrategy.RemoteFetch.BlockingFetch
+import com.dmdiaz.currency.core.domain.common.models.CommonError
+import com.dmdiaz.currency.core.domain.common.models.UnknownError
+import com.dmdiaz.currency.libs.util.extensions.emitEither
 import com.dmdiaz.currency.libs.util.extensions.flatMapRightLatest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +43,6 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
@@ -51,56 +52,72 @@ abstract class Repository(
     protected val defaultDispatcher: CoroutineDispatcher
 ) {
 
-    sealed interface FetchPolicy {
-
-        object NoFetch : FetchPolicy
-        object BackgroundFetch : FetchPolicy
-        object BlockingFetch : FetchPolicy
+    sealed interface FetchStrategy {
+        data object NoFetch : FetchStrategy
+        sealed interface RemoteFetch : FetchStrategy{
+            data object BackgroundFetch: RemoteFetch
+            data object BlockingFetch : RemoteFetch
+        }
     }
 
 
+
+    fun <LOCAL> getLocal(
+        localFlow: suspend FlowCollector<Either<CommonError, LOCAL>>.() -> Unit,
+    ) = get<LOCAL, Nothing>(
+        localFlow = localFlow,
+        fetchPolicy = { _, _ -> NoFetch },
+        fetchFlow = { _, _ -> },
+        saveFetchSuccess = {_, _, _ ->}
+    )
+
+
     fun <LOCAL, REMOTE> get(
-        localFlow: suspend FlowCollector<Either<Failure, LOCAL>>.() -> Unit,
-        fetchPolicy: suspend Raise<Failure>.(LOCAL) -> FetchPolicy,
-        fetchFlow: suspend FlowCollector<Either<Failure, REMOTE>>.(LOCAL, FetchPolicy) -> Unit,
-        saveFetchSuccess: suspend Raise<Failure>.(LOCAL, FetchPolicy, REMOTE) -> Unit,
-    ): Flow<Either<Failure, LOCAL>> =
-        flow(localFlow).flatMapRightLatest { local ->
-            flow<Either<Failure, LOCAL>> {
-                either {
-                    val policy = fetchPolicy(local)
+        localFlow: suspend FlowCollector<Either<CommonError, LOCAL>>.() -> Unit,
+        fetchPolicy: suspend Raise<CommonError>.(previousFetchPolicy: FetchStrategy?, local: LOCAL) -> FetchStrategy,
+        fetchFlow: suspend FlowCollector<Either<CommonError, REMOTE>>.(local: LOCAL, fetchMode: RemoteFetch) -> Unit,
+        saveFetchSuccess: suspend Raise<CommonError>.(local: LOCAL, fetchMode: RemoteFetch, remote: REMOTE) -> Unit,
+    ): Flow<Either<CommonError, LOCAL>> {
+        var previousFetchPolicy: FetchStrategy? = null
+        return flow(localFlow).flatMapRightLatest { local ->
+            flow<Either<CommonError, LOCAL>> {
+                 either {
+                    val policy = fetchPolicy(previousFetchPolicy, local)
+                    previousFetchPolicy = policy
                     if (policy !is BlockingFetch) emit(local.right())
-                    if (policy !is NoFetch) {
-                        emitAll(flow { fetchFlow(local, policy) }.flatMapRightLatest { remote ->
-                            flow {
-                                emit(either {
-                                    saveFetchSuccess(local, policy, remote)
-                                    local
-                                })
+                    if (policy is RemoteFetch) {
+                        flow { fetchFlow(local, policy) }.collect{ remote ->
+                            emitEither{
+                                saveFetchSuccess(local, policy, remote.bind())
+                                local
                             }
-                        })
+                        }
                     }
-                }
+                }.onLeft {
+                    emit(it.left())
+                 }
             }
         }
             .catch { emit(UnknownError(it).left()) }
             .flowOn(defaultDispatcher)
             .cancellable()
             .conflate()
+    }
 
 
-    suspend fun <RETURN, REMOTE> crud(
-        operation: suspend Raise<Failure>.() -> REMOTE,
-        saveOperationSuccess: suspend Raise<Failure>.(REMOTE) -> RETURN,
+
+    suspend fun <T> crud(
+        operation: suspend Raise<CommonError>.() -> T,
     ) = withContext(defaultDispatcher) {
-        either {
+        either<CommonError, Unit> {
             catch(
                 block = {
-                    val success = operation()
-                    saveOperationSuccess(success)
-                }) {
-                raise(UnknownError(it))
-            }
+                    operation()
+                },
+                catch = {
+                    raise(UnknownError(it))
+                }
+            )
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,32 +24,31 @@
 
 package com.dmdiaz.currency.core.data.datasources
 
-import com.dmdiaz.currency.core.data.network.handlers.NetworkHandler
 import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSource
 import com.dmdiaz.currency.core.data.rates.remote.datasource.RatesRemoteDataSourceImpl
 import com.dmdiaz.currency.core.data.rates.remote.network.APIRatesService
-import com.dmdiaz.currency.core.domain.common.models.Failure
+import com.dmdiaz.currency.core.data.util.NetworkMonitor
+import com.dmdiaz.currency.core.domain.common.models.NoInternetError
+import com.dmdiaz.currency.libs.util.testing.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.joda.money.CurrencyUnit
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.util.Date
 
 
 class RatesRemoteDataSourceTests {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val testDispatcher = UnconfinedTestDispatcher()
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
-    private val testScope = TestScope(testDispatcher)
-
-    private lateinit var networkHandler: NetworkHandler
+    private lateinit var networkMonitor: NetworkMonitor
 
     private lateinit var service: APIRatesService
 
@@ -58,25 +57,25 @@ class RatesRemoteDataSourceTests {
     @Before
     fun before(){
 
-        networkHandler = mockk<NetworkHandler>()
+        networkMonitor = mockk<NetworkMonitor>()
         service = mockk<APIRatesService>()
 
         subject = RatesRemoteDataSourceImpl(
             service = service,
-            networkHandler = networkHandler,
-            networkDispatcher = testDispatcher
+            networkMonitor = networkMonitor,
+            networkDispatcher = mainDispatcherRule.testDispatcher
         )
     }
 
     @Test
-    fun get_rates_no_network() = testScope.runTest{
+    fun get_rates_no_network() = runTest{
 
-        every { networkHandler.isNetworkAvailable() } returns false
+        every { networkMonitor.isOnline } returns flowOf(false)
 
-        val response = subject.getRates(Date(), CurrencyUnit.USD)
+        val response = subject.getRates(Date(), CurrencyUnit.USD).first()
 
         assertThat(response.isLeft()).isTrue()
-        assertThat(response.leftOrNull()).isEqualTo(Failure.NetworkUnavailable)
+        assertThat(response.leftOrNull()).isEqualTo(NoInternetError)
 
     }
 }

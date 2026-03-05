@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,13 @@
 package com.dmdiaz.currency.features.rates
 
 import androidx.compose.runtime.Immutable
-import com.dmdiaz.currency.core.domain.common.models.Failure
 import com.dmdiaz.currency.core.domain.rates.models.Rate
-import com.dmdiaz.currency.core.ui.state.Lce
+import com.dmdiaz.currency.core.domain.rates.models.RatesError
+import com.dmdiaz.currency.libs.designsystem.state.LCE
 import org.joda.money.CurrencyUnit
 
 @Immutable
 data class RatesState(
     val baseCurrencyUnit: CurrencyUnit,
-    val rates: Lce<Failure, List<Rate>> = Lce.Loading
+    val rates: LCE<RatesError, List<Rate>> = LCE.Loading
 )

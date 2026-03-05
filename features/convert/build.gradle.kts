@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,57 +22,26 @@
  * SOFTWARE.
  */
 
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.currency.android.feature)
+    alias(libs.plugins.currency.android.compose)
 }
 
 android {
     namespace = "com.dmdiaz.currency.features.convert"
-    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
-        minSdk = ProjectConfig.minSdk
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xcontext-receivers")
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = ProjectConfig.extensionVersion
     }
 }
 
 dependencies {
 
-    implementation(project(":libs:util"))
-    implementation(project(":libs:designsystem"))
+    implementation(projects.libs.util)
+    implementation(projects.libs.designsystem)
 
-    implementation(project(":core:ui"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.ui)
+    implementation(projects.core.domain)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)

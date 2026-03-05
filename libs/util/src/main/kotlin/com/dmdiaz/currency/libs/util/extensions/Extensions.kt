@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,8 @@ import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import arrow.core.Either
 import arrow.core.left
+import arrow.core.raise.Raise
+import arrow.core.raise.either
 import arrow.core.right
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -54,6 +56,7 @@ import org.joda.money.format.MoneyFormatter
 import org.joda.money.format.MoneyFormatterBuilder
 import java.util.Locale
 import java.util.regex.Pattern
+import kotlin.experimental.ExperimentalTypeInference
 
 
 fun Job?.cancelIfActive() {
@@ -159,6 +162,9 @@ fun <A, B: Any> Flow<Either<A,B?>>.filterNotNullRight(): Flow<Either<A,B>> = tra
 fun <A,B> Flow<Either<A,B>>.onEachRight(action: suspend (B) -> Unit): Flow<Either<A, B>> = this.onEach { it.fold(ifRight = { action(it) }, ifLeft = {}) }
 inline fun <A,B,C> Flow<Either<A, B>>.mapRight(crossinline transform: suspend (value: B) -> C): Flow<Either<A, C>> = this.map { it.map { transform(it) } }
 
+inline fun <A,B,C> Flow<Either<A, B>>.mapLeft(crossinline transform: suspend (value: A) -> C): Flow<Either<C, B>> = this.map { it.mapLeft { transform(it) } }
+
+
 suspend fun <A,B> FlowCollector<Either<A, B>>.emitLeft(left: A) = emit(left.left())
 
 suspend fun <A,B> FlowCollector<Either<A, B>>.emitRight(right: B) = emit(right.right())
@@ -166,6 +172,12 @@ suspend fun <A,B> FlowCollector<Either<A, B>>.emitRight(right: B) = emit(right.r
 suspend fun <A,B> FlowCollector<Either<A, B>>.emitAllLeft(leftFlow: Flow<A>) = emitAll(leftFlow.map { it.left() })
 
 suspend fun <A,B> FlowCollector<Either<A, B>>.emitAllRight(rightFlow: Flow<B>) = emitAll(rightFlow.map { it.right() })
+
+@OptIn(ExperimentalTypeInference::class)
+suspend fun <A,B> FlowCollector<Either<A, B>>.emitEither(
+    @BuilderInference block: suspend Raise<A>.() -> B
+) = emit(either { block() })
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 inline fun <A,B,C> Flow<Either<A, B>>.flatMapRightLatest(crossinline transform: suspend (value: B) -> Flow<Either<A,C>>): Flow<Either<A,C>> =

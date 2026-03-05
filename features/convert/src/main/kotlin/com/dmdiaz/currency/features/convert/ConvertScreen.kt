@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,48 +25,42 @@
 package com.dmdiaz.currency.features.convert
 
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dmdiaz.currency.core.domain.common.models.Failure
-import com.dmdiaz.currency.core.domain.common.models.Failure.NetworkError
-import com.dmdiaz.currency.core.domain.common.models.Failure.NetworkUnavailable
-import com.dmdiaz.currency.core.ui.R
+import com.dmdiaz.currency.core.domain.common.models.NoInternetError
+import com.dmdiaz.currency.core.domain.rates.models.RatesCommonError
+import com.dmdiaz.currency.core.domain.rates.models.RatesError
+import com.dmdiaz.currency.core.ui.ScreenPreviews
 import com.dmdiaz.currency.core.ui.components.CurrencyUnitIcon
-import com.dmdiaz.currency.core.ui.state.Lce
-import com.dmdiaz.currency.features.convert.ConvertEvent.AmountChanged
-import com.dmdiaz.currency.features.convert.ConvertEvent.Retry
+import com.dmdiaz.currency.core.ui.components.Error
+import com.dmdiaz.currency.core.ui.components.SimpleList
+import com.dmdiaz.currency.features.convert.ConvertScreenEvent.AmountChanged
+import com.dmdiaz.currency.features.convert.ConvertScreenEvent.AmountUpdated
+import com.dmdiaz.currency.features.convert.ConvertScreenEvent.Retry
+import com.dmdiaz.currency.features.convert.viewModel.ConvertViewModel
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
+import com.dmdiaz.currency.libs.designsystem.components.LceComponent
 import com.dmdiaz.currency.libs.designsystem.components.MoneyTextField
-import com.dmdiaz.currency.libs.designsystem.components.ThemePreviews
-import com.dmdiaz.currency.libs.designsystem.icon.CurrencyIcons
+import com.dmdiaz.currency.libs.designsystem.state.LCE
 import com.dmdiaz.currency.libs.designsystem.theme.CurrencyTheme
-import com.dmdiaz.currency.libs.designsystem.theme.LocalTintTheme
+import com.dmdiaz.currency.libs.util.extensions.toFormattedString
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
+import java.math.BigDecimal
 
 @Composable
 internal fun ConvertRoute(
@@ -74,153 +68,201 @@ internal fun ConvertRoute(
     viewModel: ConvertViewModel = hiltViewModel(),
 ) {
 
-    val uiState by viewModel.state.collectAsStateWithLifecycle()
+
+    val screenState = rememberConvertScreenState(
+        uiState = viewModel.uiState,
+        onEvent = viewModel::onEvent
+    )
 
     ConvertScreen(
-        uiState = uiState,
-        onEvent = viewModel::onEvent,
+        uiState = screenState.uiState,
+        onEvent = screenState::onEvent,
         modifier = modifier,
     )
 }
 
 @Composable
 internal fun ConvertScreen(
-    uiState: ConvertState,
-    onEvent: (ConvertEvent) -> Unit,
+    uiState: ConvertScreenUIState,
+    onEvent: (ConvertScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        MoneyTextField(
-            value = uiState.enteredAmount,
-            textStyle = MaterialTheme.typography.headlineMedium.copy(
-                textAlign = TextAlign.End
-            ),
-            onValueChange = {
-                onEvent(AmountChanged(it))
-            },
-            leadingIcon = {
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    CurrencyUnitIcon(
-                        currencyUnit = uiState.enteredAmount.currencyUnit,
-                        modifier = Modifier
-                            .padding(vertical = 16.dp)
-                            .padding(horizontal = 8.dp)
-                    )
-
-                    Text(
-                        text = uiState.enteredAmount.currencyUnit.code,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
-                }
-            },
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .fillMaxWidth()
+        ConvertMoneyTextField(
+            convertValue =  uiState.enteredAmount,
+            onConvertValueChanged = { onEvent(AmountUpdated(it)) }
         )
 
-        when (uiState.convertedAmounts) {
-            is Lce.Failure -> {
-                ErrorState(error = uiState.convertedAmounts.error,
-                    onRetryClicked = { onEvent(Retry) })
-            }
+        ConvertedAmounts(
+            modifier = Modifier.fillMaxSize(),
+            convertedAmounts = uiState.convertedAmounts ,
+            onRetry = { onEvent(Retry) },
+            onConvertedAmountClicked = { onEvent(AmountChanged(it)) }
+        )
+    }
+}
 
-            Lce.Loading -> {
+@Composable
+internal fun ConvertedAmounts(
+    convertedAmounts: LCE<RatesError, List<Money>>,
+    onRetry: () -> Unit,
+    onConvertedAmountClicked: (Money) -> Unit,
+    modifier: Modifier = Modifier
+){
+
+    LceComponent(
+        state = convertedAmounts,
+        modifier = modifier,
+        loading = {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Spacer(Modifier.weight(1f))
                 CircularProgressIndicator(
                     modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
                 )
                 Spacer(Modifier.weight(1f))
             }
-
-            is Lce.Content -> {
-                ConvertedList(list = uiState.convertedAmounts.value, onMoneyClicked = {
-                    onEvent(AmountChanged(it))
-                })
+        },
+        error = { error ->
+            Error(
+                error = (error as RatesCommonError).error,
+                onRetryClicked = onRetry
+            )
+        },
+        content = { value ->
+            SimpleList(
+                modifier = Modifier.fillMaxWidth(),
+                items = value,
+                key = { _, item -> item.currencyUnit.code }
+            ) { topExtraPadding, bottomExtraPadding, item ->
+                ConvertedListItem(
+                    money = item,
+                    modifier = Modifier
+                        .padding(
+                            top = topExtraPadding,
+                            bottom = bottomExtraPadding
+                        )
+                        .clickable { onConvertedAmountClicked(item) }
+                        .padding(
+                            top = 8.dp,
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 8.dp
+                        )
+                )
             }
         }
-
-
-    }
-
+    )
 }
-
 
 @Composable
-private fun ErrorState(
-    error: Failure, onRetryClicked: () -> Unit, modifier: Modifier = Modifier
+internal fun ConvertMoneyTextField(
+    convertValue: Money,
+    onConvertValueChanged: (Money) -> Unit
 ) {
-    Column(
+    MoneyTextField(
+        value = convertValue,
+        textStyle = MaterialTheme.typography.headlineMedium.copy(
+            textAlign = TextAlign.End
+        ),
+        onValueChange = onConvertValueChanged,
+        leadingIcon = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CurrencyUnitIcon(
+                    currencyUnit = convertValue.currencyUnit,
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .padding(horizontal = 8.dp)
+                )
+
+                Text(
+                    text = convertValue.currencyUnit.code,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            }
+        },
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .fillMaxWidth()
+    )
+}
+
+@Composable
+internal fun ConvertedListItem(
+    money: Money,
+    modifier: Modifier = Modifier
+) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .padding(16.dp)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .fillMaxWidth()
     ) {
+        CurrencyUnitIcon(currencyUnit = money.currencyUnit)
 
-        val iconTint = LocalTintTheme.current.iconTint
-
-        Image(
-            imageVector = CurrencyIcons.Warning,
-            colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
-            contentDescription = null,
+        Text(
+            text = money.currencyUnit.code,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
-                .fillMaxWidth()
-                .size(64.dp),
+                .padding(start = 16.dp, end = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(Modifier.weight(1f))
 
         Text(
-            text = stringResource(id = R.string.error),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            text = money.toFormattedString(),
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        val errorRes = when (error) {
-            is NetworkError -> R.string.network_error
-            NetworkUnavailable -> R.string.network_unavailable
-            else -> R.string.unknown_error
-        }
-
-        Text(
-            text = stringResource(id = errorRes),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(onClick = {
-            onRetryClicked()
-        }) {
-            Text(
-                text = stringResource(id = R.string.retry),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
     }
 }
 
-@ThemePreviews
+@ScreenPreviews
 @Composable
 fun ConvertScreenFailure() {
     CurrencyTheme {
         CurrencyBackground {
-            ConvertScreen(uiState = ConvertState(
+            ConvertScreen(uiState = ConvertScreenUIState(
                 enteredAmount = Money.zero(CurrencyUnit.USD),
-                convertedAmounts = Lce.Failure(NetworkUnavailable)
+                convertedAmounts = LCE.Error(RatesCommonError(NoInternetError))
+            ), onEvent = {})
+        }
+    }
+}
+
+@ScreenPreviews
+@Composable
+fun ConvertedScreenLoading() {
+    CurrencyTheme {
+        CurrencyBackground {
+            ConvertScreen(uiState = ConvertScreenUIState(
+                enteredAmount = Money.zero(CurrencyUnit.USD),
+                convertedAmounts = LCE.Loading
+            ), onEvent = {})
+        }
+    }
+}
+
+@ScreenPreviews
+@Composable
+fun ConvertedScreenContent() {
+    CurrencyTheme {
+        CurrencyBackground {
+            ConvertScreen(uiState = ConvertScreenUIState(
+                enteredAmount = Money.zero(CurrencyUnit.USD),
+                convertedAmounts = LCE.Content(
+                    value = listOf(
+                        Money.of(CurrencyUnit.CAD, BigDecimal.valueOf(1.35)),
+
+                        Money.of(CurrencyUnit.EUR, BigDecimal.valueOf(0.95))
+                    )
+                )
             ), onEvent = {})
         }
     }

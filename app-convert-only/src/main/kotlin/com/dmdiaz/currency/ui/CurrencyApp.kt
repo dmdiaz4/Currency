@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.dmdiaz.currency.libs.designsystem.components.CurrencyBackground
@@ -88,16 +89,22 @@ fun CurrencyApp(
                 Column(Modifier.fillMaxSize()) {
                     // Show the top app bar on top level destinations.
                     val destination = appState.currentTopLevelDestination
+                    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
                     if (destination != null) {
                         CurrencyTopAppBar(
                             titleRes = destination.titleTextId,
                             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                                 containerColor = Color.Transparent,
+                                scrolledContainerColor = Color.Transparent
                             ),
+                            scrollBehavior = scrollBehavior
                         )
                     }
 
-                    CurrencyNavHost(appState = appState)
+                    CurrencyNavHost(
+                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                        appState = appState
+                    )
                 }
             }
         }

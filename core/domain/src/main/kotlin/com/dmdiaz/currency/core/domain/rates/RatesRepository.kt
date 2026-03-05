@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,16 @@
 package com.dmdiaz.currency.core.domain.rates
 
 import arrow.core.Either
-import com.dmdiaz.currency.core.domain.common.models.Failure
 import com.dmdiaz.currency.core.domain.rates.models.Rate
+import com.dmdiaz.currency.core.domain.rates.models.RatesError
 import kotlinx.coroutines.flow.Flow
 import org.joda.money.CurrencyUnit
 import java.util.Date
 
 interface RatesRepository {
 
-    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<Failure, List<Rate>>>
+    fun getRates(date: Date, currencyUnit: CurrencyUnit): Flow<Either<RatesError, List<Rate>>>
 
-    suspend fun refreshRates(date: Date, currencyUnit: CurrencyUnit): Either<Failure, Unit>
+    suspend fun refreshRates(date: Date, currencyUnit: CurrencyUnit): Either<RatesError, Unit>
 
 }

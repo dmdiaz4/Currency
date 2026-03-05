@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,67 +22,37 @@
  * SOFTWARE.
  */
 
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
-plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.devtools.ksp)
-    alias(libs.plugins.room)
-}
 
-// For KSP
-ksp {
-    arg("generateKotlin", "true")
+plugins {
+    alias(libs.plugins.currency.android.library)
+    alias(libs.plugins.currency.hilt)
+    alias(libs.plugins.currency.android.room)
+    alias(libs.plugins.currency.dependecy.graph.generator)
 }
 
 
 android {
     namespace = "com.dmdiaz.currency.core.data"
-    compileSdk = ProjectConfig.compileSdk
-
     defaultConfig {
-        minSdk = ProjectConfig.minSdk
         buildConfigField("String", "BASE_URL", project.properties["BASE_URL"].toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xcontext-receivers")
-    }
     buildFeatures {
         buildConfig = true
-    }
-    room {
-        schemaDirectory("$projectDir/schemas")
     }
 }
 
 dependencies {
 
-    implementation(project(":libs:util"))
-    implementation(project(":core:domain"))
+    implementation(projects.libs.util)
+    implementation(projects.core.domain)
 
 
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
-    testImplementation(libs.hilt.android.testing)
+    implementation(libs.hilt.android.testing)
     kspTest(libs.hilt.android.compiler)
 
     implementation(libs.datastore.preferences)
@@ -104,10 +74,9 @@ dependencies {
 
     //Retrofit
     implementation(libs.retrofit)
-    implementation(libs.arrow.core.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
-    testImplementation(libs.mock.server)
+    implementation(libs.mock.server)
     implementation(libs.moshi)
     implementation(libs.moshi.adapters)
     ksp (libs.moshi.kotlin.codegen)

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 David Diaz
+ * Copyright (c) 2026 David Diaz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@
 package com.dmdiaz.currency.core.data.di
 
 
-import arrow.retrofit.adapter.either.EitherCallAdapterFactory
 import com.dmdiaz.currency.core.data.BuildConfig
 import com.dmdiaz.currency.core.data.common.serializers.BigDecimalSerializer
 import com.dmdiaz.currency.core.data.common.serializers.CurrencyUnitSerializer
@@ -42,8 +41,6 @@ import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.net.HttpURLConnection
 import javax.inject.Singleton
 
@@ -94,20 +91,6 @@ object NetworkModule {
             .add(DateSerializer)
             .add(BigDecimalSerializer)
             .add(CurrencyUnitSerializer)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    open fun provideRetrofit(
-        client: OkHttpClient,
-        moshi: Moshi
-    ): Retrofit {
-        return Retrofit.Builder()
-            .client(client)
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addCallAdapterFactory(EitherCallAdapterFactory.create())
             .build()
     }
 
