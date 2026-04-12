@@ -42,6 +42,7 @@ rootProject.name = "Currency"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":app-convert-only")
+include(":baselineprofile")
 
 include(":core:ui")
 include(":core:domain")

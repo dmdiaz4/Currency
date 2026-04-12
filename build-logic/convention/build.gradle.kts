@@ -78,6 +78,10 @@ gradlePlugin {
             id = "currency.android.test"
             implementationClass = "AndroidTestConventionPlugin"
         }
+        register("androidBaselineProfile") {
+            id = "currency.android.baselineprofile"
+            implementationClass = "AndroidBaselineProfileConventionPlugin"
+        }
         register("jvmLibrary") {
             id = "currency.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"

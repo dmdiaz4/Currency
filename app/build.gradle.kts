@@ -28,6 +28,7 @@ plugins {
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.currency.android.compose)
     alias(libs.plugins.currency.dependecy.graph.generator)
+    alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -40,6 +41,11 @@ android {
         // who clones the code to sign and run the release variant, use the debug signing key.
         signingConfig = signingConfigs.named("debug").get()
     }
+}
+
+baselineProfile {
+    // Automatically merge the generated profile into the app
+    automaticGenerationDuringBuild = false
 }
 
 dependencies {
@@ -68,6 +74,8 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     debugImplementation(libs.navigation.testing)
     implementation(libs.tracing.ktx)
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(projects.baselineprofile)
 
 
     implementation(libs.navigation.fragment.ktx)

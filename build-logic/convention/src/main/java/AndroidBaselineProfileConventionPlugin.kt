@@ -22,16 +22,26 @@
  * SOFTWARE.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.hilt.android) apply false
-    alias(libs.plugins.devtools.ksp) apply false
-    alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.room) apply false
-    alias(libs.plugins.kotlin.jvm) apply false
-    alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.baselineprofile) apply false
+import com.android.build.gradle.TestExtension
+import com.dmdiaz.currency.configureGradleManagedDevices
+import com.dmdiaz.currency.configureKotlinAndroid
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
+
+class AndroidBaselineProfileConventionPlugin : Plugin<Project> {
+    override fun apply(target: Project) {
+        with(target) {
+            with(pluginManager) {
+                apply("com.android.test")
+                apply("org.jetbrains.kotlin.android")
+                apply("androidx.baselineprofile")
+            }
+
+            extensions.configure<TestExtension> {
+                configureKotlinAndroid(this)
+                configureGradleManagedDevices(this)
+            }
+        }
+    }
 }

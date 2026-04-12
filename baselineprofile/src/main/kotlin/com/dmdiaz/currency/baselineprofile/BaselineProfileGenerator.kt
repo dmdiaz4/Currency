@@ -22,16 +22,27 @@
  * SOFTWARE.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.hilt.android) apply false
-    alias(libs.plugins.devtools.ksp) apply false
-    alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.room) apply false
-    alias(libs.plugins.kotlin.jvm) apply false
-    alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.baselineprofile) apply false
+package com.dmdiaz.currency.baselineprofile
+
+import androidx.benchmark.macro.junit4.BaselineProfileRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@RunWith(AndroidJUnit4::class)
+class BaselineProfileGenerator {
+
+    @get:Rule
+    val rule = BaselineProfileRule()
+
+    @Test
+    fun generate() = rule.collect(
+        packageName = "com.dmdiaz.currency",
+    ) {
+        pressHome()
+        startActivityAndWait()
+        // Add interactions here to cover more app startup flows,
+        // e.g. navigating to the rates screen, converting currency, etc.
+    }
 }
